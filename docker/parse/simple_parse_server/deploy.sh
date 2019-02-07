@@ -83,8 +83,3 @@ ssh $SSH_HOST sh << END
 END
 
 ssh $SSH_HOST
-
-git add .
-git status -s
-git commit -m `date '+%d.%m.%Y🌿%H:%M'`
-git push
