@@ -124,3 +124,43 @@ Parse.Cloud.define(`createNfcRecord`, (request, response) => {
 		.then((d) => { response.success(d.id) })
 		.catch((d) => { response.error(d) })
 });
+
+// request should contain object with such fields: location, start_timestamp, end_timestamp, is_regular and data.
+Parse.Cloud.define(`createClubBook`, (request, response) => {
+	var club_query = Parse.Object.extend(`Club`);
+	var club_record = new club_query();
+	club_record.set(`userId`, request.user.id)
+	club_record.set(`location`, request.params.location)
+	club_record.set(`start_timestamp`, request.params.start_timestamp)
+	club_record.set(`end_timestamp`, request.params.end_timestamp)
+	club_record.set(`is_regular`, request.params.is_regular)
+	club_record.set(`is_allowed`, false)
+	club_record.set(`data`, request.params.data)
+	club_record.save()
+		.then((d) => { response.success(d.id) })
+		.catch((d) => { response.error(d) })
+});
+
+// Get request for existing laundry books
+Parse.Cloud.define(`getClubBooks`, (request, response) => {
+	new Parse.Query(`Club`)
+		.find()
+		.then((club_book) => {
+			new Parse.Query(`User`).find()
+				.then((users) => {
+					var new_club_book = club_book.map(i => {
+						return ({
+							location: i.get(`location`),
+							start_timestamp: i.get(`start_timestamp`),
+							end_timestamp: i.get(`end_timestamp`),
+							is_regular: i.get(`is_regular`),
+							is_allowed: i.get(`is_allowed`),
+							data: i.get(`data`),
+						})
+					})
+					response.success(new_club_book)
+				})
+				.catch((d) => { response.error(d) })
+		})
+		.catch((d) => { response.error(d) })
+});

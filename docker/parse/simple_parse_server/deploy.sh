@@ -1,6 +1,6 @@
 #!/bin/bash
 LIVEQUERY_SUPPORT=1
-LIVEQUERY_CLASSES="Constants, Balance, Machines, Laundry, Transactions, NFC"
+LIVEQUERY_CLASSES="Constants, Balance, Machines, Laundry, Transactions, NFC, Club"
 
 SSH_HOST="root@$SERVER_IP"
 WORK_DIR="/root/$MY_APP_NAME"
