@@ -148,14 +148,15 @@ Parse.Cloud.define(`getClubBooks`, (request, response) => {
 		.then((club_book) => {
 			new Parse.Query(`User`).find()
 				.then((users) => {
-					var new_club_book = club_book.map(i => {
+					var new_club_book = club_book.map(book => {
 						return ({
-							location: i.get(`location`),
-							start_timestamp: i.get(`start_timestamp`),
-							end_timestamp: i.get(`end_timestamp`),
-							is_regular: i.get(`is_regular`),
-							is_allowed: i.get(`is_allowed`),
-							data: i.get(`data`),
+							location: book.get(`location`),
+							start_timestamp: book.get(`start_timestamp`),
+							end_timestamp: book.get(`end_timestamp`),
+							is_regular: book.get(`is_regular`),
+							is_allowed: book.get(`is_allowed`),
+							data: book.get(`data`),
+							owner: users.filter(i => i.id === book.get(`userId`))[0].get(`name`),
 						})
 					})
 					response.success(new_club_book)
