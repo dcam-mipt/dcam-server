@@ -144,12 +144,15 @@ Parse.Cloud.define(`createClubBook`, (request, response) => {
 // Get request for existing laundry books
 Parse.Cloud.define(`getClubBooks`, (request, response) => {
 	new Parse.Query(`Club`)
+		.greaterThan(`start_timestamp`, +new Date())
 		.find()
 		.then((club_book) => {
-			new Parse.Query(`User`).find()
+			new Parse.Query(`User`)
+				.find()
 				.then((users) => {
 					var new_club_book = club_book.map(book => {
 						return ({
+							event_id: book.id,
 							location: book.get(`location`),
 							start_timestamp: book.get(`start_timestamp`),
 							end_timestamp: book.get(`end_timestamp`),
@@ -165,3 +168,28 @@ Parse.Cloud.define(`getClubBooks`, (request, response) => {
 		})
 		.catch((d) => { response.error(d) })
 });
+
+Parse.Cloud.define(`chengeClubEventResolution`, (request, response) => {
+	new Parse.Query(`Roles`)
+		.equalTo(`role`, `ADMIN`)
+		.equalTo(`userId`, request.user.id)
+		.first()
+		.then((d) => {
+			if (d) {
+				new Parse.Query(`Club`)
+					.equalTo(`objectId`, request.params.event_id)
+					.first()
+					.then((d) => {
+						d.set(`is_allowed`, !d.get(`is_allowed`))
+						d.save()
+							.then((d) => { response.success(d) })
+							.catch((d) => { response.error(d) })
+					})
+					.catch((d) => { response.error(d) })
+			} else {
+				response.error(`You have no rights to perform an action.`)
+			}
+		})
+		.catch((d) => { response.error(d) })
+});
+
