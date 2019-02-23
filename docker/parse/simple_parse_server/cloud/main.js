@@ -192,4 +192,3 @@ Parse.Cloud.define(`chengeClubEventResolution`, (request, response) => {
 		})
 		.catch((d) => { response.error(d) })
 });
-
