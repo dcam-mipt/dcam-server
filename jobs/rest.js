@@ -26,9 +26,6 @@ server.listen(config.REST_PORT, () => {
 console.log(`> > >`)
 
 server.post('/yandex/', (req, res, next) => {
-    console.log(`> > >`)
-    console.log(req.body)
-    console.log(`> > >`)
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
     var transactions_q = new Parse.Query(`Transactions`)
     transactions_q.equalTo(`objectId`, req.body.label)
@@ -53,3 +50,9 @@ server.post('/yandex/', (req, res, next) => {
         })
         .catch((d) => { console.log(d) })
 });
+
+server.post(`/club/`, (req, res, next) => {
+    console.log(`> > >`)
+    console.log(req.body)
+    console.log(`> > >`)
+})
