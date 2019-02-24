@@ -1,8 +1,8 @@
 #!/bin/bash
-git add .
-git status -s
-git commit -m `date '+%d.%m.%Y🌿%H:%M'`
-git push
+# git add .
+# git status -s
+# git commit -m `date '+%d.%m.%Y🌿%H:%M'`
+# git push
 
 scp -r ./jobs/* root@dcam.pro:~/jobs
 ssh root@dcam.pro sh << END

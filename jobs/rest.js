@@ -6,7 +6,7 @@ var moment = require('moment-timezone')
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
-// Parse.User.enableUnsafeCurrentUser()
+Parse.User.enableUnsafeCurrentUser()
 
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.bodyParser());
@@ -31,9 +31,9 @@ server.post('/yandex/', (req, res, next) => {
     transactions_q.equalTo(`objectId`, req.body.label)
     transactions_q.first()
         .then((transaction) => {
-            var balance_q = new Parse.Query(`Balance`)
-            balance_q.equalTo(`userId`, transaction.get(`userId`))
-            balance_q.first()
+            new Parse.Query(`Balance`)
+                .equalTo(`userId`, transaction.get(`userId`))
+                .first()
                 .then((balance) => {
                     if (transaction.get(`status`) !== `done`) {
                         balance.set(`money`, balance.get(`money`) + +req.body.withdraw_amount)
