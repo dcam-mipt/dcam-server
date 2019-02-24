@@ -9,6 +9,5 @@ ssh root@dcam.pro sh << END
 	pm2 kill
 	pm2 start ~/jobs/rest.js
 	pm2 start ~/jobs/server_time.js
+	# pm2 logs
 END
-
-# ssh $SSH_HOST

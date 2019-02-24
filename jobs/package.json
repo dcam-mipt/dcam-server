@@ -2,7 +2,8 @@
     "dependencies": {
         "moment": "^2.24.0",
         "moment-timezone": "^0.5.23",
-        "parse": "^2.1.0",
-        "restify": "^7.6.0"
+        "parse": "^2.2.1",
+        "restify": "^7.7.0",
+        "restify-cors-middleware": "^1.1.1"
     }
 }
