@@ -5,6 +5,7 @@ var corsMiddleware = require('restify-cors-middleware');
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
+Parse.User.enableUnsafeCurrentUser()
 
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.bodyParser());
@@ -22,8 +23,6 @@ server.use(restify.plugins.queryParser())
 server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
-
-console.log(`> > >`)
 
 server.post('/yandex/', (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
@@ -51,8 +50,23 @@ server.post('/yandex/', (req, res, next) => {
         .catch((d) => { console.log(d) })
 });
 
-server.post(`/club/`, (req, res, next) => {
-    console.log(`> > >`)
-    console.log(req.body)
-    console.log(`> > >`)
-})
+// create club book
+server.post(`/club/`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            var club_query = Parse.Object.extend(`Club`);
+            var club_record = new club_query();
+            club_record.set(`userId`, user.id)
+            club_record.set(`location`, request.body.location)
+            club_record.set(`start_timestamp`, request.body.start_timestamp)
+            club_record.set(`end_timestamp`, request.body.end_timestamp)
+            club_record.set(`is_regular`, request.body.is_regular)
+            club_record.set(`is_allowed`, false)
+            club_record.set(`data`, request.body.data)
+            club_record.save()
+                .then((d) => { response.send(d.id) })
+                .catch((d) => { response.send(d) })
+        })
+        .catch((d) => { response.send(d) })
+});
