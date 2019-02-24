@@ -6,7 +6,7 @@ var moment = require('moment-timezone')
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
-Parse.User.enableUnsafeCurrentUser()
+// Parse.User.enableUnsafeCurrentUser()
 
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.bodyParser());
