@@ -92,12 +92,13 @@ server.post(`/club/create_book/`, (request, response, next) => {
 });
 
 // get user
-server.get(`/users/get/`, (request, response, next) => {
+server.get(`/users/get_user/:user_id`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
     Parse.User.become(sessionToken)
         .then((user) => {
             new Parse.Query(`User`)
-                .equalTo(`objectId`, request.body.user_id)
+                .equalTo(`objectId`, request.params.user_id)
+                .first()
                 .then((d) => { response.send(d) })
                 .catch((d) => { response.send(d) })
         })
