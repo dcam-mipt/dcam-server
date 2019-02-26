@@ -90,3 +90,16 @@ server.post(`/club/create_book/`, (request, response, next) => {
         })
         .catch((d) => { response.send(d) })
 });
+
+// get user
+server.get(`/users/get/`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            new Parse.Query(`User`)
+                .equalTo(`objectId`, request.body.user_id)
+                .then((d) => { response.send(d) })
+                .catch((d) => { response.send(d) })
+        })
+        .catch((d) => { response.send(d) })
+});
