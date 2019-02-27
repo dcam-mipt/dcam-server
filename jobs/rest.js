@@ -104,3 +104,22 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
         })
         .catch((d) => { response.send(d) })
 });
+
+server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            response.send(user)
+            // new Parse.Query(`Laundry`)
+            //     .equalTo(`objectId`, request.params.book_id)
+            //     .first()
+            //     .then((d) => {
+            //         d.destroy()
+            //             // .then((d) => { console.log(d) })
+            //             .catch((d) => { response.send(d) })
+            //     })
+            //     .catch((d) => { response.send(d) })
+        })
+        .catch((d) => { response.send(d) })
+});
+
