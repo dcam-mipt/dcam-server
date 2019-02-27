@@ -105,23 +105,43 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
         .catch((d) => { response.send(d) })
 });
 
-// unbook laundry
 server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
-    response.send(request)
-    // let sessionToken = request.headers.sessiontoken
-    // Parse.User.become(sessionToken)
-    //     .then((user) => {
-    //         response.send(user)
-    //         // new Parse.Query(`Laundry`)
-    //         //     .equalTo(`objectId`, request.params.book_id)
-    //         //     .first()
-    //         //     .then((d) => {
-    //         //         d.destroy()
-    //         //             // .then((d) => { console.log(d) })
-    //         //             .catch((d) => { response.send(d) })
-    //         //     })
-    //         //     .catch((d) => { response.send(d) })
-    //     })
-    //     .catch((d) => { response.send(d) })
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            new Parse.Query(`Laundry`)
+                .equalTo(`objectId`, request.params.book_id)
+                .first()
+                .then((d) => {
+                    if (user.objectId === d.userId) {
+                        d.destroy()
+                            .then((d) => { response.send(d) })
+                            .catch((d) => { response.send(d) })
+                    }
+                })
+                .catch((d) => { response.send(d) })
+        })
+        .catch((d) => { response.send(d) })
+});
+
+server.get(`/laundry/get`, (request, response, next) => {
+    new Parse.Query(`User`)
+        .find()
+        .then((users) => {
+            new Parse.Query(`Laundry`)
+                .find()
+                .then((d) => { response.send(d.map((i) => {
+                    let user = users.filter(u => u.id === i.get(`userId`))[0]
+                    return {
+                        machineId: i.get(`machineId`),
+                        objectId: i.id,
+                        timestamp: i.get(`timestamp`),
+                        userId: i.get(`userId`),
+                        email: user ? user.get(`username`) : null
+                    }
+                })) })
+                .catch((d) => { response.send(d) })
+        })
+        .catch((d) => { response.send(d) })
 });
 

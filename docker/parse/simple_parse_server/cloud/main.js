@@ -78,7 +78,8 @@ Parse.Cloud.define(`getLaundry`, (request, response) => {
 								userId: laundry.get(`userId`),
 								timestamp: laundry.get(`timestamp`),
 								laundryId: laundry.id,
-								name: users_list.filter(user => user.id === laundry.get(`userId`))[0].get(`name`).split(` `)[2],
+								// name: users_list.filter(user => user.id === laundry.get(`userId`))[0].get(`name`).split(` `)[2],
+								email: laundry.get(`email`),
 								vk: users_list.filter(user => user.id === laundry.get(`userId`))[0].get(`vk`)
 							})
 						}))
