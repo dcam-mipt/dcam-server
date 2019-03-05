@@ -130,18 +130,57 @@ server.get(`/laundry/get`, (request, response, next) => {
         .then((users) => {
             new Parse.Query(`Laundry`)
                 .find()
-                .then((d) => { response.send(d.map((i) => {
-                    let user = users.filter(u => u.id === i.get(`userId`))[0]
-                    return {
-                        machineId: i.get(`machineId`),
-                        objectId: i.id,
-                        timestamp: i.get(`timestamp`),
-                        userId: i.get(`userId`),
-                        email: user ? user.get(`username`) : null
-                    }
-                })) })
+                .then((d) => {
+                    response.send(d.map((i) => {
+                        let user = users.filter(u => u.id === i.get(`userId`))[0]
+                        return {
+                            machineId: i.get(`machineId`),
+                            objectId: i.id,
+                            timestamp: i.get(`timestamp`),
+                            userId: i.get(`userId`),
+                            email: user ? user.get(`username`) : null
+                        }
+                    }))
+                })
                 .catch((d) => { response.send(d) })
         })
         .catch((d) => { response.send(d) })
 });
 
+server.get(`/laundry/destroy_machine/:machine_id/:timestamp`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            new Parse.Query(`Roles`)
+                .equalTo(`user_id`, user.objectId)
+                .equalTo(`role`, `ADMIN`)
+                .first()
+                .then((role) => {
+                    if (role) {
+                        new Parse.Query(`Machines`)
+                            .equalTo(`objectId`, request.params.machine_id)
+                            .first()
+                            .then((machine) => {
+                                machine.set(`chill_untill`, +request.params.timestamp)
+                                machine.set(`isDisabled`, true)
+                                machine.save()
+                                    .then((d) => {
+                                        new Parse.Query(`Laundry`)
+                                            .equalTo(`machineId`, request.params.machine_id)
+                                            .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
+                                            .greaterThan(`timestamp`, +moment())
+                                            .find()
+                                            .then((d) => { response.send(d) })
+                                            .catch((d) => { response.send(d) })
+                                    })
+                                    .catch((d) => { response.send(d) })
+                            })
+                            .catch((d) => { response.send(d) })
+                    } else {
+                        response.send(`permission denied`)
+                    }
+                })
+                .catch((d) => { response.send(d) })
+        })
+        .catch((d) => { response.send(d) })
+});
