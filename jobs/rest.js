@@ -3,6 +3,7 @@ var Parse = require('parse/node')
 var config = require('./config')
 var corsMiddleware = require('restify-cors-middleware');
 var moment = require('moment-timezone')
+var axios = require(`axios`)
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
@@ -147,7 +148,7 @@ server.get(`/laundry/get`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 });
 
-server.get(`/laundry/destroy_machine/:machine_id/:timestamp`, (request, response, next) => {
+server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
     Parse.User.become(sessionToken)
         .then((user) => {
@@ -157,12 +158,13 @@ server.get(`/laundry/destroy_machine/:machine_id/:timestamp`, (request, response
                 .first()
                 .then((role) => {
                     if (role) {
+                        let is_before_now = +request.params.timestamp < +moment().add(-2, `hour`)
                         new Parse.Query(`Machines`)
                             .equalTo(`objectId`, request.params.machine_id)
                             .first()
                             .then((machine) => {
-                                machine.set(`chill_untill`, +request.params.timestamp)
-                                machine.set(`isDisabled`, true)
+                                machine.set(`chill_untill`, is_before_now ? null : +request.params.timestamp)
+                                machine.set(`isDisabled`, !is_before_now)
                                 machine.save()
                                     .then((d) => {
                                         new Parse.Query(`Laundry`)
@@ -170,7 +172,17 @@ server.get(`/laundry/destroy_machine/:machine_id/:timestamp`, (request, response
                                             .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
-                                            .then((d) => { response.send(d) })
+                                            .then((books) => {
+                                                let deal = () => {
+                                                    console.log(d[0])
+                                                    axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
+                                                        .then((d) => { books.shift(); deal() })
+                                                        .catch((d) => { response.send(d); console.error(d) })
+                                                }
+                                                if (books.length) {
+                                                    deal()
+                                                }
+                                            })
                                             .catch((d) => { response.send(d); console.error(d) })
                                     })
                                     .catch((d) => { response.send(d); console.error(d) })

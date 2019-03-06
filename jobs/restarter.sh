@@ -9,6 +9,7 @@ if [[ "$response" -ne 200 ]] ; then
   echo "fail!"
 
 docker restart dcam_parse_server
+pm2 restart
 
 else
   exit 0
