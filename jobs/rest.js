@@ -84,11 +84,11 @@ server.post(`/club/create_book/`, (request, response, next) => {
                             deal()
                         }
                     })
-                    .catch((d) => { response.send(d) })
+                    .catch((d) => { response.send(d); console.error(d) })
             }
             deal()
         })
-        .catch((d) => { response.send(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 // get user
@@ -100,9 +100,9 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
                 .equalTo(`objectId`, request.params.user_id)
                 .first()
                 .then((d) => { response.send(d) })
-                .catch((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { response.send(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
@@ -116,12 +116,12 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                     if (user.objectId === d.userId) {
                         d.destroy()
                             .then((d) => { response.send(d) })
-                            .catch((d) => { response.send(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     }
                 })
-                .catch((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { response.send(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/laundry/get`, (request, response, next) => {
@@ -142,9 +142,9 @@ server.get(`/laundry/get`, (request, response, next) => {
                         }
                     }))
                 })
-                .catch((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { response.send(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/laundry/destroy_machine/:machine_id/:timestamp`, (request, response, next) => {
@@ -171,16 +171,16 @@ server.get(`/laundry/destroy_machine/:machine_id/:timestamp`, (request, response
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
                                             .then((d) => { response.send(d) })
-                                            .catch((d) => { response.send(d) })
+                                            .catch((d) => { response.send(d); console.error(d) })
                                     })
-                                    .catch((d) => { response.send(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
                             })
-                            .catch((d) => { response.send(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     } else {
                         response.send(`permission denied`)
                     }
                 })
-                .catch((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { response.send(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
