@@ -26,6 +26,19 @@ server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
+let updateActivity = (user) => {
+    new Parse.Query(`User`)
+        .equalTo(`objectId`, user.id)
+        .first()
+        .then((user) => {
+            user.set(`last_seen`, +moment())
+            user.save()
+                // .then((d) => { console.log(d) })
+                .catch((d) => { console.error(d) })
+        })
+        .catch((d) => { console.log(d) })
+}
+
 server.post('/yandex/', (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
     var transactions_q = new Parse.Query(`Transactions`)
@@ -76,6 +89,7 @@ server.post(`/club/create_book/`, (request, response, next) => {
     let group_id = request.body.is_regular ? Math.random().toString(36).substring(2, 10) : undefined
     Parse.User.become(sessionToken)
         .then((user) => {
+            updateActivity(user)
             let week_number = 0
             let deal = () => {
                 createOneBook(request, user, group_id, week_number)
@@ -92,24 +106,11 @@ server.post(`/club/create_book/`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 });
 
-// get user
-server.get(`/users/get_user/:user_id`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
-        .then((user) => {
-            new Parse.Query(`User`)
-                .equalTo(`objectId`, request.params.user_id)
-                .first()
-                .then((d) => { response.send(d) })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
-});
-
 server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
     Parse.User.become(sessionToken)
         .then((user) => {
+            updateActivity(user)
             new Parse.Query(`Laundry`)
                 .equalTo(`objectId`, request.params.book_id)
                 .first()
@@ -152,6 +153,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
     let sessionToken = request.headers.sessiontoken
     Parse.User.become(sessionToken)
         .then((user) => {
+            updateActivity(user)
             new Parse.Query(`Roles`)
                 .equalTo(`user_id`, user.objectId)
                 .equalTo(`role`, `ADMIN`)
@@ -197,14 +199,50 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
         .catch((d) => { response.send(d); console.error(d) })
 });
 
+// get user
+server.get(`/users/get_user/:user_id`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            updateActivity(user)
+            new Parse.Query(`User`)
+                .equalTo(`objectId`, request.params.user_id)
+                .first()
+                .then((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+});
+
 server.get(`/users/get_users_list`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
     Parse.User.become(sessionToken)
-    	.then((current_user) => {
+        .then((user) => {
+            updateActivity(user)
             new Parse.Query(`User`)
-            	.then((users) => {
-                    response.send(users)
+                .find()
+                .then((users) => {
+                    new Parse.Query(`Balance`)
+                        .find()
+                        .then((balances) => {
+                            response.send(users.map((user, u_i) => user.set(`balance`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
                 })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+});
+
+server.get(`/roles/get_my_roles/`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            updateActivity(user)
+            new Parse.Query(`Roles`)
+                .equalTo(`userId`, user.id)
+                .find()
+                .then((d) => { response.send(d.map(i => i.get(`role`))) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
