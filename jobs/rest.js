@@ -196,3 +196,16 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
         })
         .catch((d) => { response.send(d); console.error(d) })
 });
+
+server.get(`/users/get_users_list`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+    	.then((current_user) => {
+            new Parse.Query(`User`)
+            	.then((users) => {
+                    response.send(users)
+                })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
