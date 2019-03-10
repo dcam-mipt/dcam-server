@@ -45,6 +45,9 @@ server.post('/yandex/', (req, res, next) => {
         .equalTo(`objectId`, req.body.label)
         .first()
         .then((transaction) => {
+            console.log(`> > >`)
+            console.log(transation.attributes)
+            console.log(`> > >`)
             new Parse.Query(`Balance`)
                 .equalTo(`to`, transaction.get(`userId`))
                 .first()
