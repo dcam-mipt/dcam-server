@@ -247,3 +247,14 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
+
+server.get(`/balance/edit/`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            axios.get(`http://dcam.pro/api/roles/get_my_roles`)
+            	.then((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
