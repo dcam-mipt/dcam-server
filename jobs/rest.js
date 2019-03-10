@@ -46,7 +46,7 @@ server.post('/yandex/', (req, res, next) => {
         .first()
         .then((transaction) => {
             console.log(`> > >`)
-            console.log(transation.attributes)
+            console.log(transaction.attributes)
             console.log(`> > >`)
             new Parse.Query(`Balance`)
                 .equalTo(`to`, transaction.get(`userId`))
