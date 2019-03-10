@@ -1,6 +1,6 @@
 #!/bin/bash
 LIVEQUERY_SUPPORT=1
-LIVEQUERY_CLASSES="Constants, Balance, Machines, Laundry, Transactions, NFC, Club"
+LIVEQUERY_CLASSES="User, Constants, Balance, Machines, Laundry, Transactions, NFC, Club"
 
 SSH_HOST="root@$SERVER_IP"
 WORK_DIR="/root/$MY_APP_NAME"
@@ -60,13 +60,13 @@ ssh $SSH_HOST '
 	sudo apt-get install -y docker-ce
 	sudo rm -rf /var/lib/dpkg/lock
 	sudo apt-get install -y docker-compose
-	sudo apt-get install -y npm
-	sudo npm install pm2 -g
-	sudo npm install
-	cd ~/jobs
-	sudo npm install -y
-	cd ~
-	rm -rf package-lock.json
+	# sudo apt-get install -y npm
+	# sudo npm install pm2 -g
+	# sudo npm install
+	# cd ~/jobs
+	# sudo npm install -y
+	# cd ~
+	# rm -rf package-lock.json
 '
 
 #launching docker-compose
@@ -77,9 +77,7 @@ ssh $SSH_HOST sh << END
 	docker-compose build
 	docker-compose up -d --force-recreate
 	docker ps -a
-	pm2 kill
-	pm2 start ~/jobs/rest.js
-	pm2 start ~/jobs/server_time.js
+	# pm2 restart
 END
 
 ssh $SSH_HOST

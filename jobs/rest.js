@@ -46,7 +46,7 @@ server.post('/yandex/', (req, res, next) => {
     transactions_q.first()
         .then((transaction) => {
             new Parse.Query(`Balance`)
-                .equalTo(`userId`, transaction.get(`userId`))
+                .equalTo(`to`, transaction.get(`userId`))
                 .first()
                 .then((balance) => {
                     if (transaction.get(`status`) !== `done`) {
@@ -225,7 +225,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
                     new Parse.Query(`Balance`)
                         .find()
                         .then((balances) => {
-                            response.send(users.map((user, u_i) => user.set(`balance`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
+                            response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
                         })
                         .catch((d) => { response.send(d); console.error(d) })
                 })
@@ -248,12 +248,60 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/balance/edit/`, (request, response, next) => {
+server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
     Parse.User.become(sessionToken)
         .then((user) => {
-            axios.get(`http://dcam.pro/api/roles/get_my_roles`)
-            	.then((d) => { response.send(d) })
+            updateActivity(user)
+            new Parse.Query(`Roles`)
+                .equalTo(`user_id`, user.objectId)
+                .equalTo(`role`, `ADMIN`)
+                .first()
+                .then((role) => {
+                    if (role) {
+                        new Parse.Query(`Balance`)
+                            .equalTo(`userId`, request.params.user_id)
+                            .first()
+                            .then((users_balance) => {
+                                users_balance.set(`money`, users_balance.get(`money`) + +request.params.value)
+                                users_balance.save()
+                                    .then((d) => {
+                                        let Transactions = Parse.Object.extend(`Transactions`);
+                                        new Transactions()
+                                            .set(`status`, `done`)
+                                            .set(`requested`, +request.params.value)
+                                            .set(`recived`, +request.params.value)
+                                            .set(`to`, request.params.user_id)
+                                            .set(`from`, user.id)
+                                            .save()
+                                            .then((d) => { response.success(d.id) })
+                                            .catch((d) => { console.log(d) })
+                                    })
+                                    .catch((d) => { response.send(d); console.error(d) })
+                            })
+                            .catch((d) => { response.send(d); console.error(d) })
+                    } else {
+                        response.send(`permission for editting balance denied`)
+                    }
+                })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
+    let sessionToken = request.headers.sessiontoken
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            updateActivity(user)
+            var Transactions = Parse.Object.extend(`Transactions`);
+            new Transactions()
+                .set(`to`, user.id)
+                .set(`from`, `yandex`)
+                .set(`status`, `started`)
+                .set(`requested`, +request.params.value)
+                .save()
+                .then((d) => { response.send(d.id) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
