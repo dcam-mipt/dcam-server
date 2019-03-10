@@ -41,9 +41,9 @@ let updateActivity = (user) => {
 
 server.post('/yandex/', (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
-    var transactions_q = new Parse.Query(`Transactions`)
-    transactions_q.equalTo(`objectId`, req.body.label)
-    transactions_q.first()
+    new Parse.Query(`Transactions`)
+        .equalTo(`objectId`, req.body.label)
+        .first()
         .then((transaction) => {
             new Parse.Query(`Balance`)
                 .equalTo(`to`, transaction.get(`userId`))
