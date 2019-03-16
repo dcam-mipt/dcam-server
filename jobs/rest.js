@@ -278,7 +278,7 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
                                             .set(`to`, request.params.user_id)
                                             .set(`from`, user.id)
                                             .save()
-                                            .then((d) => { response.success(d.id) })
+                                            .then((d) => { response.send(d.id) })
                                             .catch((d) => { console.log(d) })
                                     })
                                     .catch((d) => { response.send(d); console.error(d) })

@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "axios": "^0.18.0",
         "moment": "^2.24.0",
         "moment-timezone": "^0.5.23",
         "parse": "^2.2.1",
