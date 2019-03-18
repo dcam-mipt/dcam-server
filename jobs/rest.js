@@ -143,7 +143,6 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
 });
 
 server.get(`/laundry/get`, (request, response, next) => {
-    console.log(`/laundry/get request`)
     become(request)
         .then((d) => {
             new Parse.Query(`User`)
@@ -152,7 +151,6 @@ server.get(`/laundry/get`, (request, response, next) => {
                     new Parse.Query(`Laundry`)
                         .find()
                         .then((d) => {
-                            console.log(`/laundry/get success`)
                             response.send(d.map((i) => {
                                 let user = users.filter(u => u.id === i.get(`userId`))[0]
                                 return {
