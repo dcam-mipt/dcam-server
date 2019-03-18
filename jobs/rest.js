@@ -26,34 +26,32 @@ server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
-let updateActivity = (user) => {
+let updateActivity = (user) => new Promise((resolve, reject) => {
     new Parse.Query(`User`)
         .equalTo(`objectId`, user.id)
         .first()
         .then((user) => {
             user.set(`last_seen`, +moment())
             user.save()
-                // .then((d) => { console.log(d) })
-                .catch((d) => { console.error(d) })
+                .then((d) => { resolve(d) })
+                .catch((d) => { reject(d) })
         })
-        .catch((d) => { console.log(d) })
-}
+        .catch((d) => { reject(d) })
+})
 
-let become = (request) => {
-    return new Promise((resolve, reject) => {
-        let sessionToken = request.headers.sessiontoken
-        if (!sessionToken) {
-            reject(`invalid sessoin token`, sessionToken)
-            return
-        }
-        Parse.User.become(sessionToken)
-            .then((user) => {
-                updateActivity(user)
-                resolve(user)
-            })
-            .catch((d) => { reject(d) })
-    })
-}
+let become = (request) => new Promise((resolve, reject) => {
+    let sessionToken = request.headers.sessiontoken
+    if (!sessionToken) {
+        reject(`invalid sessoin token`, sessionToken)
+        return
+    }
+    Parse.User.become(sessionToken)
+        .then((user) => {
+            updateActivity(user)
+            resolve(user)
+        })
+        .catch((d) => { reject(d) })
+})
 
 
 server.post('/yandex/', (req, res, next) => {
