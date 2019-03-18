@@ -251,7 +251,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
-    console.log(request.cookies)
+    console.log(request.headers.sessiontoken)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
@@ -321,7 +321,6 @@ server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
 })
 
 server.get(`/machines/get`, (request, response, next) => {
-    console.log(`/machines/get`)
     become(request)
         .then((user) => {
             new Parse.Query(`Machines`)
