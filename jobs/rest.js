@@ -241,7 +241,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
     if (!sessionToken) {
-        response.send(d); console.error(`sessionToke is undefined`)
+        response.send(`invalid sessiontoken`); console.error(`invalid sessiontoken:`, sessionToken)
         return
     }
     Parse.User.become(sessionToken)
