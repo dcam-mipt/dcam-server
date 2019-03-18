@@ -43,14 +43,14 @@ let become = (request) => {
     return new Promise((resolve, reject) => {
         let sessionToken = request.headers.sessiontoken
         if (!sessionToken) {
-            reject(`invalid sessoin token`, sessionToken)
+            return reject(`invalid sessoin token`, sessionToken)
         }
         Parse.User.become(sessionToken)
             .then((user) => {
                 updateActivity(user)
-                resolve(user)
+                return resolve(user)
             })
-            .catch((d) => { reject(d) })
+            .catch((d) => reject(d))
     })
 }
 
