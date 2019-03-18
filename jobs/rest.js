@@ -43,7 +43,7 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 
 let become = (request) => new Promise((resolve, reject) => {
     // let sessionToken = request.headers.sessiontoken
-    let sessionToken = request.headers.accept.split(`r:`)[1]
+    let sessionToken = `r:` + request.headers.accept.split(`r:`)[1]
     console.log(`sessionToken:`, sessionToken)
     if (!sessionToken) {
         reject({
@@ -253,7 +253,6 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
-    console.log(`headers: `, request.headers)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
