@@ -1,4 +1,5 @@
 var restify = require('restify');
+var CookieParser = require('restify-cookies');
 var Parse = require('parse/node')
 var config = require('./config')
 var corsMiddleware = require('restify-cors-middleware');
@@ -11,6 +12,7 @@ Parse.User.enableUnsafeCurrentUser()
 
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.bodyParser());
+server.use(CookieParser.parse);
 
 var cors = corsMiddleware({
     preflightMaxAge: 5,
@@ -249,6 +251,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
+    console.log(request.cookies)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
