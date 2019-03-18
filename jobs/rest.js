@@ -318,11 +318,12 @@ server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
 })
 
 server.get(`/machines/get`, (request, response, next) => {
+    console.log(`/machines/get`)
     become(request)
         .then((user) => {
             new Parse.Query(`Machines`)
                 .find()
-                .then((d) => { response.send(d) })
+                .then((d) => { response.send(d); console.log(`/machines/get`) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
