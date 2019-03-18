@@ -42,7 +42,10 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 let become = (request) => new Promise((resolve, reject) => {
     let sessionToken = request.headers.sessiontoken
     if (!sessionToken) {
-        reject(`invalid sessoin token`, sessionToken)
+        reject({
+            error: `invalid sessoin token`,
+            code: 209,
+        }, sessionToken)
         return
     }
     Parse.User.become(sessionToken)
