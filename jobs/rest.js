@@ -122,6 +122,7 @@ server.post(`/club/create_book/`, (request, response, next) => {
 });
 
 server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
+    console.log(`/laundry/unbook/:book_id`)
     become(request)
         .then((user) => {
             new Parse.Query(`Laundry`)
@@ -140,6 +141,7 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
 });
 
 server.get(`/laundry/get`, (request, response, next) => {
+    console.log(`/laundry/get`)
     new Parse.Query(`User`)
         .find()
         .then((users) => {
@@ -163,6 +165,7 @@ server.get(`/laundry/get`, (request, response, next) => {
 });
 
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
+    console.log(`/laundry/broke_machine/:machine_id/:timestamp`)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
@@ -212,6 +215,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
 
 // get user
 server.get(`/users/get_user/:user_id`, (request, response, next) => {
+    console.log(`/users/get_user/:user_id`)
     become(request)
         .then((user) => {
             new Parse.Query(`User`)
@@ -224,6 +228,7 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 });
 
 server.get(`/users/get_users_list`, (request, response, next) => {
+    console.log(`/users/get_users_list`)
     become(request)
         .then((user) => {
             new Parse.Query(`User`)
@@ -242,6 +247,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
+    console.log(`/roles/get_my_roles/`)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
@@ -256,6 +262,7 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
 })
 
 server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
+    console.log(`/balance/edit/:user_id/:value`)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
@@ -295,6 +302,7 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
 })
 
 server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
+    console.log(`/transactions/start_yandex/:value`)
     become(request)
         .then((user) => {
             var Transactions = Parse.Object.extend(`Transactions`);
