@@ -39,6 +39,22 @@ let updateActivity = (user) => {
         .catch((d) => { console.log(d) })
 }
 
+let become = (request) => {
+    return new Promise((resolve, reject) => {
+        let sessionToken = request.headers.sessiontoken
+        if (!sessionToken) {
+            reject(`invalid sessoin token`, sessionToken)
+        }
+        Parse.User.become(sessionToken)
+            .then((user) => {
+                updateActivity(user)
+                resolve(user)
+            })
+            .catch((d) => { reject(d) })
+    })
+}
+
+
 server.post('/yandex/', (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
     new Parse.Query(`Transactions`)
@@ -89,11 +105,9 @@ let createOneBook = (request, user, group_id, week_number) => {
 
 // create club book
 server.post(`/club/create_book/`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
     let group_id = request.body.is_regular ? Math.random().toString(36).substring(2, 10) : undefined
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             let week_number = 0
             let deal = () => {
                 createOneBook(request, user, group_id, week_number)
@@ -111,10 +125,8 @@ server.post(`/club/create_book/`, (request, response, next) => {
 });
 
 server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             new Parse.Query(`Laundry`)
                 .equalTo(`objectId`, request.params.book_id)
                 .first()
@@ -154,10 +166,8 @@ server.get(`/laundry/get`, (request, response, next) => {
 });
 
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             new Parse.Query(`Roles`)
                 .equalTo(`user_id`, user.objectId)
                 .equalTo(`role`, `ADMIN`)
@@ -205,10 +215,8 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
 
 // get user
 server.get(`/users/get_user/:user_id`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             new Parse.Query(`User`)
                 .equalTo(`objectId`, request.params.user_id)
                 .first()
@@ -219,10 +227,8 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 });
 
 server.get(`/users/get_users_list`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             new Parse.Query(`User`)
                 .find()
                 .then((users) => {
@@ -238,22 +244,9 @@ server.get(`/users/get_users_list`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 });
 
-let become = (request) => {
-    return new Promise((resolve, reject) => {
-        let sessionToken = request.headers.sessiontoken
-        if (!sessionToken) {
-            reject(`invalid sessoin token`, sessionToken)
-        }
-        Parse.User.become(sessionToken)
-            .then((d) => { resolve(d) })
-            .catch((d) => { reject(d) })
-    })
-}
-
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
     become(request)
         .then((user) => {
-            updateActivity(user)
             new Parse.Query(`Roles`)
                 .equalTo(`userId`, user.id)
                 .find()
@@ -267,10 +260,8 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
 })
 
 server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             new Parse.Query(`Roles`)
                 .equalTo(`user_id`, user.objectId)
                 .equalTo(`role`, `ADMIN`)
@@ -308,10 +299,8 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
 })
 
 server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
-            updateActivity(user)
             var Transactions = Parse.Object.extend(`Transactions`);
             new Transactions()
                 .set(`to`, user.id)
