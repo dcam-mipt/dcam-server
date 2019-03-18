@@ -251,7 +251,8 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
-    console.log(request.cookies)
+    // console.log(request.cookies)
+    console.log(request.headers.Authorization)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
