@@ -253,7 +253,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
     console.log(`params: `, request.params)
     console.log(`headers: `, request.headers)
-    console.log(`headers: `, request.data)
+    console.log(`data: `, request.data)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
