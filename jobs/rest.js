@@ -42,9 +42,8 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 })
 
 let become = (request) => new Promise((resolve, reject) => {
-    // let sessionToken = request.headers.sessiontoken
-    let sessionToken = `r:` + request.headers.accept.split(`r:`)[1]
-    console.log(`sessionToken:`, sessionToken)
+    let sessionToken = request.headers.sessiontoken
+    // let sessionToken = `r:` + request.headers.accept.split(`r:`)[1]
     if (!sessionToken) {
         reject({
             error: `invalid sessoin token`,
