@@ -240,6 +240,10 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
     let sessionToken = request.headers.sessiontoken
+    if (!sessionToken) {
+        response.send(d); console.error(`sessionToke is undefined`)
+        return
+    }
     Parse.User.become(sessionToken)
         .then((user) => {
             updateActivity(user)
