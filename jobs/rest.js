@@ -147,26 +147,26 @@ server.get(`/laundry/get`, (request, response, next) => {
     become(request)
         .then((d) => {
             new Parse.Query(`User`)
-            .find()
-            .then((users) => {
-                new Parse.Query(`Laundry`)
-                    .find()
-                    .then((d) => {
-                        console.log(`/laundry/get success`)
-                        response.send(d.map((i) => {
-                            let user = users.filter(u => u.id === i.get(`userId`))[0]
-                            return {
-                                machineId: i.get(`machineId`),
-                                objectId: i.id,
-                                timestamp: i.get(`timestamp`),
-                                userId: i.get(`userId`),
-                                email: user ? user.get(`username`) : null
-                            }
-                        }))
-                    })
-                    .catch((d) => { response.send(d); console.error(d) })
-            })
-            .catch((d) => { response.send(d); console.error(d) })
+                .find()
+                .then((users) => {
+                    new Parse.Query(`Laundry`)
+                        .find()
+                        .then((d) => {
+                            console.log(`/laundry/get success`)
+                            response.send(d.map((i) => {
+                                let user = users.filter(u => u.id === i.get(`userId`))[0]
+                                return {
+                                    machineId: i.get(`machineId`),
+                                    objectId: i.id,
+                                    timestamp: i.get(`timestamp`),
+                                    userId: i.get(`userId`),
+                                    email: user ? user.get(`username`) : null
+                                }
+                            }))
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
+                })
+                .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 });
@@ -314,6 +314,17 @@ server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
                 .set(`requested`, +request.params.value)
                 .save()
                 .then((d) => { response.send(d.id) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/machines/get`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            new Parse.Query(`Machines`)
+                .find()
+                .then((d) => { response.send(d) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
