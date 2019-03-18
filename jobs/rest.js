@@ -247,7 +247,7 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
                 .equalTo(`userId`, user.id)
                 .find()
                 .then((d) => { 
-                    console.log(`GET ROLE:`, sessionToken)
+                    console.log(`GET ROLE:`, sessionToken, d)
                     response.send(d.map(i => i.get(`role`)))
                 })
                 .catch((d) => { response.send(d); console.error(d) })
