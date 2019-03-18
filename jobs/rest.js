@@ -19,7 +19,6 @@ var cors = corsMiddleware({
     origins: ['*'],
     allowHeaders: ['*'],
     methods: ['GET', 'PUT', 'DELETE', 'POST', 'OPTIONS'],
-    headers: [`Authorization`]
 })
 server.pre(cors.preflight)
 server.use(cors.actual)
@@ -253,7 +252,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
     // console.log(request.cookies)
-    console.log(request.headers)
+    console.log(request.params)
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
