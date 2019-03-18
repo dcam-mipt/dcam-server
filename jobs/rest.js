@@ -238,19 +238,26 @@ server.get(`/users/get_users_list`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 });
 
+let become = (request) => {
+    return new Promise((resolve, reject) => {
+        let sessionToken = request.headers.sessiontoken
+        if (!sessionToken) {
+            reject(`invalid sessoin token`, sessionToken)
+        }
+        Parse.User.become(sessionToken)
+            .then((d) => { resolve(d) })
+            .catch((d) => { reject(d) })
+    })
+}
+
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
-    let sessionToken = request.headers.sessiontoken
-    if (!sessionToken) {
-        response.send(`invalid sessiontoken`); console.error(`invalid sessiontoken:`, sessionToken)
-        return
-    }
-    Parse.User.become(sessionToken)
+    become(request)
         .then((user) => {
             updateActivity(user)
             new Parse.Query(`Roles`)
                 .equalTo(`userId`, user.id)
                 .find()
-                .then((d) => { 
+                .then((d) => {
                     console.log(`GET ROLE:`, sessionToken, d)
                     response.send(d.map(i => i.get(`role`)))
                 })
