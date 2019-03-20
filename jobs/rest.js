@@ -324,7 +324,7 @@ server.get(`/machines/get`, (request, response, next) => {
         .then((user) => {
             new Parse.Query(`Machines`)
                 .find()
-                .then((d) => { response.send(d) })
+                .then((d) => { response.send(d); console.log(data.map(i => i.createdAt)) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
