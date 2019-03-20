@@ -197,7 +197,6 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .find()
                                             .then((books) => {
                                                 let deal = () => {
-                                                    console.log(d[0])
                                                     axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
                                                         .then((d) => { books.shift(); deal() })
                                                         .catch((d) => { response.send(d); console.error(d) })
@@ -325,7 +324,7 @@ server.get(`/machines/get`, (request, response, next) => {
         .then((user) => {
             new Parse.Query(`Machines`)
                 .find()
-                .then((d) => { response.send(d); console.log(`/machines/get`) })
+                .then((d) => { console.log(d); response.send(d); console.log(`/machines/get`) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
