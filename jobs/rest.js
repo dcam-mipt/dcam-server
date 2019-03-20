@@ -324,7 +324,7 @@ server.get(`/machines/get`, (request, response, next) => {
         .then((user) => {
             new Parse.Query(`Machines`)
                 .find()
-                .then((d) => { console.log(d.attributes); response.send(d) })
+                .then((d) => { response.send(d) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
