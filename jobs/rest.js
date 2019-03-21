@@ -196,22 +196,21 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .greaterThan(`timestamp`, +moment().add(-2, `hour`))
                                             .find()
                                             .then((books) => {
-                                                console.log(books)
-                                                // let deal = () => {
-                                                //     new Parse.Query(`Laundry`)
-                                                //         .equalTo(`objectId`, books[0].id)
-                                                //         .first()
-                                                //         .then((d) => {
-                                                //             d.destroy()
-                                                //                 .then((d) => { books.shift(); deal() })
-                                                //                 .catch((d) => { response.send(d); console.error(d) })
-                                                //         })
-                                                //         .catch((d) => { response.send(d); console.error(d) })
+                                                let deal = () => {
+                                                    new Parse.Query(`Laundry`)
+                                                        .equalTo(`objectId`, books[0].id)
+                                                        .first()
+                                                        .then((d) => {
+                                                            d.destroy()
+                                                                .then((d) => { books.shift(); deal() })
+                                                                .catch((d) => { response.send(d); console.error(d) })
+                                                        })
+                                                        .catch((d) => { response.send(d); console.error(d) })
 
-                                                // }
-                                                // if (books.length) {
-                                                //     deal()
-                                                // }
+                                                }
+                                                if (books.length) {
+                                                    deal()
+                                                }
                                             })
                                             .catch((d) => { response.send(d); console.error(d) })
                                     })
