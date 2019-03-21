@@ -191,21 +191,21 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                 machine.save()
                                     .then((d) => {
                                         new Parse.Query(`Laundry`)
-                                            .equalTo(`machineId`, request.params.machine_id)
+                                            // .equalTo(`machineId`, request.params.machine_id)
                                             .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
                                             .then((books) => {
                                                 console.log(books.length)
-                                                let deal = () => {
-                                                    axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
-                                                    // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
-                                                        .then((d) => { books.shift(); deal() })
-                                                        .catch((d) => { response.send(d); console.error(d) })
-                                                }
-                                                if (books.length) {
-                                                    deal()
-                                                }
+                                                // let deal = () => {
+                                                //     // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
+                                                //     axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
+                                                //         .then((d) => { books.shift(); deal() })
+                                                //         .catch((d) => { response.send(d); console.error(d) })
+                                                // }
+                                                // if (books.length) {
+                                                //     deal()
+                                                // }
                                             })
                                             .catch((d) => { response.send(d); console.error(d) })
                                     })
