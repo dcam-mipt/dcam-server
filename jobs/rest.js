@@ -191,7 +191,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                 machine.save()
                                     .then((d) => {
                                         new Parse.Query(`Laundry`)
-                                            // .equalTo(`machineId`, request.params.machine_id)
+                                            .equalTo(`machineId`, request.params.machine_id)
                                             .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
