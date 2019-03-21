@@ -192,26 +192,26 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                     .then((d) => {
                                         new Parse.Query(`Laundry`)
                                             .equalTo(`machineId`, request.params.machine_id)
-                                            .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
-                                            .greaterThan(`timestamp`, +moment())
+                                            // .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
+                                            // .greaterThan(`timestamp`, +moment())
                                             .find()
                                             .then((books) => {
                                                 console.log(books)
-                                                let deal = () => {
-                                                    new Parse.Query(`Laundry`)
-                                                        .equalTo(`objectId`, books[0].id)
-                                                        .first()
-                                                        .then((d) => {
-                                                            d.destroy()
-                                                                .then((d) => { books.shift(); deal() })
-                                                                .catch((d) => { response.send(d); console.error(d) })
-                                                        })
-                                                        .catch((d) => { response.send(d); console.error(d) })
+                                                // let deal = () => {
+                                                //     new Parse.Query(`Laundry`)
+                                                //         .equalTo(`objectId`, books[0].id)
+                                                //         .first()
+                                                //         .then((d) => {
+                                                //             d.destroy()
+                                                //                 .then((d) => { books.shift(); deal() })
+                                                //                 .catch((d) => { response.send(d); console.error(d) })
+                                                //         })
+                                                //         .catch((d) => { response.send(d); console.error(d) })
 
-                                                }
-                                                if (books.length) {
-                                                    deal()
-                                                }
+                                                // }
+                                                // if (books.length) {
+                                                //     deal()
+                                                // }
                                             })
                                             .catch((d) => { response.send(d); console.error(d) })
                                     })
