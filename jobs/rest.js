@@ -180,7 +180,6 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                 .equalTo(`role`, `ADMIN`)
                 .first()
                 .then((role) => {
-                    console.log(request.params)
                     if (role) {
                         let is_before_now = +request.params.timestamp < +moment().add(-2, `hour`)
                         new Parse.Query(`Machines`)
@@ -197,8 +196,8 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
                                             .then((books) => {
+                                                console.log(Parse.User.current().getSessionToken())
                                                 let deal = () => {
-                                                    console.log(Parse.User.current().getSessionToken())
                                                     // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
                                                     axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
                                                         .then((d) => { books.shift(); deal() })
