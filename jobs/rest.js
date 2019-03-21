@@ -196,6 +196,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
                                             .then((books) => {
+                                                console.log(books)
                                                 let deal = () => {
                                                     new Parse.Query(`Laundry`)
                                                         .equalTo(`objectId`, books[0].id)
