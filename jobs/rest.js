@@ -196,6 +196,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .greaterThan(`timestamp`, +moment())
                                             .find()
                                             .then((books) => {
+                                                console.log(books.length)
                                                 let deal = () => {
                                                     axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
                                                     // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
