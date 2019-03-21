@@ -197,8 +197,8 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .find()
                                             .then((books) => {
                                                 let deal = () => {
-                                                    // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
-                                                    axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
+                                                    axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
+                                                    // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
                                                         .then((d) => { books.shift(); deal() })
                                                         .catch((d) => { response.send(d); console.error(d) })
                                                 }
