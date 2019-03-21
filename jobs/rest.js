@@ -173,14 +173,12 @@ server.get(`/laundry/get`, (request, response, next) => {
 });
 
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
+    console.log(request.params)
     become(request)
         .then((user) => {
-            new Parse.Query(`Roles`)
-                .equalTo(`user_id`, user.objectId)
-                .equalTo(`role`, `ADMIN`)
-                .first()
+            axios.get(`http://dcam.pro/api/roles/get_my_roles/`)
                 .then((role) => {
-                    if (role) {
+                    if (role.indexOf(`ADMIN`) > -1) {
                         let is_before_now = +request.params.timestamp < +moment().add(-2, `hour`)
                         new Parse.Query(`Machines`)
                             .equalTo(`objectId`, request.params.machine_id)
@@ -214,7 +212,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                         response.send(`permission denied`)
                     }
                 })
-                .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { console.log(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 });
