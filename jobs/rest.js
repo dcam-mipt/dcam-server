@@ -197,10 +197,16 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                             .find()
                                             .then((books) => {
                                                 let deal = () => {
-                                                    axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`, null, {Accept: axios.defaults.headers.common['Accept'] + `, ` + Parse.User.current().getSessionToken()})
-                                                    // axios.get(`http://dcam.pro/api/laundry/unbook/${books[0].id}`)
-                                                        .then((d) => { books.shift(); deal() })
+                                                    new Parse.Query(`Laundry`)
+                                                        .equalTo(`objectId`, books[0].id)
+                                                        .first()
+                                                        .then((d) => {
+                                                            d.destroy()
+                                                                .then((d) => { books.shift(); deal() })
+                                                                .catch((d) => { response.send(d); console.error(d) })
+                                                        })
                                                         .catch((d) => { response.send(d); console.error(d) })
+
                                                 }
                                                 if (books.length) {
                                                     deal()
