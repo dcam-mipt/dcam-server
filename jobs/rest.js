@@ -68,6 +68,7 @@ server.post('/yandex/', (req, res, next) => {
         .first()
         .then((transaction) => {
             new Parse.Query(`Balance`)
+                .limit(1000000)
                 .equalTo(`userId`, transaction.get(`to`))
                 .first()
                 .then((balance) => {
@@ -154,6 +155,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                 .find()
                 .then((users) => {
                     new Parse.Query(`Laundry`)
+                        .greaterThanOrEqualTo(`timestamp`, +moment().startOf(`week`))
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
@@ -250,6 +252,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
                 .find()
                 .then((users) => {
                     new Parse.Query(`Balance`)
+                        .limit(1000000)
                         .find()
                         .then((balances) => {
                             response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
@@ -285,6 +288,7 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
                 .then((role) => {
                     if (role) {
                         new Parse.Query(`Balance`)
+                            .limit(1000000)
                             .equalTo(`userId`, request.params.user_id)
                             .first()
                             .then((users_balance) => {
