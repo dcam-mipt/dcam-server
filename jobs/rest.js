@@ -154,7 +154,6 @@ server.get(`/laundry/get`, (request, response, next) => {
                 .find()
                 .then((users) => {
                     new Parse.Query(`Laundry`)
-                        .greaterThanOrEqualTo(`timestamp`, +moment().startOf(`week`))
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
@@ -164,25 +163,16 @@ server.get(`/laundry/get`, (request, response, next) => {
                                     objectId: i.id,
                                     timestamp: i.get(`timestamp`),
                                     userId: i.get(`userId`),
-                                    email: user ? user.get(`username`) : i.get(`userId`)
+                                    email: user ? user.get(`username`) : null
                                 }
                             }))
                         })
                         .catch((d) => { response.send(d); console.error(d) })
                 })
-                .catch((d) => { console.log(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 });
-
-// server.get(`/laundry/get`, (request, response, next) => {
-//     become(request)
-//         .then((user) => {
-//             new Parse.Query(`Laundry`)
-//             .greaterThanOrEqualTo(`timestamp`, +moment())
-//         })
-//         .catch((d) => { response.send(d); console.error(d) })
-// });
 
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
     become(request)
@@ -237,12 +227,6 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
         })
         .catch((d) => { response.send(d); console.error(d) })
 });
-
-server.get(`/users/update_activity`, (request, response, next) => {
-    become(request)
-        .then((d) => { response.send(d) })
-        .catch((d) => { response.send(d); console.error(d) })
-})
 
 // get user
 server.get(`/users/get_user/:user_id`, (request, response, next) => {
