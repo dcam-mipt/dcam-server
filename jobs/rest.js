@@ -156,7 +156,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                         .then((d) => {
                             response.send(d.map((i) => {
                                 let user = users.filter(u => u.id === i.get(`userId`))[0]
-                                console.log(i);
+                                console.log(i.attributes);
                                 // if (user.id == `DtdM1ZOxh4`) {
                                 //     console.log(user.attributes);
                                 // }
