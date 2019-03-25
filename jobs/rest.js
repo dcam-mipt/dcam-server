@@ -152,7 +152,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                 .find()
                 .then((users) => {
                     new Parse.Query(`Laundry`)
-                        .greaterThanOrEqualTo(`timetamp`, +moment().startOf(`week`))
+                        .greaterThanOrEqualTo(`timestamp`, +moment().startOf(`week`))
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
