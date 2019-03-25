@@ -30,6 +30,7 @@ server.listen(config.REST_PORT, () => {
 
 let updateActivity = (user) => new Promise((resolve, reject) => {
     new Parse.Query(`User`)
+        .limit(1000000)
         .equalTo(`objectId`, user.id)
         .first()
         .then((user) => {
@@ -149,6 +150,7 @@ server.get(`/laundry/get`, (request, response, next) => {
     become(request)
         .then((d) => {
             new Parse.Query(`User`)
+                .limit(1000000)
                 .find()
                 .then((users) => {
                     new Parse.Query(`Laundry`)
@@ -247,6 +249,7 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`User`)
+                .limit(1000000)
                 .equalTo(`objectId`, request.params.user_id)
                 .first()
                 .then((d) => { response.send(d) })
@@ -256,12 +259,22 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 });
 
 server.get(`/users/get_users_list`, (request, response, next) => {
-    new Parse.Query(`User`)
-    .find()
-    .then((d) => {
-        response.send(d.map(i => i.set(`money`, 100)))
-    })
-    .catch((d) => { console.log(d) })
+    become(request)
+        .then((user) => {
+            new Parse.Query(`User`)
+                .limit(1000000)
+                .find()
+                .then((users) => {
+                    new Parse.Query(`Balance`)
+                        .find()
+                        .then((balances) => {
+                            response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
+                })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
