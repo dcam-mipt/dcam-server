@@ -258,10 +258,10 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 server.get(`/users/get_users_list`, (request, response, next) => {
     become(request)
         .then((user) => {
-            console.log(user);
             new Parse.Query(`User`)
                 .find()
                 .then((users) => {
+                    console.log(users.map(i => i.get(`username`)));
                     new Parse.Query(`Balance`)
                         .find()
                         .then((balances) => {
