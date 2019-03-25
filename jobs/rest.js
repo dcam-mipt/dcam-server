@@ -163,7 +163,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                                     objectId: i.id,
                                     timestamp: i.get(`timestamp`),
                                     userId: i.get(`userId`),
-                                    email: user ? user.get(`username`) : null
+                                    email: user ? user.get(`username`) : i.get(`userId`)
                                 }
                             }))
                         })
