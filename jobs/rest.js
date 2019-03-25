@@ -152,11 +152,12 @@ server.get(`/laundry/get`, (request, response, next) => {
                 .find()
                 .then((users) => {
                     new Parse.Query(`Laundry`)
+                        .greaterThanOrEqualTo(`timetamp`, +moment().startOf(`week`))
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
                                 let user = users.filter(u => u.id === i.get(`userId`))[0]
-                                console.log(i.attributes);
+                                console.log(users);
                                 // if (user.id == `DtdM1ZOxh4`) {
                                 //     console.log(user.attributes);
                                 // }
