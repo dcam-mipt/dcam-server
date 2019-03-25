@@ -148,22 +148,27 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
 server.get(`/laundry/get`, (request, response, next) => {
     become(request)
         .then((d) => {
-            new Parse.Query(`Laundry`)
-                .greaterThanOrEqualTo(`timestamp`, +moment().startOf(`week`))
+            new Parse.Query(`User`)
                 .find()
-                .then((d) => {
-                    response.send(d.map((i) => {
-                        let user = users.filter(u => u.id === i.get(`userId`))[0]
-                        return {
-                            machineId: i.get(`machineId`),
-                            objectId: i.id,
-                            timestamp: i.get(`timestamp`),
-                            userId: i.get(`userId`),
-                            email: user ? user.get(`username`) : i.get(`userId`)
-                        }
-                    }))
+                .then((users) => {
+                    new Parse.Query(`Laundry`)
+                        .greaterThanOrEqualTo(`timestamp`, +moment().startOf(`week`))
+                        .find()
+                        .then((d) => {
+                            response.send(d.map((i) => {
+                                let user = users.filter(u => u.id === i.get(`userId`))[0]
+                                return {
+                                    machineId: i.get(`machineId`),
+                                    objectId: i.id,
+                                    timestamp: i.get(`timestamp`),
+                                    userId: i.get(`userId`),
+                                    email: user ? user.get(`username`) : i.get(`userId`)
+                                }
+                            }))
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
                 })
-                .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { console.log(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 });
