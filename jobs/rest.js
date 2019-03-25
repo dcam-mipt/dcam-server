@@ -261,11 +261,12 @@ server.get(`/users/get_users_list`, (request, response, next) => {
             new Parse.Query(`User`)
                 .find()
                 .then((users) => {
-                    console.log(users.map(i => i.get(`username`)));
+                    // console.log(users.map(i => i.get(`username`)));
                     new Parse.Query(`Balance`)
                         .find()
                         .then((balances) => {
-                            response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
+                            // response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
+                            response.send(users.map((user, u_i) => user.set(`money`, 100)))
                         })
                         .catch((d) => { response.send(d); console.error(d) })
                 })
