@@ -173,6 +173,15 @@ server.get(`/laundry/get`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 });
 
+// server.get(`/laundry/get`, (request, response, next) => {
+//     become(request)
+//         .then((user) => {
+//             new Parse.Query(`Laundry`)
+//             .greaterThanOrEqualTo(`timestamp`, +moment())
+//         })
+//         .catch((d) => { response.send(d); console.error(d) })
+// });
+
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
     become(request)
         .then((user) => {
@@ -249,6 +258,7 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 server.get(`/users/get_users_list`, (request, response, next) => {
     become(request)
         .then((user) => {
+            console.log(user);
             new Parse.Query(`User`)
                 .find()
                 .then((users) => {
