@@ -256,24 +256,12 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 });
 
 server.get(`/users/get_users_list`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            new Parse.Query(`User`)
-                .find()
-                .then((users) => {
-                    // console.log(users.map(i => i.get(`username`)));
-                    response.send(users.map((user, u_i) => user.set(`money`, 100)))
-                    // new Parse.Query(`Balance`)
-                    //     .find()
-                    //     .then((balances) => {
-                    //         // response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
-                    //         response.send(users.map((user, u_i) => user.set(`money`, 100)))
-                    //     })
-                    //     .catch((d) => { response.send(d); console.error(d) })
-                })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
+    new Parse.Query(`User`)
+    .find()
+    .then((d) => {
+        response.send(d.map(i => i.set(`money`, 100)))
+    })
+    .catch((d) => { console.log(d) })
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
