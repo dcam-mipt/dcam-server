@@ -346,5 +346,7 @@ server.get(`/machines/get`, (request, response, next) => {
 })
 
 server.get(`/user/auth/:login/:password`, (request, response, next) => {
-    response.send(request.params)
+    Parse.User.logIn(request.params.login, request.params.password)
+        .then((d) => { response.send(d) })
+        .catch((d) => { response.send(d) })
 })
