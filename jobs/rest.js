@@ -346,17 +346,7 @@ server.get(`/machines/get`, (request, response, next) => {
 })
 
 server.get(`/user/auth/:login/:password`, (request, response, next) => {
-    new Parse.Query(`User`)
-        .equalTo(`username`, request.params.login)
-        .first()
-        .then((user) => {
-            new Parse.Query(Parse.Session)
-                .find({ useMasterKey: true })
-                .then((d) => { console.log(d) })
-                .catch((d) => { console.log(d) })
-        })
+    Parse.User.logIn(request.params.login, request.params.password)
+        .then((d) => { response.send(d.sessionToken) })
         .catch((d) => { response.send(d) })
-    // Parse.User.logIn(request.params.login, request.params.password)
-    //     .then((d) => { response.send(d) })
-    //     .catch((d) => { response.send(d) })
 })
