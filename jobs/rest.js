@@ -345,6 +345,6 @@ server.get(`/machines/get`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/user/auth`, (request, response, next) => {
+server.get(`/user/auth/:login/:password`, (request, response, next) => {
     response.send(request.params)
 })
