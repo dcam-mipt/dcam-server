@@ -346,5 +346,5 @@ server.get(`/machines/get`, (request, response, next) => {
 })
 
 server.get(`/user/auth`, (request, response, next) => {
-    response.send(request.body)
+    response.send(request)
 })
