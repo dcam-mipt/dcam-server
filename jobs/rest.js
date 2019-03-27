@@ -350,11 +350,7 @@ server.get(`/user/auth/:login/:password`, (request, response, next) => {
         .equalTo(`username`, request.params.login)
         .first()
         .then((user) => {
-            new Parse.Query(`Session`)
-                // .equalTo(`user`, user)
-                .find()
-                .then((d) => { response.send(d) })
-                .catch((d) => { response.send(d) })
+            console.log(user);
         })
         .catch((d) => { response.send(d) })
     // Parse.User.logIn(request.params.login, request.params.password)
