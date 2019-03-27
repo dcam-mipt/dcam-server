@@ -346,7 +346,17 @@ server.get(`/machines/get`, (request, response, next) => {
 })
 
 server.get(`/user/auth/:login/:password`, (request, response, next) => {
-    Parse.User.logIn(request.params.login, request.params.password)
-        .then((d) => { response.send(d) })
+    new Parse.Query(`User`)
+        .equalTo(`username`, request.params.login)
+        .first()
+        .then((user) => {
+            new Parse.Query(`Session`)
+                .equalTo(`user`, user)
+                .then((d) => { response.send(d) })
+                .catch((d) => { response.send(d) })
+        })
         .catch((d) => { response.send(d) })
+    // Parse.User.logIn(request.params.login, request.params.password)
+    //     .then((d) => { response.send(d) })
+    //     .catch((d) => { response.send(d) })
 })
