@@ -351,7 +351,7 @@ server.get(`/user/auth/:login/:password`, (request, response, next) => {
         .first()
         .then((user) => {
             new Parse.Query(Parse.Session)
-                .find()
+                .find({ useMasterKey: true })
                 .then((d) => { console.log(d) })
                 .catch((d) => { console.log(d) })
         })
