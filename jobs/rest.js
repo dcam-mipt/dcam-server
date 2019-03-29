@@ -350,3 +350,9 @@ server.get(`/auth/:email/:password`, (request, response, next) => {
         .then((d) => { response.send(d.get(`sessionToken`)) })
         .catch((d) => { response.send(d); console.error(d) })
 })
+
+server.get(`/user/get_my_info`, (request, response, next) => {
+    become(request)
+        .then((user) => { response.send(user) })
+        .catch((d) => { response.send(d); console.error(d) })
+})
