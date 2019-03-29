@@ -355,6 +355,7 @@ server.get(`/auth/:email/:password`, (request, response, next) => {
 server.get(`/auth/sign_out`, (request, response, next) => {
     become(request)
         .then((d) => {
+            console.log(d);
             Parse.User.logOut()
                 .then((user) => { response.send(user) })
                 .catch((d) => { response.send(d); console.error(d) })
