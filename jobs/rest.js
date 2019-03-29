@@ -347,6 +347,6 @@ server.get(`/machines/get`, (request, response, next) => {
 
 server.get(`/auth/:email/:password`, (request, response, next) => {
     Parse.User.logIn(request.params.email, request.params.password)
-        .then((d) => { response.send(d) })
+        .then((d) => { response.send(d.get(`sessionToken`)) })
         .catch((d) => { response.send(d); console.error(d) })
 })
