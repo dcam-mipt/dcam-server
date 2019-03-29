@@ -352,6 +352,16 @@ server.get(`/auth/:email/:password`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
+server.get(`/auth/sign_out`, (request, response, next) => {
+    become(request)
+        .then((d) => {
+            Parse.User.logOut()
+                .then((user) => { response.send(user) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
 server.get(`/user/get_my_info`, (request, response, next) => {
     become(request)
         .then((user) => { response.send(user) })
