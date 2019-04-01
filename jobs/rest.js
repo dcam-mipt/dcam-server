@@ -43,10 +43,7 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 })
 
 let become = (request) => new Promise((resolve, reject) => {
-    console.log(request.headers);
-    // let sessionToken = request.headers.sessiontoken
-    let sessionToken = `r:` + request.headers.accept.split(`r:`)[1]
-    console.log(sessionToken);
+    let sessionToken = request.headers.authorization
     if (!sessionToken) {
         reject({
             error: `invalid sessoin token`,
@@ -56,6 +53,7 @@ let become = (request) => new Promise((resolve, reject) => {
     }
     Parse.User.become(sessionToken)
         .then((user) => {
+            console.log(`> > > become:`, sessionToken, user.get(`username`));
             updateActivity(user)
             resolve(user)
         })
