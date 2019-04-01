@@ -40,7 +40,7 @@ let deal = () => {
             time_const.set(`value`, +moment().tz(`Europe/Moscow`) + "")
             time_const.save({}, { useMasterKey: true })
                 .then((d) => {
-                    console.log(`set server time:`, d.get(`timestamp`));
+                    console.log(`set server time:`, moment(+d.get(`timestamp`)).format(`DD.MM.YY HH:mm`));
                     deal()
                 })
                 .catch((d) => { console.log(d) })
