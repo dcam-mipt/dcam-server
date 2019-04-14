@@ -53,7 +53,7 @@ let become = (request) => new Promise((resolve, reject) => {
     }
     Parse.User.become(sessionToken)
         .then((user) => {
-            console.log(`> > > become:`, sessionToken, user.get(`username`));
+            console.log(`> > > become:`, user.get(`username`), sessionToken);
             updateActivity(user)
             resolve(user)
         })
