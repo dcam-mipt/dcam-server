@@ -426,12 +426,14 @@ server.get(`/dev`, (request, response, next) => {
                     .equalTo(`objectId`, id)
                     .first()
                     .then((d) => {
-                        d.set(`machine_id`, d.get(`machineId`))
-                        d.save()
-                            .then((d) => {
-                                resolve(d)
-                            })
-                            .catch((d) => { reject(d) })
+                        console.log(`< < <`, d);
+                        resolve(d)
+                        // d.set(`machine_id`, d.get(`machineId`))
+                        // d.save()
+                        //     .then((d) => {
+                        //         resolve(d)
+                        //     })
+                        //     .catch((d) => { reject(d) })
                     })
                     .catch((d) => { reject(d) })
             })
