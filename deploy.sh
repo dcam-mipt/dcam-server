@@ -21,5 +21,7 @@ fi
 
 scp -r ./jobs/* root@$SSH_SERVER:~/jobs
 ssh root@dcam.pro sh << END
+    # pm2 start ./jobs/rest.js
+    # pm2 start ./jobs/rest.js
 	pm2 restart all
 END

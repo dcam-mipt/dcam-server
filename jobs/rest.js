@@ -136,7 +136,7 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                 .equalTo(`objectId`, request.params.book_id)
                 .first()
                 .then((d) => {
-                    if (user.objectId === d.userId) {
+                    if (user.objectId === d.user_id) {
                         d.destroy()
                             .then((d) => { response.send(d) })
                             .catch((d) => { response.send(d); console.error(d) })
@@ -164,7 +164,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                                     machine_id: i.get(`machine_id`),
                                     objectId: i.id,
                                     timestamp: i.get(`timestamp`),
-                                    userId: i.get(`user_id`),
+                                    user_id: i.get(`user_id`),
                                     email: user ? user.get(`username`) : i.get(`user_id`)
                                 }
                             }))
