@@ -371,7 +371,7 @@ server.get(`/user/get_my_info`, (request, response, next) => {
 server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
     become(request)
         .then((user) => {
-            response.send(user)
+            response.send(user.objectId)
             // new Parse.Query(`Laundry`)
             //     .equalTo(`timestamp`, request.params.timestamp)
             //     .equalTo(`machine_id`, request.params.machine_id)
@@ -390,7 +390,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
             //                         .save()
             //                         .then((d) => {
             //                             new Parse.Query(`Balance`)
-            //                                 .equalTo(`userId`, request.user.id)
+            //                                 .equalTo(`userId`, user.objectId)
             //                                 .first()
             //                                 .then((userBalance) => {
             //                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
