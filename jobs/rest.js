@@ -438,16 +438,17 @@ server.get(`/dev`, (request, response, next) => {
                     .catch((d) => { reject(d) })
             })
             let a = array.map((i, index) => i.objectId)
-            if (a.length) {
-                deal(a[0])
-                    .then((d) => {
-                        a = a.filter((i, index) => index > 0)
-                        if (a.length) {
-                            deal(a[0])
-                        }
-                    })
-                    .catch((d) => { console.log(d) })
-            }
+            console.log(a);
+            // if (a.length) {
+            //     deal(a[0])
+            //         .then((d) => {
+            //             a = a.filter((i, index) => index > 0)
+            //             if (a.length) {
+            //                 deal(a[0])
+            //             }
+            //         })
+            //         .catch((d) => { console.log(d) })
+            // }
 
         })
         .catch((d) => { console.log(d) })
