@@ -415,3 +415,38 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
+
+server.get(`/dev`, (request, response, next) => {
+    new Parse.Query(`Laundry`)
+        .equalTo(`machine_id`, undefined)
+        .find()
+        .then((array) => {
+            let deal = (id) => new Promise((resolve, reject) => {
+                new Parse.Query(`Laundry`)
+                    .equalTo(`objectId`, id)
+                    .first()
+                    .then((d) => {
+                        d.set(`machine_id`, d.get(`machineId`))
+                        d.save()
+                            .then((d) => {
+                                resolve(d)
+                            })
+                            .catch((d) => { reject(d) })
+                    })
+                    .catch((d) => { reject(d) })
+            })
+            let a = array.map((i, index) => i.objectId)
+            if (a.length) {
+                deal(a[0])
+                    .then((d) => {
+                        a = a.filter((i, index) => index > 0)
+                        if (a.length) {
+                            deal(a[0])
+                        }
+                    })
+                    .catch((d) => { console.log(d) })
+            }
+
+        })
+        .catch((d) => { console.log(d) })
+})
