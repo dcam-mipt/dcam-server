@@ -394,20 +394,20 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                             .then((userBalance) => {
                                                 userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
                                                 userBalance.save()
-                                                    .then((d) => { response.success(d) })
-                                                    .catch((d) => { response.error() })
+                                                    .then((d) => { response.send(d) })
+                                                    .catch((d) => { response.send() })
                                             })
-                                            .catch((d) => { response.error() })
+                                            .catch((d) => { response.send() })
 
                                     })
-                                    .catch((d) => { response.error() })
+                                    .catch((d) => { response.send() })
                             })
-                            .catch((d) => { response.error() })
+                            .catch((d) => { response.send() })
                     } else {
-                        response.error(`error: laundry booking for this time is already exists`)
+                        response.send(`error: laundry booking for this time is already exists`)
                     }
                 })
-                .catch((d) => { response.error() })
+                .catch((d) => { response.send() })
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
