@@ -371,44 +371,43 @@ server.get(`/user/get_my_info`, (request, response, next) => {
 server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
     become(request)
         .then((user) => {
-            response.send(user.id)
-            // new Parse.Query(`Laundry`)
-            //     .equalTo(`timestamp`, request.params.timestamp)
-            //     .equalTo(`machine_id`, request.params.machine_id)
-            //     .find()
-            //     .then((laundry) => {
-            //         if (!laundry.length) {
-            //             new Parse.Query(`Constants`)
-            //                 .equalTo(`name`, `laundry_cost`)
-            //                 .first()
-            //                 .then((cost) => {
-            //                     new Parse.Object(`Laundry`)
-            //                         .set(`timestamp`, request.params.timestamp)
-            //                         .set(`machine_id`, request.params.machine_id)
-            //                         .set(`userId`, request.user.id)
-            //                         .set(`book_cost`, +cost.get(`value`))
-            //                         .save()
-            //                         .then((d) => {
-            //                             new Parse.Query(`Balance`)
-            //                                 .equalTo(`userId`, user.objectId)
-            //                                 .first()
-            //                                 .then((userBalance) => {
-            //                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-            //                                     userBalance.save()
-            //                                         .then((d) => { response.success(d) })
-            //                                         .catch((d) => { response.error() })
-            //                                 })
-            //                                 .catch((d) => { response.error() })
+            new Parse.Query(`Laundry`)
+                .equalTo(`timestamp`, request.params.timestamp)
+                .equalTo(`machine_id`, request.params.machine_id)
+                .find()
+                .then((laundry) => {
+                    if (!laundry.length) {
+                        new Parse.Query(`Constants`)
+                            .equalTo(`name`, `laundry_cost`)
+                            .first()
+                            .then((cost) => {
+                                new Parse.Object(`Laundry`)
+                                    .set(`timestamp`, request.params.timestamp)
+                                    .set(`machine_id`, request.params.machine_id)
+                                    .set(`userId`, user.id)
+                                    .set(`book_cost`, +cost.get(`value`))
+                                    .save()
+                                    .then((d) => {
+                                        new Parse.Query(`Balance`)
+                                            .equalTo(`userId`, user.id)
+                                            .first()
+                                            .then((userBalance) => {
+                                                userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+                                                userBalance.save()
+                                                    .then((d) => { response.success(d) })
+                                                    .catch((d) => { response.error() })
+                                            })
+                                            .catch((d) => { response.error() })
 
-            //                         })
-            //                         .catch((d) => { response.error() })
-            //                 })
-            //                 .catch((d) => { response.error() })
-            //         } else {
-            //             response.error(`error: laundry booking for this time is already exists`)
-            //         }
-            //     })
-            //     .catch((d) => { response.error() })
+                                    })
+                                    .catch((d) => { response.error() })
+                            })
+                            .catch((d) => { response.error() })
+                    } else {
+                        response.error(`error: laundry booking for this time is already exists`)
+                    }
+                })
+                .catch((d) => { response.error() })
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
