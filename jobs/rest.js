@@ -382,7 +382,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                             .first()
                             .then((cost) => {
                                 new Parse.Object(`Laundry`)
-                                    .set(`timestamp`, request.params.timestamp)
+                                    .set(`timestamp`, +request.params.timestamp)
                                     .set(`machine_id`, request.params.machine_id)
                                     .set(`userId`, user.id)
                                     .set(`book_cost`, +cost.get(`value`))
@@ -398,19 +398,19 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                                         console.log(`> > > laundry book: ${user.id} ${moment(request.params.timestamp).format(`DD.MM.YY HH:mm`)} ${request.params.machine_id} > > >`);
                                                         response.send(d)
                                                     })
-                                                    .catch((d) => { console.log(d); response.send(d) })
+                                                    .catch((d) => { response.send(d); console.error(d) })
                                             })
-                                            .catch((d) => { console.log(d); response.send(d) })
+                                            .catch((d) => { response.send(d); console.error(d) })
 
                                     })
-                                    .catch((d) => { console.log(d); response.send(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
                             })
-                            .catch((d) => { console.log(d); response.send(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     } else {
                         response.send(`error: laundry booking for this time is already exists`)
                     }
                 })
-                .catch((d) => { console.log(d); response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
