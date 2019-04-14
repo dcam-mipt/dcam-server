@@ -376,7 +376,10 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                 .equalTo(`machine_id`, request.params.machine_id)
                 .find()
                 .then((laundry) => {
-                    if (!laundry.length) {
+                    console.log(`< < <`, laundry);
+                    if (laundry.length) {
+                        response.send(`error: laundry booking for this time is already exists`)
+                    } else {
                         new Parse.Query(`Constants`)
                             .equalTo(`name`, `laundry_cost`)
                             .first()
@@ -406,8 +409,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                     .catch((d) => { response.send(d); console.error(d) })
                             })
                             .catch((d) => { response.send(d); console.error(d) })
-                    } else {
-                        response.send(`error: laundry booking for this time is already exists`)
                     }
                 })
                 .catch((d) => { response.send(d); console.error(d) })
