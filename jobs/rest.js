@@ -69,7 +69,7 @@ server.post('/yandex/', (req, res, next) => {
         .then((transaction) => {
             new Parse.Query(`Balance`)
                 .limit(1000000)
-                .equalTo(`userId`, transaction.get(`to`))
+                .equalTo(`user_id`, transaction.get(`to`))
                 .first()
                 .then((balance) => {
                     if (transaction.get(`status`) !== `done`) {
@@ -95,7 +95,7 @@ server.post('/yandex/', (req, res, next) => {
 let createOneBook = (request, user, group_id, week_number) => new Promise((resolve, reject) => {
     var club_query = Parse.Object.extend(`Club`);
     var club_record = new club_query();
-    club_record.set(`userId`, user.id)
+    club_record.set(`user_id`, user.id)
     club_record.set(`location`, request.body.location)
     club_record.set(`start_timestamp`, +moment(request.body.start_timestamp).tz(`Europe/Moscow`).add(week_number, `week`))
     club_record.set(`end_timestamp`, +moment(request.body.end_timestamp).tz(`Europe/Moscow`).add(week_number, `week`))
@@ -159,13 +159,13 @@ server.get(`/laundry/get`, (request, response, next) => {
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
-                                let user = users.filter(u => u.id === i.get(`userId`))[0]
+                                let user = users.filter(u => u.id === i.get(`user_id`))[0]
                                 return {
                                     machine_id: i.get(`machine_id`),
                                     objectId: i.id,
                                     timestamp: i.get(`timestamp`),
-                                    userId: i.get(`userId`),
-                                    email: user ? user.get(`username`) : i.get(`userId`)
+                                    userId: i.get(`user_id`),
+                                    email: user ? user.get(`username`) : i.get(`user_id`)
                                 }
                             }))
                         })
@@ -191,7 +191,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                             .first()
                             .then((machine) => {
                                 machine.set(`chill_untill`, is_before_now ? null : +request.params.timestamp)
-                                machine.set(`isDisabled`, !is_before_now)
+                                machine.set(`is_disabled`, !is_before_now)
                                 machine.save()
                                     .then((d) => {
                                         new Parse.Query(`Laundry`)
@@ -255,7 +255,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
                         .limit(1000000)
                         .find()
                         .then((balances) => {
-                            response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`userId`) === user.id)[0].get(`money`))))
+                            response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`user_id`) === user.id)[0].get(`money`))))
                         })
                         .catch((d) => { response.send(d); console.error(d) })
                 })
@@ -268,7 +268,7 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Roles`)
-                .equalTo(`userId`, user.id)
+                .equalTo(`user_id`, user.id)
                 .find()
                 .then((d) => {
                     response.send(d.map(i => i.get(`role`)))
@@ -289,7 +289,7 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
                     if (role) {
                         new Parse.Query(`Balance`)
                             .limit(1000000)
-                            .equalTo(`userId`, request.params.user_id)
+                            .equalTo(`user_id`, request.params.user_id)
                             .first()
                             .then((users_balance) => {
                                 users_balance.set(`money`, users_balance.get(`money`) + +request.params.value)
@@ -387,12 +387,12 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                 new Parse.Object(`Laundry`)
                                     .set(`timestamp`, +request.params.timestamp)
                                     .set(`machine_id`, request.params.machine_id)
-                                    .set(`userId`, user.id)
+                                    .set(`user_id`, user.id)
                                     .set(`book_cost`, +cost.get(`value`))
                                     .save()
                                     .then((d) => {
                                         new Parse.Query(`Balance`)
-                                            .equalTo(`userId`, user.id)
+                                            .equalTo(`user_id`, user.id)
                                             .first()
                                             .then((userBalance) => {
                                                 userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
@@ -414,42 +414,4 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
-})
-
-server.get(`/dev`, (request, response, next) => {
-    new Parse.Query(`Laundry`)
-        .equalTo(`machine_id`, undefined)
-        .find()
-        .then((array) => {
-            let deal = (id) => new Promise((resolve, reject) => {
-                new Parse.Query(`Laundry`)
-                    .equalTo(`objectId`, id)
-                    .first()
-                    .then((d) => {
-                        console.log(`< < <`, d);
-                        resolve(d)
-                        // d.set(`machine_id`, d.get(`machineId`))
-                        // d.save()
-                        //     .then((d) => {
-                        //         resolve(d)
-                        //     })
-                        //     .catch((d) => { reject(d) })
-                    })
-                    .catch((d) => { reject(d) })
-            })
-            let a = array.map((i, index) => i.objectId)
-            console.log(a);
-            // if (a.length) {
-            //     deal(a[0])
-            //         .then((d) => {
-            //             a = a.filter((i, index) => index > 0)
-            //             if (a.length) {
-            //                 deal(a[0])
-            //             }
-            //         })
-            //         .catch((d) => { console.log(d) })
-            // }
-
-        })
-        .catch((d) => { console.log(d) })
 })
