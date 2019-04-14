@@ -372,7 +372,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
     become(request)
         .then((user) => {
             new Parse.Query(`Laundry`)
-                .equalTo(`timestamp`, request.params.timestamp)
+                .equalTo(`timestamp`, +request.params.timestamp)
                 .equalTo(`machine_id`, request.params.machine_id)
                 .find()
                 .then((laundry) => {
