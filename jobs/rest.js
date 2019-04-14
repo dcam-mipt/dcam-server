@@ -398,19 +398,19 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                                         console.log(`> > > laundry book: ${user.id} ${moment(request.params.timestamp).format(`DD.MM.YY HH:mm`)} ${request.params.machine_id} > > >`);
                                                         response.send(d)
                                                     })
-                                                    .catch((d) => { response.send() })
+                                                    .catch((d) => { console.log(d); response.send(d) })
                                             })
-                                            .catch((d) => { response.send() })
+                                            .catch((d) => { console.log(d); response.send(d) })
 
                                     })
-                                    .catch((d) => { response.send() })
+                                    .catch((d) => { console.log(d); response.send(d) })
                             })
-                            .catch((d) => { response.send() })
+                            .catch((d) => { console.log(d); response.send(d) })
                     } else {
                         response.send(`error: laundry booking for this time is already exists`)
                     }
                 })
-                .catch((d) => { response.send() })
+                .catch((d) => { console.log(d); response.send(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
