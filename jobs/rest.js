@@ -161,7 +161,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                             response.send(d.map((i) => {
                                 let user = users.filter(u => u.id === i.get(`userId`))[0]
                                 return {
-                                    machineId: i.get(`machineId`),
+                                    machine_id: i.get(`machine_id`),
                                     objectId: i.id,
                                     timestamp: i.get(`timestamp`),
                                     userId: i.get(`userId`),
@@ -195,7 +195,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                 machine.save()
                                     .then((d) => {
                                         new Parse.Query(`Laundry`)
-                                            .equalTo(`machineId`, request.params.machine_id)
+                                            .equalTo(`machine_id`, request.params.machine_id)
                                             .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
                                             .greaterThan(`timestamp`, +moment().add(-2, `hour`))
                                             .find()
@@ -365,5 +365,50 @@ server.get(`/auth/sign_out`, (request, response, next) => {
 server.get(`/user/get_my_info`, (request, response, next) => {
     become(request)
         .then((user) => { response.send(user) })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            response.send(user)
+            // new Parse.Query(`Laundry`)
+            //     .equalTo(`timestamp`, request.params.timestamp)
+            //     .equalTo(`machine_id`, request.params.machine_id)
+            //     .find()
+            //     .then((laundry) => {
+            //         if (!laundry.length) {
+            //             new Parse.Query(`Constants`)
+            //                 .equalTo(`name`, `laundry_cost`)
+            //                 .first()
+            //                 .then((cost) => {
+            //                     new Parse.Object(`Laundry`)
+            //                         .set(`timestamp`, request.params.timestamp)
+            //                         .set(`machine_id`, request.params.machine_id)
+            //                         .set(`userId`, request.user.id)
+            //                         .set(`book_cost`, +cost.get(`value`))
+            //                         .save()
+            //                         .then((d) => {
+            //                             new Parse.Query(`Balance`)
+            //                                 .equalTo(`userId`, request.user.id)
+            //                                 .first()
+            //                                 .then((userBalance) => {
+            //                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+            //                                     userBalance.save()
+            //                                         .then((d) => { response.success(d) })
+            //                                         .catch((d) => { response.error() })
+            //                                 })
+            //                                 .catch((d) => { response.error() })
+
+            //                         })
+            //                         .catch((d) => { response.error() })
+            //                 })
+            //                 .catch((d) => { response.error() })
+            //         } else {
+            //             response.error(`error: laundry booking for this time is already exists`)
+            //         }
+            //     })
+            //     .catch((d) => { response.error() })
+        })
         .catch((d) => { response.send(d); console.error(d) })
 })
