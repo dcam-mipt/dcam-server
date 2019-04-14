@@ -394,7 +394,10 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                             .then((userBalance) => {
                                                 userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
                                                 userBalance.save()
-                                                    .then((d) => { response.send(d) })
+                                                    .then((d) => {
+                                                        console.log(`> > > laundry book: ${user.id} ${moment(request.params.timestamp).format(`DD.MM.YY HH:mm`)} ${request.params.machine_id} > > >`);
+                                                        response.send(d)
+                                                    })
                                                     .catch((d) => { response.send() })
                                             })
                                             .catch((d) => { response.send() })
