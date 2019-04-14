@@ -4,12 +4,12 @@
 
 // Add balance to new user
 Parse.Cloud.afterSave(Parse.User, (request) => {
-	new Parse.Query(`Balance`).equalTo(`userId`, request.object.id).first()
+	new Parse.Query(`Balance`).equalTo(`user_id`, request.object.id).first()
 		.then((d) => {
 			if (!d) {
 				var Balance = Parse.Object.extend(`Balance`);
 				var balance = new Balance();
-				balance.set(`userId`, request.object.id)
+				balance.set(`user_id`, request.object.id)
 				balance.set(`money`, 100)
 				// balance.setACL(new Parse.ACL(request.object));
 				balance.save()
@@ -23,11 +23,11 @@ Parse.Cloud.afterSave(Parse.User, (request) => {
 
 // Poset request for new laundry book with following 'data' object:
 // - timestamp: integer
-// - machineId: string
+// - machine_id: string
 Parse.Cloud.define(`setLaundry`, (request, response) => {
 	var laundryQuery = new Parse.Query(`Laundry`)
 	laundryQuery.equalTo(`timestamp`, request.params.timestamp)
-	laundryQuery.equalTo(`machineId`, request.params.machineId)
+	laundryQuery.equalTo(`machine_id`, request.params.machine_id)
 	laundryQuery.find()
 		.then((laundry) => {
 			if (!laundry.length) {
@@ -37,13 +37,13 @@ Parse.Cloud.define(`setLaundry`, (request, response) => {
 					.then((cost) => {
 						var object = new Parse.Object(`Laundry`)
 						object.set(`timestamp`, request.params.timestamp)
-						object.set(`machineId`, request.params.machineId)
-						object.set(`userId`, request.user.id)
+						object.set(`machine_id`, request.params.machine_id)
+						object.set(`user_id`, request.user.id)
 						object.set(`book_cost`, +cost.get(`value`))
 						object.save()
 							.then((d) => {
 								var balanceQuery = new Parse.Query(`Balance`)
-								balanceQuery.equalTo(`userId`, request.user.id)
+								balanceQuery.equalTo(`user_id`, request.user.id)
 								balanceQuery.first()
 									.then((userBalance) => {
 										userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
@@ -71,16 +71,16 @@ Parse.Cloud.define(`getLaundry`, (request, response) => {
 			new Parse.Query(`User`).find()
 				.then((users_list) => {
 					response.success(laundry_list
-						.filter(laundry => users_list.map(i => i.id).indexOf(laundry.get(`userId`)) > -1)
+						.filter(laundry => users_list.map(i => i.id).indexOf(laundry.get(`user_id`)) > -1)
 						.map(laundry => {
 							return ({
-								machineId: laundry.get(`machineId`),
-								userId: laundry.get(`userId`),
+								machine_id: laundry.get(`machine_id`),
+								user_id: laundry.get(`user_id`),
 								timestamp: laundry.get(`timestamp`),
-								laundryId: laundry.id,
-								// name: users_list.filter(user => user.id === laundry.get(`userId`))[0].get(`name`).split(` `)[2],
+								laundry_id: laundry.id,
+								// name: users_list.filter(user => user.id === laundry.get(`user_id`))[0].get(`name`).split(` `)[2],
 								email: laundry.get(`email`),
-								vk: users_list.filter(user => user.id === laundry.get(`userId`))[0].get(`vk`)
+								vk: users_list.filter(user => user.id === laundry.get(`user_id`))[0].get(`vk`)
 							})
 						}))
 				})
@@ -91,7 +91,7 @@ Parse.Cloud.define(`getLaundry`, (request, response) => {
 
 Parse.Cloud.afterDelete(`Laundry`, (request, response) => {
 	var balanceQuery = new Parse.Query(`Balance`)
-	balanceQuery.equalTo(`userId`, request.object.get(`userId`))
+	balanceQuery.equalTo(`user_id`, request.object.get(`user_id`))
 	balanceQuery.first()
 		.then((balance) => {
 			balance.set(`money`, balance.get(`money`) + request.object.get(`book_cost`))
@@ -107,7 +107,7 @@ Parse.Cloud.afterDelete(`Laundry`, (request, response) => {
 Parse.Cloud.define(`saveTransaction`, (request, response) => {
 	var Transactions = Parse.Object.extend(`Transactions`);
 	var transactions = new Transactions();
-	transactions.set(`userId`, request.user.id)
+	transactions.set(`user_id`, request.user.id)
 	transactions.set(`status`, `started`)
 	transactions.set(`requested`, request.params.value)
 	transactions.save()
@@ -119,7 +119,7 @@ Parse.Cloud.define(`createNfcRecord`, (request, response) => {
 	var nfc_query = Parse.Object.extend(`NFC`);
 	var nfc_record = new nfc_query();
 	nfc_record.set(`uid`, request.params.value)
-	nfc_record.set(`userId`, request.user.id)
+	nfc_record.set(`user_id`, request.user.id)
 	// nfc_record.setACL(new Parse.ACL(request.user));
 	nfc_record.save()
 		.then((d) => { response.success(d.id) })
@@ -130,7 +130,7 @@ Parse.Cloud.define(`createNfcRecord`, (request, response) => {
 Parse.Cloud.define(`createClubBook`, (request, response) => {
 	var club_query = Parse.Object.extend(`Club`);
 	var club_record = new club_query();
-	club_record.set(`userId`, request.user.id)
+	club_record.set(`user_id`, request.user.id)
 	club_record.set(`location`, request.params.location)
 	club_record.set(`start_timestamp`, request.params.start_timestamp)
 	club_record.set(`end_timestamp`, request.params.end_timestamp)
@@ -160,7 +160,7 @@ Parse.Cloud.define(`getClubBooks`, (request, response) => {
 							is_regular: book.get(`is_regular`),
 							is_allowed: book.get(`is_allowed`),
 							data: book.get(`data`),
-							owner: users.filter(i => i.id === book.get(`userId`))[0].get(`name`),
+							owner: users.filter(i => i.id === book.get(`user_id`))[0].get(`name`),
 						})
 					})
 					response.success(new_club_book)
@@ -173,7 +173,7 @@ Parse.Cloud.define(`getClubBooks`, (request, response) => {
 Parse.Cloud.define(`chengeClubEventResolution`, (request, response) => {
 	new Parse.Query(`Roles`)
 		.equalTo(`role`, `ADMIN`)
-		.equalTo(`userId`, request.user.id)
+		.equalTo(`user_id`, request.user.id)
 		.first()
 		.then((d) => {
 			if (d) {
