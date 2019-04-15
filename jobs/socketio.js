@@ -1,9 +1,6 @@
 /*eslint-disable no-unused-vars*/
 const server = require('http').createServer();
-const io = require('socket.io')({
-    path: '/websocket',
-    serveClient: false,
-});
+var io = require('socket.io')(server, { origins: 'dcam.pro:* http://dcam.pro:* http://www.dcam.pro:*' });
 io.set('origins', '*:*');
 io.attach(server, {
     pingInterval: 10000,
