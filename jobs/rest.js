@@ -43,9 +43,6 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 })
 
 let become = (request) => new Promise((resolve, reject) => {
-    console.log(`> > >`);
-    console.log(request.headers);
-    console.log(`> > >`);
     let sessionToken = request.headers.authorization
     if (!sessionToken) {
         reject({
@@ -351,7 +348,12 @@ server.get(`/machines/get`, (request, response, next) => {
 server.get(`/auth/:email/:password`, (request, response, next) => {
     Parse.User.logIn(request.params.email, request.params.password)
         .then((d) => { response.send(d.get(`sessionToken`)) })
-        .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => {
+            if (d.error === `Error: Invalid username/password.`) {
+                console.log(`> > > EXEPTION > > >`);
+            }
+            response.send(d); console.error(d)
+        })
 })
 
 server.get(`/auth/sign_out`, (request, response, next) => {
