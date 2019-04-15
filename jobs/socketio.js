@@ -5,9 +5,6 @@ const io = require('socket.io')({
     serveClient: false,
 });
 io.set('origins', '*:*');
-
-// either
-
 io.attach(server, {
     pingInterval: 10000,
     pingTimeout: 5000,
@@ -15,11 +12,4 @@ io.attach(server, {
 });
 
 server.listen(3000);
-
-// or
-io.attach(3000, {
-    pingInterval: 10000,
-    pingTimeout: 5000,
-    cookie: false
-});
 /*eslint-enable no-unused-vars*/
