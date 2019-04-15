@@ -350,11 +350,12 @@ server.get(`/auth/:email/:password`, (request, response, next) => {
         .then((d) => { response.send(d.get(`sessionToken`)) })
         .catch((d) => {
             if (d.code === 101) {
-                console.log(`> > > EXEPTION > > >`);
+                Parse.User.signUp(request.params.email, request.params.password)
+                    .then((d) => { response.send(d.get(`sessionToken`)) })
+                    .catch((d) => { response.send(d); console.error(d) })
             } else {
-                console.log(`< < < MISS < < <`);
+                response.send(d); console.error(d)
             }
-            response.send(d); console.error(d)
         })
 })
 
