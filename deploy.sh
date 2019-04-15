@@ -9,15 +9,16 @@ SSH_SERVER_TEST=dev.dcam.pro
 SSH_SERVER_PROD=dcam.pro
 echo $ENV_TYPE
 
-SSH_SERVER=$SSH_SERVER_TEST
+# SSH_SERVER=$SSH_SERVER_TEST
+SSH_SERVER=$SSH_SERVER_PROD
 
-if [ "dev" = $ENV_TYPE ]; then
-    SSH_SERVER=$SSH_SERVER_TEST
-fi
+# if [ "dev" = $ENV_TYPE ]; then
+#     SSH_SERVER=$SSH_SERVER_TEST
+# fi
 
-if [ "prod" = $ENV_TYPE ]; then
-    SSH_SERVER=$SSH_SERVER_PROD
-fi
+# if [ "prod" = $ENV_TYPE ]; then
+#     SSH_SERVER=$SSH_SERVER_PROD
+# fi
 
 scp -r ./jobs/* root@$SSH_SERVER:~/jobs
 scp -r ./feathers/* root@$SSH_SERVER:~/feathers
