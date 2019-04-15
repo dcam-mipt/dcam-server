@@ -44,7 +44,7 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 
 let become = (request) => new Promise((resolve, reject) => {
     console.log(`> > >`);
-    console.log(request.headers.authorization);
+    console.log(request.headers);
     console.log(`> > >`);
     let sessionToken = request.headers.authorization
     if (!sessionToken) {
