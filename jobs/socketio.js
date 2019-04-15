@@ -11,6 +11,8 @@ app.use((req, res, next) => {
     next();
 });
 var port = Number(process.env.PORT || 3000);
+var server = app.listen(3000)
+var io = require('socket.io').listen(server);
 
 io.on('connection', function (socket) {
     console.log('ping-pong started');
