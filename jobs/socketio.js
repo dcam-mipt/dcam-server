@@ -1,12 +1,31 @@
 /*eslint-disable no-unused-vars*/
-const server = require('http').createServer();
-var io = require('socket.io')(server);
-io.set('origins', '*:*');
-io.attach(server, {
-    pingInterval: 10000,
-    pingTimeout: 5000,
-    cookie: false
-});
+var WebSocketServer = new require('ws');
 
-server.listen(3000);
+// подключенные клиенты
+var clients = {};
+
+// WebSocket-сервер на порту 8081
+var webSocketServer = new WebSocketServer.Server({
+    port: 8081
+});
+webSocketServer.on('connection', function (ws) {
+
+    var id = Math.random();
+    clients[id] = ws;
+    console.log("новое соединение " + id);
+
+    ws.on('message', function (message) {
+        console.log('получено сообщение ' + message);
+
+        for (var key in clients) {
+            clients[key].send(message);
+        }
+    });
+
+    ws.on('close', function () {
+        console.log('соединение закрыто ' + id);
+        delete clients[id];
+    });
+
+});
 /*eslint-enable no-unused-vars*/
