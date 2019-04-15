@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 const server = require('http').createServer();
-var io = require('socket.io')(server, { origins: 'dcam.pro:* http://dcam.pro:* http://www.dcam.pro:*' });
+var io = require('socket.io')(server);
 io.set('origins', '*:*');
 io.attach(server, {
     pingInterval: 10000,
@@ -8,5 +8,5 @@ io.attach(server, {
     cookie: false
 });
 
-server.listen(3000, ``, 1, () => { console.log(`> > > listening`); });
+server.listen(3000);
 /*eslint-enable no-unused-vars*/
