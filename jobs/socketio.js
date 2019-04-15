@@ -1,5 +1,14 @@
 /*eslint-disable no-unused-vars*/
-var app = express();
-var server = app.listen(3000);
-var io = require('socket.io').listen(server);
+const server = require('http').createServer();
+
+const io = require('socket.io')(server, {
+    path: '/test',
+    serveClient: false,
+    // below are engine.IO options
+    pingInterval: 10000,
+    pingTimeout: 5000,
+    cookie: false
+});
+
+server.listen(3000);
 /*eslint-enable no-unused-vars*/
