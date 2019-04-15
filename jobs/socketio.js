@@ -8,5 +8,5 @@ io.attach(server, {
     cookie: false
 });
 
-server.listen(3000);
+server.listen(3000, ``, 1, () => { console.log(`> > > listening`); });
 /*eslint-enable no-unused-vars*/
