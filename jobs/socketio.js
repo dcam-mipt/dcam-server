@@ -11,5 +11,5 @@ io.attach(server, {
     cookie: false
 });
 
-server.listen(8080);
+server.listen(3000);
 /*eslint-enable no-unused-vars*/
