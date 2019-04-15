@@ -4,7 +4,7 @@ const io = require('socket.io')({
     path: '/websocket',
     serveClient: false,
 });
-io.origins('*:*')
+io.set('origins', '*:*');
 
 // either
 const server = require('http').createServer();
