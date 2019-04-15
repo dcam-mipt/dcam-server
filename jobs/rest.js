@@ -349,7 +349,7 @@ server.get(`/auth/:email/:password`, (request, response, next) => {
     Parse.User.logIn(request.params.email, request.params.password)
         .then((d) => { response.send(d.get(`sessionToken`)) })
         .catch((d) => {
-            if (d.Error === `Error: Invalid username/password.`) {
+            if (d.code === 101) {
                 console.log(`> > > EXEPTION > > >`);
             } else {
                 console.log(`< < < MISS < < <`);
