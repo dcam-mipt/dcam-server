@@ -21,7 +21,6 @@ SSH_SERVER=$SSH_SERVER_PROD
 # fi
 
 scp -r ./jobs/* root@$SSH_SERVER:~/jobs
-scp -r ./feathers/* root@$SSH_SERVER:~/feathers
 ssh root@dcam.pro sh << END
     # pm2 start ./jobs/rest.js
     # pm2 start ./jobs/rest.js
