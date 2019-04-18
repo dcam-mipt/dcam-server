@@ -15,8 +15,8 @@ app.get('/test', function (req, res, next) {
     res.json({ msg: 'This is CORS-enabled for all origins!' })
 })
 
-app.listen(80, function () {
-    console.log('CORS-enabled web server listening on port 80')
+app.listen(3000, function () {
+    console.log('CORS-enabled web server listening on port 3000')
 })
 var server = http.createServer(app);
 const io = require('socket.io')(server, {});
