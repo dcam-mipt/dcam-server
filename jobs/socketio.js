@@ -1,6 +1,5 @@
 /*eslint-disable no-unused-vars*/
-var app = express();
-var server = app.listen(3000);
-var io = require('socket.io').listen(server);
-var http = require('http');
+const io = require('socket.io')(server, {});
+
+server.listen(3000);
 /*eslint-enable no-unused-vars*/
