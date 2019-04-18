@@ -6,6 +6,17 @@ var corsMiddleware = require('restify-cors-middleware');
 var moment = require('moment-timezone')
 var axios = require(`axios`)
 
+const io = require('socket.io')(server, {
+    path: '/test',
+    serveClient: false,
+    // below are engine.IO options
+    pingInterval: 10000,
+    pingTimeout: 5000,
+    cookie: false
+});
+
+server.listen(3000);
+
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
 Parse.User.enableUnsafeCurrentUser()
