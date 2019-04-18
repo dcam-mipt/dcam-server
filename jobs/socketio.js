@@ -6,10 +6,10 @@ io.on('connection', (socket) => {
     console.log(`new connection`);
     socket.on('disconnect', (socket) => {
         console.log(`lost connection`);
-        // socket.on('chat message', function (msg) {
-        //     console.log('message: ' + msg);
-        //     io.emit('chat message', msg);
-        // });
+    });
+    socket.on('chat message', function (msg) {
+        console.log('message: ' + msg);
+        io.emit('chat message', msg);
     });
 });
 
