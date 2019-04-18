@@ -20,7 +20,7 @@ app.listen(3000, function () {
     console.log('CORS-enabled web server listening on port 3000')
 })
 var server = http.createServer(app);
-const io = require('socket.io')(server, {});
+const io = require('socket.io')(server, { origins: '*:*' });
 
 io.on('connection', (socket) => {
     console.log(`new connection`);
