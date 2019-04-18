@@ -2,8 +2,8 @@
 var express = require('express');
 var app = express();
 var http = require('http')
-// var cors = require('cors')
-// app.use(cors())
+var cors = require('cors')
+app.use(cors())
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -11,13 +11,13 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
     next();
 });
-// app.get('/test', function (req, res, next) {
-//     res.json({ msg: 'This is CORS-enabled for all origins!' })
-// })
+app.get('/test', function (req, res, next) {
+    res.json({ msg: 'This is CORS-enabled for all origins!' })
+})
 
-// app.listen(80, function () {
-//     console.log('CORS-enabled web server listening on port 80')
-// })
+app.listen(80, function () {
+    console.log('CORS-enabled web server listening on port 80')
+})
 var server = http.createServer(app);
 const io = require('socket.io')(server, {});
 
