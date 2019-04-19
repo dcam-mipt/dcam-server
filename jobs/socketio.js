@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 const server = require('http').createServer();
-const io = require('socket.io')(server, { path: `/test` });
+const io = require('socket.io')(server, { path: '/test' });
 
 io.on('connection', (socket) => {
     console.log(`new connection`);
