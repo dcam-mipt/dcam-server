@@ -1,5 +1,5 @@
 /*eslint-disable no-unused-vars*/
-const server = require('http').createServer();
+const server = require('http').createServer((req, res) => { res.end('test') });
 const io = require('socket.io')(server, { path: '/test' });
 
 io.on('connection', (socket) => {
@@ -13,5 +13,6 @@ io.on('connection', (socket) => {
     });
 });
 
+server.on('listening', () => { console.log('ok, server is running') });
 server.listen(443);
 /*eslint-enable no-unused-vars*/
