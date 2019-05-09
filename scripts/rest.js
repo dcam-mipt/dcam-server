@@ -354,18 +354,6 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/test`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            new Parse.Query(`Balance`)
-                .equalTo(`user_id`, user.id)
-                .first()
-                .then((d) => { response.send(d.get(`money`)) })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
-})
-
 server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
     become(request)
         .then((user) => {
@@ -534,6 +522,18 @@ server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => 
 })
 
 server.get(`/laundry/get_laundry_cost`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            new Parse.Query(`Constants`)
+                .equalTo(`name`, `laundry_cost`)
+                .first()
+                .then((d) => { response.send(d.get(`value`)) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/balance/get_laundry_cost`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Constants`)
