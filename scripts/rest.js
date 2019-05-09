@@ -355,6 +355,7 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
 })
 
 server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
+    console.log(`< < <`);
     become(request)
         .then((user) => {
             var Transactions = Parse.Object.extend(`Transactions`);
@@ -539,10 +540,7 @@ server.get(`/balance/get_my_balance`, (request, response, next) => {
             new Parse.Query(`Balance`)
                 .equalTo(`user_id`, user.id)
                 .first()
-                .then((d) => {
-                    writeLog(`balance: get my balance (${user.id}, ${d.get(`money`)} rub)`, user)
-                    response.send(d.get(`money`) + ``)
-                })
+                .then((d) => { response.send(d.get(`money`) + ``) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
