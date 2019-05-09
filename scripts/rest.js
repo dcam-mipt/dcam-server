@@ -540,8 +540,7 @@ server.get(`/balance/get_laundry_cost`, (request, response, next) => {
                 .equalTo(`user_id`, user.id)
                 .first()
                 .then((d) => {
-                    console.log(d.get(`money`), d.money);
-                    response.send(d)
+                    response.send(d.get(`money`))
                 })
                 .catch((d) => { response.send(d); console.error(d) })
         })
