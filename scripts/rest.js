@@ -539,7 +539,7 @@ server.get(`/balance/get_laundry_cost`, (request, response, next) => {
             new Parse.Query(`Balance`)
                 .equalTo(`user_id`, user.id)
                 .first()
-                .then((d) => { response.send(d) })
+                .then((d) => { response.send(d.money) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
