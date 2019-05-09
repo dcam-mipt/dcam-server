@@ -536,11 +536,12 @@ server.get(`/laundry/get_laundry_cost`, (request, response, next) => {
 server.get(`/balance/get_laundry_cost`, (request, response, next) => {
     become(request)
         .then((user) => {
-            new Parse.Query(`Constants`)
-                .equalTo(`name`, `laundry_cost`)
-                .first()
-                .then((d) => { response.send(d.get(`value`)) })
-                .catch((d) => { response.send(d); console.error(d) })
+            console.log(`< < < `, user.objectId);
+            // new Parse.Query(`Balance`)
+            //     .equalTo(`user_id`, `laundry_cost`)
+            //     .first()
+            //     .then((d) => { response.send(d.get(`value`)) })
+            //     .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
