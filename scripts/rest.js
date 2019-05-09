@@ -533,13 +533,16 @@ server.get(`/laundry/get_laundry_cost`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/balance/get_laundry_cost`, (request, response, next) => {
+server.get(`/balance/get_my_balance`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Balance`)
                 .equalTo(`user_id`, user.id)
                 .first()
-                .then((d) => { response.send(d.get(`money`) + ``) })
+                .then((d) => {
+                    writeLog(`balance: get my balance (${user.id}, ${d.get(`money`)} rub)`, user)
+                    response.send(d.get(`money`) + ``)
+                })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
