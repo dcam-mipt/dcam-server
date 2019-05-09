@@ -536,7 +536,7 @@ server.get(`/laundry/get_laundry_cost`, (request, response, next) => {
 server.get(`/balance/get_laundry_cost`, (request, response, next) => {
     become(request)
         .then((user) => {
-            console.log(`< < < `, user.objectId);
+            console.log(`< < < `, user.id);
             // new Parse.Query(`Balance`)
             //     .equalTo(`user_id`, `laundry_cost`)
             //     .first()
