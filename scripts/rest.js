@@ -354,17 +354,13 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/balance/get_my_balance`, (requestm, response) => {
-    console.log(`< < <`);
+server.get(`/balance/get_by_balance/`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Balance`)
                 .equalTo(`user_id`, user.id)
                 .first()
-                .then((d) => {
-                    writeLog(`balance: get (${user.id}, ${d.get(`value`)} rub)`, user)
-                    response.send(d.get(`value`))
-                })
+                .then((d) => { response.send(d.get(`money`)) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
