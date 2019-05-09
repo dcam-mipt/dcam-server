@@ -28,6 +28,17 @@ server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
+let writeLog = (message, user) => new Promise((resolve, reject) => {
+    var Logs = Parse.Object.extend(`Logs`);
+    console.log(message);
+    new Logs()
+        .set(`message`, message)
+        .set(`from`, user)
+        .save()
+        .then((d) => { resolve(d) })
+        .catch((d) => { reject(d) })
+})
+
 let updateActivity = (user) => new Promise((resolve, reject) => {
     new Parse.Query(`User`)
         .limit(1000000)
@@ -37,6 +48,23 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
             user.set(`last_seen`, +moment())
             user.save()
                 .then((d) => { resolve(d) })
+                .catch((d) => { reject(d) })
+        })
+        .catch((d) => { reject(d) })
+})
+
+let changeBalance = (user, value, author) => new Promise((resolve, reject) => {
+    console.log(`< < <`, user, value, author);
+    new Parse.Query(`Balance`)
+        .equalTo(`user_id`, user)
+        .first()
+        .then((d) => {
+            d.set(`money`, d.get(`money`) + +value)
+            d.save()
+                .then((d) => {
+                    writeLog(`balance: change ${user} to ${d.get(`money`)} (${value} rub)`, author)
+                    resolve(d)
+                })
                 .catch((d) => { reject(d) })
         })
         .catch((d) => { reject(d) })
@@ -61,6 +89,16 @@ let become = (request) => new Promise((resolve, reject) => {
 })
 
 
+let isAdmin = (user) => new Promise((resolve, reject) => {
+    new Parse.Query(`Roles`)
+        .equalTo(`user_id`, user.objectId)
+        .equalTo(`role`, `ADMIN`)
+        .first()
+        .then((d) => { resolve(true) })
+        .catch((d) => { resolve(false) })
+})
+
+
 server.post('/yandex/', (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
     new Parse.Query(`Transactions`)
@@ -82,14 +120,14 @@ server.post('/yandex/', (req, res, next) => {
                                 transaction.set(`recived`, +req.body.amount)
                                 transaction.save()
                                     .then((d) => { console.log(d) })
-                                    .catch((d) => { console.log(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
                             })
-                            .catch((d) => { console.log(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     }
                 })
-                .catch((d) => { console.log(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { console.log(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 let createOneBook = (request, user, group_id, week_number) => new Promise((resolve, reject) => {
@@ -136,11 +174,15 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                 .equalTo(`objectId`, request.params.book_id)
                 .first()
                 .then((d) => {
-                    if (user.objectId === d.user_id) {
-                        d.destroy()
-                            .then((d) => { response.send(d) })
-                            .catch((d) => { response.send(d); console.error(d) })
-                    }
+                    changeBalance(d.get(`user_id`), d.get(`book_cost`), user)
+                        .then((new_balance) => {
+                            let message = `laundry: unbook (${d.get(`user_id`)}, ${d.get(`machine_id`)}, ${moment(d.get(`timestamp`)).format(`DD.MM.YY HH:mm`)})`
+                            writeLog(message, user)
+                            d.destroy()
+                                .then((d) => { response.send(d) })
+                                .catch((d) => { response.send(d); console.error(d) })
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
                 })
                 .catch((d) => { response.send(d); console.error(d) })
         })
@@ -179,10 +221,7 @@ server.get(`/laundry/get`, (request, response, next) => {
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
     become(request)
         .then((user) => {
-            new Parse.Query(`Roles`)
-                .equalTo(`user_id`, user.objectId)
-                .equalTo(`role`, `ADMIN`)
-                .first()
+            isAdmin(user)
                 .then((role) => {
                     if (role) {
                         let is_before_now = +request.params.timestamp < +moment().add(-2, `hour`)
@@ -281,10 +320,7 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
 server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
     become(request)
         .then((user) => {
-            new Parse.Query(`Roles`)
-                .equalTo(`user_id`, user.objectId)
-                .equalTo(`role`, `ADMIN`)
-                .first()
+            isAdmin(user)
                 .then((role) => {
                     if (role) {
                         new Parse.Query(`Balance`)
@@ -318,6 +354,21 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
+server.get(`/balance/get_my_balance`, (requestm, response) => {
+    become(request)
+        .then((user) => {
+            new Parse.Query(`Balance`)
+                .equalTo(`user_id`, user.id)
+                .first()
+                .then((d) => {
+                    writeLog(`balance: get (${user.id}, ${d.get(`value`)} rub)`, user)
+                    response.send(d.get(`value`))
+                })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
 server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
     become(request)
         .then((user) => {
@@ -345,13 +396,33 @@ server.get(`/machines/get`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
+server.get(`/machines/create`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            new Parse.Object(`Machines`)
+                .set(`is_broken`, false)
+                .set(`chill_untill`, undefined)
+                .save()
+                .then((d) => { response.send(d) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
 server.get(`/auth/:email/:password`, (request, response, next) => {
     Parse.User.logIn(request.params.email, request.params.password)
         .then((d) => { response.send(d.get(`sessionToken`)) })
         .catch((d) => {
             if (d.code === 101) {
                 Parse.User.signUp(request.params.email, request.params.password)
-                    .then((d) => { response.send(d.get(`sessionToken`)) })
+                    .then((user) => {
+                        new Parse.Object(`Balance`)
+                            .set(`user_id`, user.id)
+                            .set(`money`, 100)
+                            .save()
+                            .then((d) => { response.send(user.get(`sessionToken`)) })
+                            .catch((d) => { response.send(d); console.error(d) })
+                    })
                     .catch((d) => { response.send(d); console.error(d) })
             } else {
                 response.send(d); console.error(d)
@@ -376,6 +447,18 @@ server.get(`/user/get_my_info`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
+server.post(`/user/set_my_avatar`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            user
+                .set(`avatar`, request.body.url)
+                .save()
+                .then((d) => { response.send(d); })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
 server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
     become(request)
         .then((user) => {
@@ -384,7 +467,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                 .equalTo(`machine_id`, request.params.machine_id)
                 .find()
                 .then((laundry) => {
-                    console.log(`< < <`, laundry);
                     if (laundry.length) {
                         response.send(`error: laundry booking for this time is already exists`)
                     } else {
@@ -392,33 +474,75 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                             .equalTo(`name`, `laundry_cost`)
                             .first()
                             .then((cost) => {
-                                new Parse.Object(`Laundry`)
-                                    .set(`timestamp`, +request.params.timestamp)
-                                    .set(`machine_id`, request.params.machine_id)
-                                    .set(`user_id`, user.id)
-                                    .set(`book_cost`, +cost.get(`value`))
-                                    .save()
-                                    .then((d) => {
-                                        new Parse.Query(`Balance`)
-                                            .equalTo(`user_id`, user.id)
-                                            .first()
-                                            .then((userBalance) => {
-                                                userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-                                                userBalance.save()
-                                                    .then((d) => {
-                                                        console.log(`> > > laundry book: ${user.get(`username`)} ${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)} ${request.params.machine_id} > > >`);
-                                                        response.send(d)
-                                                    })
-                                                    .catch((d) => { response.send(d); console.error(d) })
-                                            })
-                                            .catch((d) => { response.send(d); console.error(d) })
-
+                                new Parse.Query(`Balance`)
+                                    .equalTo(`user_id`, user.id)
+                                    .first()
+                                    .then((userBalance) => {
+                                        if (userBalance.get(`money`) < +cost.get(`value`)) {
+                                            let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
+                                            writeLog(message, user)
+                                            response.send(message);
+                                        } else {
+                                            new Parse.Object(`Laundry`)
+                                                .set(`timestamp`, +request.params.timestamp)
+                                                .set(`machine_id`, request.params.machine_id)
+                                                .set(`user_id`, user.id)
+                                                .set(`book_cost`, +cost.get(`value`))
+                                                .save()
+                                                .then((d) => {
+                                                    userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+                                                    userBalance.save()
+                                                        .then((d) => {
+                                                            let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
+                                                            writeLog(message, user)
+                                                            response.send(d)
+                                                        })
+                                                        .catch((d) => { response.send(d); console.error(d) })
+                                                })
+                                                .catch((d) => { response.send(d); console.error(d) })
+                                        }
                                     })
                                     .catch((d) => { response.send(d); console.error(d) })
                             })
                             .catch((d) => { response.send(d); console.error(d) })
                     }
                 })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            isAdmin(user)
+                .then((role) => {
+                    if (role) {
+                        new Parse.Query(`Constants`)
+                            .equalTo(`name`, `laundry_cost`)
+                            .first()
+                            .then((d) => {
+                                d
+                                    .set(`value`, request.params.new_value)
+                                    .save()
+                                    .then((d) => { response.send(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
+
+                            })
+                            .catch((d) => { response.send(d); console.error(d) })
+                    }
+                })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/laundry/get_laundry_cost`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            new Parse.Query(`Constants`)
+                .equalTo(`name`, `laundry_cost`)
+                .first()
+                .then((d) => { response.send(d.get(`value`)) })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
