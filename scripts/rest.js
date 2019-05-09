@@ -354,7 +354,7 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/balance/get_by_balance`, (request, response, next) => {
+server.get(`/test`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Balance`)
