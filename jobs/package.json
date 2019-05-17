@@ -1,6 +1,4 @@
 {
-    "name": "parse_and_rest",
-    "version": "0.0.1",
     "dependencies": {
         "axios": "^0.18.0",
         "moment": "^2.24.0",

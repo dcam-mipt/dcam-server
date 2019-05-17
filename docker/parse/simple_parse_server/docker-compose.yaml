@@ -1,0 +1,64 @@
+#this file is inspired by https://github.com/yongjhih/docker-parse-server
+#see the full example of docker-compose.yaml at https://raw.githubusercontent.com/yongjhih/docker-parse-server/master/docker-compose.yml
+
+version: '2.0'
+
+services:
+
+  mongo:
+    image: mongo:3.0.8
+    container_name: "$MY_APP_NAME_mongo"
+    restart: always
+    #ports:
+    #  - "27017:27017"
+    volumes:
+      # note:
+      # /your/path/to/db:/data/db
+      - "/data/mongo/db/$MY_APP_NAME:/data/db"
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+
+  parse-server:
+    image: yongjhih/parse-server
+    restart: always
+    container_name: $MY_APP_NAME
+    ports:
+      - "$PARSE_SERVER_PORT:1337"
+    volumes:
+      - ./cloud:/parse/cloud
+    environment:
+      PORT: 1337
+      MASTER_KEY: $MY_APP_MASTER_KEY
+      APP_ID: $MY_APP_ID
+      JAVASCRIPT_KEY: $MY_APP_JS_KEY
+      REST_API_KEY: $MY_APP_REST_API_KEY
+      CLIENT_KEY: $MY_APP_CLIENT_KEY
+      DATABASE_URI: "mongodb://mongo:27017/dev"
+      LIVEQUERY_SUPPORT: $LIVEQUERY_SUPPORT
+      LIVEQUERY_CLASSES: $LIVEQUERY_CLASSES
+      AUTH_GOOGLE_CLIENT_ID: $AUTH_GOOGLE_CLIENT_ID
+      AUTH_GOOGLE_API_KEY: $AUTH_GOOGLE_API_KEY
+
+    links:
+        - mongo
+
+  parse-dashboard:
+    image: yongjhih/parse-dashboard:1.0.18
+    # image: yongjhih/parse-dashboard
+    links:
+      - parse-server
+    environment:
+      ALLOW_INSECURE_HTTP: 1
+      USER1: $USER_NAME
+      USER1_PASSWORD: $USER_PASSWORD
+      PARSE_DASHBOARD_ALLOW_INSECURE_HTTP: 1
+      PARSE_DASHBOARD_SERVER_URL: "http://$SERVER_IP:$PARSE_SERVER_PORT/parse"
+
+      PARSE_DASHBOARD_MASTER_KEY: $MY_APP_MASTER_KEY
+      PARSE_DASHBOARD_APP_ID: $MY_APP_ID
+      PARSE_DASHBOARD_APP_NAME: $PARSE_DASHBOARD_NAME
+      PARSE_DASHBOARD_USER_ID: $USER_NAME
+      PARSE_DASHBOARD_USER_PASSWORD: $USER_PASSWORD
+      TRUST_PROXY: 1
+      PORT: 4040
+    ports:
+      - "$PARSE_DASHBOARD_PORT:4040"
