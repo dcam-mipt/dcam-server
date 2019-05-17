@@ -5,7 +5,6 @@ var path = require('path');
 
 var api = new ParseServer({
     databaseURI: 'mongodb://localhost:27017/dev',
-    cloud: __dirname + '/cloud/main.js',
     appId: 'dcam',
     masterKey: 'dcam',
     javasScriptKey: 'dcam',
