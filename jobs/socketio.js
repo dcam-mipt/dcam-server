@@ -14,5 +14,5 @@ io.on('connection', (socket) => {
 });
 
 server.on('listening', () => { console.log('ok, server is running') });
-server.listen(3000);
+server.listen(80);
 /*eslint-enable no-unused-vars*/
