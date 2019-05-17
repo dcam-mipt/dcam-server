@@ -1,0 +1,1 @@
+parse-dashboard --config ./scripts/parse-dashboard-config.json
