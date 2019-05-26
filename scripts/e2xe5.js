@@ -18,7 +18,7 @@ var cors = corsMiddleware({
     preflightMaxAge: 5,
     origins: ['*'],
     allowHeaders: ['*'],
-    methods: ['GET', 'PUT', 'DELETE', 'POST', 'OPTIONS'],
+    methods: ['GET', 'PUT', 'DELETE', 'POST', 'OPTIONS', `multipart/form-data`],
 })
 server.pre(cors.preflight)
 server.use(cors.actual)
