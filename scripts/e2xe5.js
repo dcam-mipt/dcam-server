@@ -29,6 +29,7 @@ server.listen(8081, () => {
 });
 
 server.get(`/balance/`, (request, response, next) => {
+    // console.log(request.config.data);
     response.send(request);
 })
 
