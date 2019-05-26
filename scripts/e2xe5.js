@@ -32,7 +32,7 @@ server.get(`/balance/`, (request, response, next) => {
     response.send(`hello, e2xe5`);
 })
 
-server.get(`/upload/`, (request, response, next) => {
+server.post(`/upload/`, (request, response, next) => {
     response.send(`hello, e2xe5`);
 })
 /*eslint-enable no-unused-vars*/
