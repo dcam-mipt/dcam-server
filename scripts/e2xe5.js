@@ -34,6 +34,6 @@ server.get(`/balance/`, (request, response, next) => {
 })
 
 server.post(`/upload/`, (request, response, next) => {
-    response.send(request);
+    response.send({request: request});
 })
 /*eslint-enable no-unused-vars*/
