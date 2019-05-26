@@ -2,7 +2,6 @@
 var restify = require('restify');
 var CookieParser = require('restify-cookies');
 var Parse = require('parse/node')
-var config = require('./config')
 var corsMiddleware = require('restify-cors-middleware');
 var moment = require('moment-timezone')
 var axios = require(`axios`)
@@ -31,5 +30,9 @@ server.listen(8081, () => {
 
 server.get(`/balance/`, (request, response, next) => {
     response.send(`hello, e2xe5`);
+})
+
+server.post(`/upload/`, (request, response, next) => {
+    response.send(request);
 })
 /*eslint-enable no-unused-vars*/
