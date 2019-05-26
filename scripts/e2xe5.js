@@ -29,7 +29,7 @@ server.listen(8081, () => {
 });
 
 server.get(`/balance/`, (request, response, next) => {
-    response.send(`hello, e2xe5`, request);
+    response.send(request);
 })
 
 server.post(`/upload/`, (request, response, next) => {
