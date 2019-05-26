@@ -29,7 +29,7 @@ server.listen(8081, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
-server.get(`/upload_img/`, (request, response, next) => {
-    response.send(request)
+server.get(`/balance/`, (request, response, next) => {
+    response.send(`hello, e2xe5`);
 })
 /*eslint-enable no-unused-vars*/
