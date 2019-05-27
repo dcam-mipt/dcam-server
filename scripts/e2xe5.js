@@ -11,7 +11,9 @@ Parse.serverURL = `http://dcam.pro:1337/parse_e2xe5/`
 Parse.User.enableUnsafeCurrentUser()
 
 var server = restify.createServer({ maxParamLength: 500 });
-server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.bodyParser({
+    mapParams: true
+}));
 server.use(CookieParser.parse);
 
 var cors = corsMiddleware({
@@ -34,6 +36,13 @@ server.get(`/balance/`, (request, response, next) => {
 })
 
 server.post(`/upload/`, (request, response, next) => {
-    response.send(`test`, request.body);
+    const data = Array.from(Buffer.from(request.body, 'binary'))
+    const contentType = request.headers['content-type'];
+    const parseFile = new Parse.File('logo.jpg', data, contentType)
+    new Parse.Object(`pictures`)
+        .set(`file`, parseFile)
+        .save()
+        .then((d) => { response.send(d); })
+        .catch((d) => { response.send(d); })
 })
 /*eslint-enable no-unused-vars*/
