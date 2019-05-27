@@ -30,11 +30,6 @@ server.listen(8081, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
-server.get(`/balance/`, (request, response, next) => {
-    // console.log(request.config.data);
-    response.send(request);
-})
-
 server.post(`/upload/`, (request, response, next) => {
     const data = Array.from(Buffer.from(request.body, 'binary'))
     const contentType = request.headers['content-type'];
