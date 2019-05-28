@@ -28,6 +28,14 @@ server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
+// socket io
+const socket_server = require('http').createServer((req, res) => { res.end('test') });
+const io = require('socket.io')(socket_server);
+socket_server.on('listening', () => { console.log('ok, server is running') });
+socket_server.listen(3000);
+
+// rest
+
 let writeLog = (message, user) => new Promise((resolve, reject) => {
     var Logs = Parse.Object.extend(`Logs`);
     console.log(message);
@@ -54,7 +62,6 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
 })
 
 let changeBalance = (user, value, author) => new Promise((resolve, reject) => {
-    console.log(`< < <`, user, value, author);
     new Parse.Query(`Balance`)
         .equalTo(`user_id`, user)
         .first()
@@ -81,7 +88,7 @@ let become = (request) => new Promise((resolve, reject) => {
     }
     Parse.User.become(sessionToken)
         .then((user) => {
-            console.log(`> > > become:`, user.get(`username`), sessionToken);
+            // console.log(`> > > become:`, user.get(`username`), sessionToken);
             updateActivity(user)
             resolve(user)
         })
@@ -179,7 +186,11 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                             let message = `laundry: unbook (${d.get(`user_id`)}, ${d.get(`machine_id`)}, ${moment(d.get(`timestamp`)).format(`DD.MM.YY HH:mm`)})`
                             writeLog(message, user)
                             d.destroy()
-                                .then((d) => { response.send(d) })
+                                .then((d) => {
+                                    io.emit(`laundry update`, `laundry update`);
+                                    io.emit(`balance update`, `laundry update`);
+                                    response.send(d)
+                                })
                                 .catch((d) => { response.send(d); console.error(d) })
                         })
                         .catch((d) => { response.send(d); console.error(d) })
@@ -355,7 +366,6 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
 })
 
 server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
-    console.log(`< < <`);
     become(request)
         .then((user) => {
             var Transactions = Parse.Object.extend(`Transactions`);
@@ -482,6 +492,8 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                                             let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
                                                             writeLog(message, user)
                                                             response.send(d)
+                                                            io.emit(`laundry update`, `laundry update`)
+                                                            io.emit(`balance update`, `laundry update`);
                                                         })
                                                         .catch((d) => { response.send(d); console.error(d) })
                                                 })
