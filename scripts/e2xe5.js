@@ -6,10 +6,6 @@ var corsMiddleware = require('restify-cors-middleware');
 var moment = require('moment-timezone')
 var axios = require(`axios`)
 
-Parse.initialize(`e2xe5`, `e2xe5`, `e2xe5`);
-Parse.serverURL = `http://dcam.pro:1337/parse_e2xe5/`
-Parse.User.enableUnsafeCurrentUser()
-
 var server = restify.createServer({ maxParamLength: 500 });
 server.use(restify.plugins.bodyParser({
     mapParams: true

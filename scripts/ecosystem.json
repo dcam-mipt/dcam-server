@@ -16,11 +16,6 @@
             "watch": false
         },
         {
-            "name": "e2xe5",
-            "script": "./scripts/e2xe5.js",
-            "watch": false
-        },
-        {
             "name": "telegram",
             "script": "./scripts/telegram.js",
             "watch": false

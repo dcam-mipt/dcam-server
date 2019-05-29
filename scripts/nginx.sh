@@ -47,11 +47,6 @@ server {
             proxy_pass http://localhost:8080/;
         }
 
-        location /api_e2xe5/ {
-            add_header "Access-Control-Allow-Headers" "Authorization, Origin, X-Requested-With, Content-Type, Accept";
-            proxy_pass http://localhost:8081/;
-        }
-
         location / {
                 root /var/www/$DOMAIN_NAME/html;
         }

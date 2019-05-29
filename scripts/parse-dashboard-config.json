@@ -5,12 +5,6 @@
             "appId": "dcam",
             "masterKey": "dcam",
             "appName": "dcam"
-        },
-        {
-            "serverURL": "http://dcam.pro:1337/parse_e2xe5/",
-            "appId": "e2xe5",
-            "masterKey": "e2xe5",
-            "appName": "e2xe5"
         }
     ],
     "users": [
