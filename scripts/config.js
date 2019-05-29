@@ -7,4 +7,4 @@ module.exports.PARSE_APP_ID = `dcam`
 module.exports.PARSE_JS_KEY = `dcam`
 module.exports.PARSE_MASTER_KEY = `dcam`
 module.exports.REST_PORT = 8080
-module.exports.TELEGRAM_TOKEN = `808288308:AAFJswXwtQsvFdaCz8w20JB9LqlJvnDX-UE`
+module.exports.TELEGRAM_TOKEN = `800353456:AAFYR_DZAlHofgjyOhtj-cHHJ-Qzwcn9sHM`

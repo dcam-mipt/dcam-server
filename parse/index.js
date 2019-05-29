@@ -10,7 +10,7 @@ var api = new ParseServer({
     javasScriptKey: 'dcam',
     serverURL: 'http://localhost:1337/parse',
     liveQuery: {
-        classNames: [`Laundry`]
+        classNames: [`Laundry`, `Verifications`, `User`, `Balance`, `Constants`, `Machines`]
     }
 });
 
@@ -33,6 +33,7 @@ var httpServer = require('http').createServer(app);
 httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
 });
+ParseServer.createLiveQueryServer(httpServer);
 
 ParseServer.createLiveQueryServer(httpServer);
 

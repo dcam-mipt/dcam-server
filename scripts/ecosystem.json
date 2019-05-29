@@ -19,6 +19,11 @@
             "name": "telegram",
             "script": "./scripts/telegram.js",
             "watch": false
+        },
+        {
+            "name": "socketio",
+            "script": "./scripts/socketio.js",
+            "watch": false
         }
     ]
 }

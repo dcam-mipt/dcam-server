@@ -28,12 +28,6 @@ server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
-// socket io
-const socket_server = require('http').createServer((req, res) => { res.end('test') });
-const io = require('socket.io')(socket_server);
-socket_server.on('listening', () => { console.log('ok, server is running') });
-socket_server.listen(3000);
-
 // rest
 
 let writeLog = (message, user) => new Promise((resolve, reject) => {
@@ -82,6 +76,7 @@ let become = (request) => new Promise((resolve, reject) => {
     if (!sessionToken) {
         reject({
             error: `invalid sessoin token`,
+            token: sessionToken,
             code: 209,
         }, sessionToken)
         return
@@ -186,11 +181,7 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                             let message = `laundry: unbook (${d.get(`user_id`)}, ${d.get(`machine_id`)}, ${moment(d.get(`timestamp`)).format(`DD.MM.YY HH:mm`)})`
                             writeLog(message, user)
                             d.destroy()
-                                .then((d) => {
-                                    io.emit(`laundry update`, `laundry update`);
-                                    io.emit(`balance update`, `laundry update`);
-                                    response.send(d)
-                                })
+                                .then((d) => { response.send(d) })
                                 .catch((d) => { response.send(d); console.error(d) })
                         })
                         .catch((d) => { response.send(d); console.error(d) })
@@ -492,8 +483,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                                             let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
                                                             writeLog(message, user)
                                                             response.send(d)
-                                                            io.emit(`laundry update`, `laundry update`)
-                                                            io.emit(`balance update`, `laundry update`);
                                                         })
                                                         .catch((d) => { response.send(d); console.error(d) })
                                                 })
@@ -558,28 +547,24 @@ server.get(`/balance/get_my_balance`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/create_verificatoin_pass/:username/:telegram_id`, (request, response, next) => {
+server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:username`, (request, response, next) => {
     let pass = new Array(5).fill(0).map(i => Math.round(Math.random() * 10)).join(``).substring(0, 5)
     new Parse.Object(`Verifications`)
         .set(`pass`, pass)
         .set(`telegram_id`, request.params.telegram_id)
-        .set(`username`, request.params.username)
+        .set(`telegram_username`, request.params.username)
+        .set(`username`, request.params.email)
         .save()
         .then((d) => {
-            io.emit(`verifications update`, `verifications update`)
             response.send(pass);
             setTimeout(() => {
                 new Parse.Query(`Verifications`)
                     .equalTo(`objectId`, d.id)
                     .first()
-                    .then((d_to_destroy) => {
-                        d_to_destroy.destroy()
-                            .then((d) => { io.emit(`verifications update`, `verifications update`) })
-                            .catch((d) => { response.send(d); console.error(d) })
-                    })
+                    .then((d_to_destroy) => { d_to_destroy && d_to_destroy.destroy() })
                     .catch((d) => { response.send(d); console.error(d) })
 
-            }, 3 * 1000)
+            }, 60 * 1000)
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
@@ -596,17 +581,26 @@ server.get(`/auth/get_my_entries`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/accept_verificatoin_pass/:pass`, (request, response, next) => {
+server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Verifications`)
                 .equalTo(`username`, user.get(`username`))
                 .first()
-                .then((d) => {
-                    if (d.get(`pass`) === request.params.pass) {
-                        user.set(`telegram_id`, d.get(`telegram_id`))
+                .then((verification) => {
+                    if (verification.get(`pass`) === request.params.pass) {
+                        user.set(`telegram`, {
+                            id: verification.get(`telegram_id`),
+                            username: verification.get(`telegram_username`),
+                        })
                         user.save()
-                            .then((d) => { response.send(`success`) })
+                            .then((d) => {
+                                response.send(`success`)
+                                verification
+                                    .destroy()
+                                    .then((d) => { console.log(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
+                            })
                             .catch((d) => { response.send(d); console.error(d) })
                     } else {
                         response.send(`password denied`)
@@ -617,11 +611,11 @@ server.get(`/auth/accept_verificatoin_pass/:pass`, (request, response, next) => 
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/forget_my_telegram_id`, (request, response, next) => {
+server.get(`/auth/forget_my_telegram`, (request, response, next) => {
     become(request)
         .then((user) => {
             user
-                .set(`telegram_id`, undefined)
+                .set(`telegram`, null)
                 .save()
                 .then((d) => { response.send(`successfully unpinned telegram account`) })
                 .catch((d) => { response.send(d); console.error(d) })
