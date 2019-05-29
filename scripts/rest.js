@@ -616,3 +616,15 @@ server.get(`/auth/accept_verificatoin_pass/:pass`, (request, response, next) => 
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
+
+server.get(`/auth/forget_my_telegram_id`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            user
+                .set(`telegram_id`, undefined)
+                .save()
+                .then((d) => { response.send(`successfully unpinned telegram account`) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
