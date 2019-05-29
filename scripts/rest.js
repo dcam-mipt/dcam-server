@@ -557,3 +557,62 @@ server.get(`/balance/get_my_balance`, (request, response, next) => {
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
+
+server.get(`/auth/create_verificatoin_pass/:username/:telegram_id`, (request, response, next) => {
+    let pass = new Array(5).fill(0).map(i => Math.round(Math.random() * 10)).join(``).substring(0, 5)
+    new Parse.Object(`Verifications`)
+        .set(`pass`, pass)
+        .set(`telegram_id`, request.params.telegram_id)
+        .set(`username`, request.params.username)
+        .save()
+        .then((d) => {
+            io.emit(`verifications update`, `verifications update`)
+            response.send(pass);
+            setTimeout(() => {
+                new Parse.Query(`Verifications`)
+                    .equalTo(`objectId`, d.id)
+                    .first()
+                    .then((d_to_destroy) => {
+                        d_to_destroy.destroy()
+                            .then((d) => { io.emit(`verifications update`, `verifications update`) })
+                            .catch((d) => { response.send(d); console.error(d) })
+                    })
+                    .catch((d) => { response.send(d); console.error(d) })
+
+            }, 3 * 1000)
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/auth/get_my_entries`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            new Parse.Query(`Verifications`)
+                .equalTo(`username`, user.get(`username`))
+                .find()
+                .then((d) => { response.send(d.length > 0) })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
+
+server.get(`/auth/accept_verificatoin_pass/:pass`, (request, response, next) => {
+    become(request)
+        .then((user) => {
+            new Parse.Query(`Verifications`)
+                .equalTo(`username`, user.get(`username`))
+                .first()
+                .then((d) => {
+                    if (d.get(`pass`) === request.params.pass) {
+                        user.set(`telegram_id`, d.get(`telegram_id`))
+                        user.save()
+                            .then((d) => { response.send(`success`) })
+                            .catch((d) => { response.send(d); console.error(d) })
+                    } else {
+                        response.send(`password denied`)
+                    }
+                })
+                .catch((d) => { response.send(d); console.error(d) })
+        })
+        .catch((d) => { response.send(d); console.error(d) })
+})
