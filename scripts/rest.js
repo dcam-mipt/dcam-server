@@ -571,7 +571,7 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
                 })
                 .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { console.log(d) })
+        .catch((d) => { response.send(`wrong email`); console.error(d) })
 })
 
 server.get(`/auth/get_my_entries`, (request, response, next) => {
