@@ -54,12 +54,10 @@ auth_command()
 telegram.sendMessage(227992175, `deployed.`)
 subscribe(`Laundry`, `create`, async (laundry) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
-    console.log(`user: `, user.get(`telegram`));
-    let machines = await new Parse.Query(`Machines`).find()
-    console.log(`machines:`, machines.map(i => i.id));
-    // new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first().then(user => {
-    //     user.get(`telegram`) && sendMessage(user.get(`telegram`).id, `Куплена стирка на ${moment(+laundry.get(`timestamp`)).format(`DD.MM.YY HH:mm`)}, в ${} машинку за ${}р. \nНовый баланс: ${}.`)
-    // })
+    if (user.get(`telegram`)) {
+        let machines = await new Parse.Query(`Machines`).find()
+        sendMessage(user.get(`telegram`).id, `Куплена стирка на ${moment(+laundry.get(`timestamp`)).format(`DD.MM.YY HH:mm`)}, в ${machines.indexOf(laundry.get(`machine_id`)) + 1} машинку за ${laundry.get(`book_cost`)}р. \nНовый баланс: ${}.`)
+    }
 })
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
