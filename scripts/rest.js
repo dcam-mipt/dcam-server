@@ -485,22 +485,21 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                 .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                 .save()
                                                 .then((notification) => {
-                                                    console.log(`notification:`, notification);
-                                                    response.send(notification)
-                                                    // new Parse.Object(`Laundry`)
-                                                    //     .set(`timestamp`, +request.params.timestamp)
-                                                    //     .set(`machine_id`, request.params.machine_id)
-                                                    //     .set(`user_id`, user.id)
-                                                    //     .set(`book_cost`, +cost.get(`value`))
-                                                    //     .set(`notification_id`, notification.id)
-                                                    //     .save()
-                                                    //     .then((d) => {
-                                                    //         userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-                                                    //         userBalance.save()
-                                                    //             .then((d) => { response.send(d) })
-                                                    //             .catch((d) => { response.send(d); console.error(d) })
-                                                    //     })
-                                                    //     .catch((d) => { response.send(d); console.error(d) })
+                                                    console.log(`notification_id`, notification.id);
+                                                    new Parse.Object(`Laundry`)
+                                                        .set(`timestamp`, +request.params.timestamp)
+                                                        .set(`machine_id`, request.params.machine_id)
+                                                        .set(`user_id`, user.id)
+                                                        .set(`book_cost`, +cost.get(`value`))
+                                                        .set(`notification_id`, notification.id)
+                                                        .save()
+                                                        .then((d) => {
+                                                            userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+                                                            userBalance.save()
+                                                                .then((d) => { response.send(d) })
+                                                                .catch((d) => { response.send(d); console.error(d) })
+                                                        })
+                                                        .catch((d) => { response.send(d); console.error(d) })
                                                 })
                                                 .catch((d) => { response.send(d); console.error(d) })
                                         }
