@@ -53,9 +53,8 @@ auth_command()
 
 telegram.sendMessage(227992175, `deployed.`)
 subscribe(`Laundry`, `create`, async (laundry) => {
-    console.log(`user_id:`, laundry.get(`user_id`));
-    let user = await new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first()
-    console.log(`user: `, user);
+    let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
+    console.log(`user: `, user.get(`telegram`));
     let machines = await new Parse.Query(`Machines`).find()
     console.log(`machines:`, machines.map(i => i.id));
     // new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first().then(user => {
