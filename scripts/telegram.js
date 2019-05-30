@@ -20,7 +20,7 @@ bot.command('auth', (ctx) => {
                     ctx.reply(`Произошла ошибка, не ведаю, что происходит`)
                 }
             })
-    }
+    })
 })
 bot.launch()
 /*eslint-enable no-unused-vars*/
