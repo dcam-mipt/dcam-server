@@ -547,26 +547,31 @@ server.get(`/balance/get_my_balance`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:username`, (request, response, next) => {
+server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_username`, (request, response, next) => {
     let pass = new Array(5).fill(0).map(i => Math.round(Math.random() * 10)).join(``).substring(0, 5)
-    new Parse.Object(`Verifications`)
-        .set(`pass`, pass)
-        .set(`telegram_id`, request.params.telegram_id)
-        .set(`telegram_username`, request.params.username)
-        .set(`username`, request.params.email)
-        .save()
+    new Parse.Query(`User`)
+        .equalTo(`username`, request.params.email)
         .then((d) => {
-            response.send(pass);
-            setTimeout(() => {
-                new Parse.Query(`Verifications`)
-                    .equalTo(`objectId`, d.id)
-                    .first()
-                    .then((d_to_destroy) => { d_to_destroy && d_to_destroy.destroy() })
-                    .catch((d) => { response.send(d); console.error(d) })
+            new Parse.Object(`Verifications`)
+                .set(`pass`, pass)
+                .set(`telegram_id`, request.params.telegram_id)
+                .set(`telegram_username`, request.params.telegram_username)
+                .set(`username`, request.params.email)
+                .save()
+                .then((d) => {
+                    response.send(pass);
+                    setTimeout(() => {
+                        new Parse.Query(`Verifications`)
+                            .equalTo(`objectId`, d.id)
+                            .first()
+                            .then((d_to_destroy) => { d_to_destroy && d_to_destroy.destroy() })
+                            .catch((d) => { response.send(d); console.error(d) })
 
-            }, 60 * 1000)
+                    }, 60 * 1000)
+                })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { console.log(d) })
 })
 
 server.get(`/auth/get_my_entries`, (request, response, next) => {
