@@ -485,7 +485,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                 .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                 .save()
                                                 .then((notification) => {
-                                                    console.log(`notification_id`, notification.id);
                                                     new Parse.Object(`Laundry`)
                                                         .set(`timestamp`, +request.params.timestamp)
                                                         .set(`machine_id`, request.params.machine_id)
