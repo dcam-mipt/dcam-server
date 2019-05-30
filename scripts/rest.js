@@ -636,3 +636,5 @@ server.get(`/auth/forget_my_telegram`, (request, response, next) => {
         })
         .catch((d) => { response.send(d); console.error(d) })
 })
+
+export let log = (d) => { console.log(d); }

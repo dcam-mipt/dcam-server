@@ -3,9 +3,14 @@ const axios = require(`axios`)
 const Telegraf = require('telegraf')
 const config = require('./config')
 const Telegram = require('telegraf/telegram')
+const Parse = require('parse/node')
+const log = require('./rest')
+log(`< < < log > > >`)
 
 const telegram = new Telegram(config.TELEGRAM_TOKEN)
 const bot = new Telegraf(config.TELEGRAM_TOKEN)
+Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
+Parse.serverURL = config.PARSE_SERVER_URL
 
 let auth_command = () => {
     let auth_mode = false
