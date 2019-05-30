@@ -28,6 +28,8 @@ server.listen(config.REST_PORT, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
 
+let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
+
 // rest
 
 let writeLog = (message, user) => new Promise((resolve, reject) => {
@@ -477,12 +479,14 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                             writeLog(message, user)
                                             response.send(message);
                                         } else {
+                                            let machines = await new Parse.Query(`Machines`).find()
+                                            console.log(`🧺 Напоминаем о предстоязей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(request.params.machine_id) + 1}\nЦена: ${+cost.get(`value`)}р`);
                                             new Parse.Object(`Notifications`)
                                                 .set(`user_id`, user.id)
                                                 .set(`status`, `delayed`)
                                                 // .set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`))
                                                 .set(`delivery_timestamp`, +moment().tz(`Europe/Moscow`).add(-30, `seconds`))
-                                                .set(`message`, `Напомниаем, что у через час у Вас стирка`)
+                                                .set(`message`, `🧺 Напоминаем`)
                                                 .save()
                                                 .then((notification) => {
                                                     new Parse.Object(`Laundry`)
