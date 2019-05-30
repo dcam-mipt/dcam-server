@@ -3,9 +3,29 @@ const axios = require(`axios`)
 const Telegraf = require('telegraf')
 const config = require('./config')
 const Telegram = require('telegraf/telegram')
+var Parse = require(`parse/node`)
+var config = require('./config')
 
 const telegram = new Telegram(config.TELEGRAM_TOKEN)
 const bot = new Telegraf(config.TELEGRAM_TOKEN)
+Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
+Parse.serverURL = config.PARSE_SERVER_URL
+
+let openClient = () => {
+    let client = new Parse.LiveQueryClient({
+        applicationId: 'dcam',
+        serverURL: 'ws://dcam.pro:1337/parse',
+        javascriptKey: `dcam`,
+        masterKey: `dcam`
+    });
+    client.open()
+    // error is here
+    return client
+}
+let client = openClient()
+let subscribe = (className, method, action) => {
+    client.subscribe(new Parse.Query(className)).on(method, (object) => { action(object) })
+}
 
 let auth_command = () => {
     let auth_mode = false
@@ -32,6 +52,7 @@ let auth_command = () => {
 auth_command()
 
 telegram.sendMessage(227992175, `бот снова работает`)
+subscribe(`Laundry`, `create`, () => { telegram.sendMessage(227992175, `создана какая-то стирка`) })
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
 bot.launch()
