@@ -14,8 +14,8 @@ bot.command('auth', (ctx) => {
         mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
             .then((d) => {
                 switch (d.data) {
-                    case `already connected`: ctx.reply(`Аккаунт с этой почтой уже связан с telegram. Если это Ваш аккаунт - нажмите "забыть этот аккаунт" в профиле на сайте, и повторите попытку`)
-                    case `wrong email`: ctx.reply(`Не существует пользователя с такой почтой`)
+                    case `already connected`: ctx.reply(`Аккаунт с этой почтой уже связан с telegram. Если это Ваш аккаунт - нажмите "забыть этот аккаунт" в профиле на сайте, и повторите попытку`); break;
+                    case `wrong email`: ctx.reply(`Не существует пользователя с такой почтой`); break;
                     default: ctx.reply(`Откройте окно Вашего профиля в личном кабинете и введите этот код - ${d.data}. Не сообщайте его никому. Срок действия кода подтверждения - 60 секунд.`)
                 }
             })
