@@ -554,8 +554,7 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
         .first()
         .then((d) => {
             if (d) {
-                console.log(d.get(`telegram`));
-                if (d.get(`telgram`)) {
+                if (d.get(`telgram`).id.length) {
                     response.send(`already connected`)
                 } else {
                     new Parse.Object(`Verifications`)

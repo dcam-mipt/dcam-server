@@ -13,6 +13,7 @@ bot.command('auth', (ctx) => {
         let mail = mail_answer.update.message.text
         mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
             .then((d) => {
+                console.log(d.data);
                 switch (d.data) {
                     case `already connected`: ctx.reply(`Аккаунт с этой почтой уже связан с telegram. Если это Ваш аккаунт - нажмите "забыть этот аккаунт" в профиле на сайте, и повторите попытку`); break;
                     case `wrong email`: ctx.reply(`Не существует пользователя с такой почтой`); break;
