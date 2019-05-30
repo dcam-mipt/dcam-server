@@ -51,13 +51,15 @@ let auth_command = () => {
 
 auth_command()
 
+let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
+
 telegram.sendMessage(227992175, `deployed.`)
 subscribe(`Laundry`, `create`, async (laundry) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
     if (user.get(`telegram`)) {
         let machines = await new Parse.Query(`Machines`).find()
         let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, user.id).first()
-        telegram.sendMessage(user.get(`telegram`).id, `🧺 Куплена стирка\nДата: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р. \n\nНовый баланс: ${balance.get(`money`)}р`)
+        telegram.sendMessage(user.get(`telegram`).id, `🧺 Куплена стирка\nДата: ${days_of_week_short[oment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekDay()]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р \n\nНовый баланс: ${balance.get(`money`)}р`)
     }
 })
 
