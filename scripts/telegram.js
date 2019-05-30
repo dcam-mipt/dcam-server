@@ -35,6 +35,7 @@ let auth_command = () => {
         bot.on(`text`, (mail_answer) => {
             console.log(`< < < auth for`, mail_answer.update.message.text);
             if (auth_mode) {
+                console.log(`< < < gone through auth_mode`);
                 let mail = mail_answer.update.message.text
                 mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
                     .then((d) => {
