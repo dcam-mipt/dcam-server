@@ -102,6 +102,6 @@ subscribe(`Notifications`, `create`, async (notification) => {
 
 create_notifications_queue()
 
-bot.start((ctx) => ctx.reply('Добро пожаловать!'))
+bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /auth'))
 bot.launch()
 /*eslint-enable no-unused-vars*/
