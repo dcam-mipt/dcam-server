@@ -80,7 +80,7 @@ subscribe(`Balance`, `update`, async(balance) => {
 
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).greaterThan(`delivery_timestamp`, +moment().tz(`Europe/Moscow`))
-    console.log(notifications.map(i => moment(i.get(`delivery_timestamp`)).format(`DD.MM.YY HH:mm`)));
+    console.log(notifications)
 }
 
 create_notifications_queue()
