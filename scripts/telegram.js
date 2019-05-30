@@ -33,7 +33,7 @@ let auth_command = () => {
         auth_mode = true
         ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
         bot.on(`text`, (mail_answer) => {
-            if (auth_mode) {
+            // if (auth_mode) {
                 let mail = mail_answer.update.message.text
                 mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
                     .then((d) => {
@@ -44,7 +44,7 @@ let auth_command = () => {
                         }
                         auth_mode = false
                     })
-            }
+            // }
         })
     })
 }

@@ -455,64 +455,68 @@ server.post(`/user/set_my_avatar`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
+// server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
+//     become(request)
+//         .then((user) => {
+//             new Parse.Query(`Laundry`)
+//                 .equalTo(`timestamp`, +request.params.timestamp)
+//                 .equalTo(`machine_id`, request.params.machine_id)
+//                 .find()
+//                 .then((laundry) => {
+//                     if (laundry.length) {
+//                         response.send(`error: laundry booking for this time is already exists`)
+//                     } else {
+//                         new Parse.Query(`Constants`)
+//                             .equalTo(`name`, `laundry_cost`)
+//                             .first()
+//                             .then((cost) => {
+//                                 new Parse.Query(`Balance`)
+//                                     .equalTo(`user_id`, user.id)
+//                                     .first()
+//                                     .then(async (userBalance) => {
+//                                         if (userBalance.get(`money`) < +cost.get(`value`)) {
+//                                             let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
+//                                             writeLog(message, user)
+//                                             response.send(message);
+//                                         } else {
+//                                             let machines = await new Parse.Query(`Machines`).find()
+//                                             new Parse.Object(`Notifications`)
+//                                                 .set(`user_id`, user.id)
+//                                                 .set(`status`, `delayed`)
+//                                                 .set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`))
+//                                                 .set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(request.params.machine_id) + 1}`)
+//                                                 .save()
+//                                                 .then((notification) => {
+//                                                     new Parse.Object(`Laundry`)
+//                                                         .set(`timestamp`, +request.params.timestamp)
+//                                                         .set(`machine_id`, request.params.machine_id)
+//                                                         .set(`user_id`, user.id)
+//                                                         .set(`book_cost`, +cost.get(`value`))
+//                                                         .set(`notification_id`, notification.id)
+//                                                         .save()
+//                                                         .then((d) => {
+//                                                             userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+//                                                             userBalance.save()
+//                                                                 .then((d) => { response.send(d) })
+//                                                                 .catch((d) => { response.send(d); console.error(d) })
+//                                                         })
+//                                                         .catch((d) => { response.send(d); console.error(d) })
+//                                                 })
+//                                                 .catch((d) => { response.send(d); console.error(d) })
+//                                         }
+//                                     })
+//                                     .catch((d) => { response.send(d); console.error(d) })
+//                             })
+//                             .catch((d) => { response.send(d); console.error(d) })
+//                     }
+//                 })
+//                 .catch((d) => { response.send(d); console.error(d) })
+//         })
+//         .catch((d) => { response.send(d); console.error(d) })
+// })
+
 server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            new Parse.Query(`Laundry`)
-                .equalTo(`timestamp`, +request.params.timestamp)
-                .equalTo(`machine_id`, request.params.machine_id)
-                .find()
-                .then((laundry) => {
-                    if (laundry.length) {
-                        response.send(`error: laundry booking for this time is already exists`)
-                    } else {
-                        new Parse.Query(`Constants`)
-                            .equalTo(`name`, `laundry_cost`)
-                            .first()
-                            .then((cost) => {
-                                new Parse.Query(`Balance`)
-                                    .equalTo(`user_id`, user.id)
-                                    .first()
-                                    .then(async (userBalance) => {
-                                        if (userBalance.get(`money`) < +cost.get(`value`)) {
-                                            let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
-                                            writeLog(message, user)
-                                            response.send(message);
-                                        } else {
-                                            let machines = await new Parse.Query(`Machines`).find()
-                                            new Parse.Object(`Notifications`)
-                                                .set(`user_id`, user.id)
-                                                .set(`status`, `delayed`)
-                                                .set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`))
-                                                .set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(request.params.machine_id) + 1}`)
-                                                .save()
-                                                .then((notification) => {
-                                                    new Parse.Object(`Laundry`)
-                                                        .set(`timestamp`, +request.params.timestamp)
-                                                        .set(`machine_id`, request.params.machine_id)
-                                                        .set(`user_id`, user.id)
-                                                        .set(`book_cost`, +cost.get(`value`))
-                                                        .set(`notification_id`, notification.id)
-                                                        .save()
-                                                        .then((d) => {
-                                                            userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-                                                            userBalance.save()
-                                                                .then((d) => { response.send(d) })
-                                                                .catch((d) => { response.send(d); console.error(d) })
-                                                        })
-                                                        .catch((d) => { response.send(d); console.error(d) })
-                                                })
-                                                .catch((d) => { response.send(d); console.error(d) })
-                                        }
-                                    })
-                                    .catch((d) => { response.send(d); console.error(d) })
-                            })
-                            .catch((d) => { response.send(d); console.error(d) })
-                    }
-                })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
+    
 })
 
 server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => {
