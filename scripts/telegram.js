@@ -31,6 +31,8 @@ let auth_command = () => {
 
 auth_command()
 
+telegram.sendMessage(227992175, `бот снова работает`)
+
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
 bot.launch()
 /*eslint-enable no-unused-vars*/
