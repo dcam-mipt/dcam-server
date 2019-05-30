@@ -455,7 +455,7 @@ server.post(`/user/set_my_avatar`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
+server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Laundry`)
@@ -473,7 +473,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                 new Parse.Query(`Balance`)
                                     .equalTo(`user_id`, user.id)
                                     .first()
-                                    .then((userBalance) => {
+                                    .then(async (userBalance) => {
                                         if (userBalance.get(`money`) < +cost.get(`value`)) {
                                             let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
                                             writeLog(message, user)
