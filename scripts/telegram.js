@@ -71,7 +71,7 @@ subscribe(`Laundry`, `delete`, async (laundry) => {
     }
 })
 
-subscribe(`Balance`, `update`, async(balance) => {
+subscribe(`Balance`, `update`, async (balance) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, balance.get(`user_id`)).first()
     if (user.get(`telegram`)) {
         telegram.sendMessage(user.get(`telegram`).id, `💳 Новыйы баланс: ${balance.get(`money`)}р`)
@@ -80,7 +80,9 @@ subscribe(`Balance`, `update`, async(balance) => {
 
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).greaterThan(`delivery_timestamp`, +moment().tz(`Europe/Moscow`)).find()
-    console.log(notifications.map(i => moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`)));
+    console.log(notifications.map(i => {
+        return (+moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment()) / 1000
+    }));
 }
 
 create_notifications_queue()
