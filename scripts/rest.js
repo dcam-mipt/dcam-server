@@ -554,24 +554,28 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
         .first()
         .then((d) => {
             if (d) {
-                new Parse.Object(`Verifications`)
-                .set(`pass`, pass)
-                .set(`telegram_id`, request.params.telegram_id)
-                .set(`telegram_username`, request.params.telegram_username)
-                .set(`username`, request.params.email)
-                .save()
-                .then((d) => {
-                    response.send(pass);
-                    setTimeout(() => {
-                        new Parse.Query(`Verifications`)
-                            .equalTo(`objectId`, d.id)
-                            .first()
-                            .then((d_to_destroy) => { d_to_destroy && d_to_destroy.destroy() })
-                            .catch((d) => { response.send(d); console.error(d) })
+                if (d.get(`telgram`)) {
+                    response.send(`already connected`)
+                } else {
+                    new Parse.Object(`Verifications`)
+                        .set(`pass`, pass)
+                        .set(`telegram_id`, request.params.telegram_id)
+                        .set(`telegram_username`, request.params.telegram_username)
+                        .set(`username`, request.params.email)
+                        .save()
+                        .then((d) => {
+                            response.send(pass);
+                            setTimeout(() => {
+                                new Parse.Query(`Verifications`)
+                                    .equalTo(`objectId`, d.id)
+                                    .first()
+                                    .then((d_to_destroy) => { d_to_destroy && d_to_destroy.destroy() })
+                                    .catch((d) => { response.send(d); console.error(d) })
 
-                    }, 60 * 1000)
-                })
-                .catch((d) => { response.send(d); console.error(d) })
+                            }, 60 * 1000)
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
+                }
             } else {
                 response.send(`wrong email`)
             }
