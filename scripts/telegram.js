@@ -13,7 +13,7 @@ Parse.serverURL = config.PARSE_SERVER_URL
 let openClient = () => {
     let client = new Parse.LiveQueryClient({
         applicationId: config.PARSE_APP_ID,
-        serverURL: `ws://${config.PARSE_SERVER_URL.split(`//`)[1]}`,
+        serverURL: config.PARSE_WS_URL,
         javascriptKey: config.PARSE_JS_KEY,
         masterKey: config.PARSE_MASTER_KEY
     });

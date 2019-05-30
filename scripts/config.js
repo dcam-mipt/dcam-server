@@ -3,6 +3,7 @@
  */
 
 module.exports.PARSE_SERVER_URL = `http://parse.dcam.pro/`
+module.exports.PARSE_WS_URL = `ws://dcam.pro:1337/parse`
 module.exports.PARSE_APP_ID = `dcam`
 module.exports.PARSE_JS_KEY = `dcam`
 module.exports.PARSE_MASTER_KEY = `dcam`

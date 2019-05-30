@@ -16,17 +16,18 @@ Parse.serverURL = config.PARSE_SERVER_URL
 
 let openClient = () => {
         let client = new Parse.LiveQueryClient({
-                applicationId: 'dcam',
-                serverURL: 'ws://dcam.pro:1337/parse',
-                javascriptKey: `dcam`,
-                masterKey: `dcam`
+                applicationId: config.PARSE_APP_ID,
+                serverURL: config.PARSE_WS_URL,
+                javascriptKey: config.PARSE_JS_KEY,
+                masterKey: config.PARSE_MASTER_KEY
         });
         client.open()
         // error is here
         return client
 }
+let client = openClient()
 
-let createSubscriptionOnUpdate = (className, action) => {
+let subscribe = (className, action) => {
         let client = openClient()
         let query = new Parse.Query(className)
         client.subscribe(query)
@@ -35,10 +36,10 @@ let createSubscriptionOnUpdate = (className, action) => {
                 .on('delete', (object) => { action(object) })
 }
 
-createSubscriptionOnUpdate(`Laundry`, (d) => { io.emit(`Laundry`, `Laundry`) })
-createSubscriptionOnUpdate(`Verifications`, (d) => { io.emit(`Verifications`, d.get(`username`)) })
-createSubscriptionOnUpdate(`Balance`, (d) => { io.emit(`Balance`, d.get(`user_id`)) })
-createSubscriptionOnUpdate(`Constants`, (d) => { io.emit(`Constants`, `Constants`) })
-createSubscriptionOnUpdate(`Machines`, (d) => { io.emit(`Machines`, `Machines`) })
+subscribe(`Laundry`, (d) => { io.emit(`Laundry`, `Laundry`) })
+subscribe(`Verifications`, (d) => { io.emit(`Verifications`, d.get(`username`)) })
+subscribe(`Balance`, (d) => { io.emit(`Balance`, d.get(`user_id`)) })
+subscribe(`Constants`, (d) => { io.emit(`Constants`, `Constants`) })
+subscribe(`Machines`, (d) => { io.emit(`Machines`, `Machines`) })
 
 /*eslint-enable no-unused-vars*/
