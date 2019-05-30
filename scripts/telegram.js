@@ -4,6 +4,7 @@ const Telegraf = require('telegraf')
 const config = require('./config')
 const Telegram = require('telegraf/telegram')
 const Parse = require(`parse/node`)
+const moment = require('moment-timezone')
 
 const telegram = new Telegram(config.TELEGRAM_TOKEN)
 const bot = new Telegraf(config.TELEGRAM_TOKEN)
@@ -51,7 +52,15 @@ let auth_command = () => {
 auth_command()
 
 telegram.sendMessage(227992175, `бот снова работает`)
-subscribe(`Laundry`, `create`, (d) => { telegram.sendMessage(227992175, `создана какая-то стирка, ${d.get(`user_id`)}`) })
+subscribe(`Laundry`, `create`, (laundry) => {
+    let user = await new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first()
+    console.log(user.get(`id`));
+    let machines = await new Parse.Query(`Machines`)
+    console.log(machines.map(i => i.id));
+    // new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first().then(user => {
+    //     user.get(`telegram`) && sendMessage(user.get(`telegram`).id, `Куплена стирка на ${moment(+laundry.get(`timestamp`)).format(`DD.MM.YY HH:mm`)}, в ${} машинку за ${}р. \nНовый баланс: ${}.`)
+    // })
+})
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
 bot.launch()
