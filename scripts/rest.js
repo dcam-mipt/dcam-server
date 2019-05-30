@@ -478,7 +478,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                             response.send(message);
                                         } else {
                                             new Parse.Object(`Notifications`)
-                                                .set(`to`, user.id)
+                                                .set(`user_id`, user.id)
                                                 .set(`status`, `delayed`)
                                                 // .set(`delivery_timestamp`, +request.params.timestamp)
                                                 .set(`delivery_timestamp`, +moment().tz(`Europe/Moscow`).add(2, `minute`))
