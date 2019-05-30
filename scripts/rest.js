@@ -533,7 +533,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
                                                     userBalance.save()
                                                         .then((d) => {
-                                                            let notification = new Parse.Object(`Notificatoins`)
+                                                            let notification = new Parse.Object(`Notifications`)
                                                             notification.set(`to`, user.id)
                                                             notification.set(`status`, `delayed`)
                                                             notification.set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
