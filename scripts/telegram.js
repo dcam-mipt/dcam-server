@@ -83,8 +83,9 @@ let create_notifications_queue = async () => {
     notifications.map(async i => {
         let user = await new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()
         if (user.get(`telegram`)) {
-            console.log((+moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment()) / 1000);
+            let interval = setInterval(() => { console.log((+moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment()) / 1000); }, 1000)
             setTimeout(() => {
+                clearInterval(interval);
                 telegram.sendMessage(user.get(`telegram`).id, i.get(`message`))
             }, +moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment())
         }
