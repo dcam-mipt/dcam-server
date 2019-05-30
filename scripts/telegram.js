@@ -57,7 +57,7 @@ subscribe(`Laundry`, `create`, async (laundry) => {
     if (user.get(`telegram`)) {
         let machines = await new Parse.Query(`Machines`).find()
         let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, user.id).first()
-        telegram.sendMessage(user.get(`telegram`).id, `🧺 Куплена стирка на ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`)}, в ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1} машинку за ${laundry.get(`book_cost`)}р. \nНовый баланс: ${balance.get(`money`)}.`)
+        telegram.sendMessage(user.get(`telegram`).id, `🧺 Куплена стирка\nДата: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р. \n\nНовый баланс: ${balance.get(`money`)}р`)
     }
 })
 
