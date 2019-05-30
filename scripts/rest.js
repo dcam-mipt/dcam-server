@@ -553,7 +553,8 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
         .equalTo(`username`, request.params.email)
         .first()
         .then((d) => {
-            new Parse.Object(`Verifications`)
+            if (d) {
+                new Parse.Object(`Verifications`)
                 .set(`pass`, pass)
                 .set(`telegram_id`, request.params.telegram_id)
                 .set(`telegram_username`, request.params.telegram_username)
@@ -570,9 +571,12 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
 
                     }, 60 * 1000)
                 })
-                .catch((d) => { response.send(`another mistake`); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
+            } else {
+                response.send(`wrong email`)
+            }
         })
-        .catch((d) => { response.send(`wrong email`); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/auth/get_my_entries`, (request, response, next) => {
