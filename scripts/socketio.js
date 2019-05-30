@@ -1,9 +1,4 @@
 /*eslint-disable no-unused-vars*/
-var Parse = require(`parse/node`)
-var config = require('./config')
-
-
-// socket io
 const socket_server = require('http').createServer((req, res) => { res.end('test') });
 const io = require('socket.io')(socket_server);
 const {subscripiton} = require('./parse_api')
