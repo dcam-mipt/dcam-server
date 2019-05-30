@@ -536,7 +536,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                             new Parse.Object(`Notifications`)
                                                                 .set(`to`, user.id)
                                                                 .set(`status`, `delayed`)
-                                                                // .set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
+                                                                .set(`delivery_timestamp`, +request.params.timestamp)
                                                                 .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                                 .save()
                                                                 .then((d) => {
