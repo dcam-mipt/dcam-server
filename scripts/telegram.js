@@ -51,12 +51,13 @@ let auth_command = () => {
 
 auth_command()
 
-telegram.sendMessage(227992175, `бот снова работает`)
+telegram.sendMessage(227992175, `deployed.`)
 subscribe(`Laundry`, `create`, async (laundry) => {
+    console.log(`user_id:`, laundry.get(`user_id`));
     let user = await new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first()
-    console.log(user);
+    console.log(`user: `, user);
     let machines = await new Parse.Query(`Machines`).find()
-    console.log(machines.map(i => i.id));
+    console.log(`machines:`, machines.map(i => i.id));
     // new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first().then(user => {
     //     user.get(`telegram`) && sendMessage(user.get(`telegram`).id, `Куплена стирка на ${moment(+laundry.get(`timestamp`)).format(`DD.MM.YY HH:mm`)}, в ${} машинку за ${}р. \nНовый баланс: ${}.`)
     // })
