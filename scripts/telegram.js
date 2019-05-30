@@ -49,6 +49,10 @@ let auth_command = () => {
     })
 }
 
+bot.on(`text`, (message) => {
+    telegram.sendMessage(227992175, `${ctx.update.message.from.username}\n\n${message.update.message.text}`)
+})
+
 auth_command()
 
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
