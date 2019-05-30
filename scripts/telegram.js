@@ -81,7 +81,13 @@ subscribe(`Balance`, `update`, async (balance) => {
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).greaterThan(`delivery_timestamp`, +moment().tz(`Europe/Moscow`)).find()
     console.log(notifications.map(i => {
-        return (+moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment()) / 1000
+        let user = await new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()
+        if (user.get(`telegram`)) {
+            setTimeout(() => {
+                telegram.sendMessage(user.get(`telegram`).id, i.get(`message`))
+            }, +moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment())
+        }
+        return +moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment()
     }));
 }
 
