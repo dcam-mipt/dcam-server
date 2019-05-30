@@ -51,7 +51,7 @@ let auth_command = () => {
 auth_command()
 
 telegram.sendMessage(227992175, `бот снова работает`)
-subscribe(`Laundry`, `create`, () => { telegram.sendMessage(227992175, `создана какая-то стирка`) })
+subscribe(`Laundry`, `create`, (d) => { telegram.sendMessage(227992175, `создана какая-то стирка, ${d.get(`user_id`)}`) })
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
 bot.launch()
