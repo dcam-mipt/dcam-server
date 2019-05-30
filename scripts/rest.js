@@ -446,7 +446,60 @@ server.post(`/user/set_my_avatar`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
+// server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
+//     become(request)
+//         .then((user) => {
+//             new Parse.Query(`Laundry`)
+//                 .equalTo(`timestamp`, +request.params.timestamp)
+//                 .equalTo(`machine_id`, request.params.machine_id)
+//                 .find()
+//                 .then((laundry) => {
+//                     if (laundry.length) {
+//                         response.send(`error: laundry booking for this time is already exists`)
+//                     } else {
+//                         new Parse.Query(`Constants`)
+//                             .equalTo(`name`, `laundry_cost`)
+//                             .first()
+//                             .then((cost) => {
+//                                 new Parse.Query(`Balance`)
+//                                     .equalTo(`user_id`, user.id)
+//                                     .first()
+//                                     .then((userBalance) => {
+//                                         if (userBalance.get(`money`) < +cost.get(`value`)) {
+//                                             let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
+//                                             writeLog(message, user)
+//                                             response.send(message);
+//                                         } else {
+//                                             new Parse.Object(`Laundry`)
+//                                                 .set(`timestamp`, +request.params.timestamp)
+//                                                 .set(`machine_id`, request.params.machine_id)
+//                                                 .set(`user_id`, user.id)
+//                                                 .set(`book_cost`, +cost.get(`value`))
+//                                                 .save()
+//                                                 .then((d) => {
+//                                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+//                                                     userBalance.save()
+//                                                         .then((d) => {
+//                                                             let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
+//                                                             writeLog(message, user)
+//                                                             response.send(d)
+//                                                         })
+//                                                         .catch((d) => { response.send(d); console.error(d) })
+//                                                 })
+//                                                 .catch((d) => { response.send(d); console.error(d) })
+//                                         }
+//                                     })
+//                                     .catch((d) => { response.send(d); console.error(d) })
+//                             })
+//                             .catch((d) => { response.send(d); console.error(d) })
+//                     }
+//                 })
+//                 .catch((d) => { response.send(d); console.error(d) })
+//         })
+//         .catch((d) => { response.send(d); console.error(d) })
+// })
+
+server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
     become(request)
         .then((user) => {
             new Parse.Query(`Laundry`)
@@ -480,9 +533,18 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
                                                     userBalance.save()
                                                         .then((d) => {
-                                                            let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
-                                                            writeLog(message, user)
-                                                            response.send(d)
+                                                            let notification = new Parse.Object(`Notificatoins`)
+                                                            notification.set(`to`, user.id)
+                                                            notification.set(`status`, `delayed`)
+                                                            notification.set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
+                                                            notification.set(`message`, `Напомниаем, что у через час у Вас стирка`)
+                                                                .save()
+                                                                .then((d) => {
+                                                                    let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
+                                                                    writeLog(message, user)
+                                                                    response.send(d)
+                                                                })
+                                                                .catch((d) => { response.send(d); console.error(d) })
                                                         })
                                                         .catch((d) => { response.send(d); console.error(d) })
                                                 })
