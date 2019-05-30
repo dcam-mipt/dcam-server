@@ -569,7 +569,7 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
 
                     }, 60 * 1000)
                 })
-                .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(`another mistake`); console.error(d) })
         })
         .catch((d) => { response.send(`wrong email`); console.error(d) })
 })
