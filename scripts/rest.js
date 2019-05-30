@@ -533,11 +533,11 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
                                                     userBalance.save()
                                                         .then((d) => {
-                                                            let notification = new Parse.Object(`Notifications`)
-                                                            notification.set(`to`, user.id)
-                                                            notification.set(`status`, `delayed`)
-                                                            notification.set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
-                                                            notification.set(`message`, `Напомниаем, что у через час у Вас стирка`)
+                                                            new Parse.Object(`Notifications`)
+                                                                .set(`to`, user.id)
+                                                                .set(`status`, `delayed`)
+                                                                .set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
+                                                                .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                                 .save()
                                                                 .then((d) => {
                                                                     let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
