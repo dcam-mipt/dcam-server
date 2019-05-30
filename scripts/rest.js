@@ -47,7 +47,7 @@ let updateActivity = (user) => new Promise((resolve, reject) => {
         .equalTo(`objectId`, user.id)
         .first()
         .then((user) => {
-            user.set(`last_seen`, +moment())
+            user.set(`last_seen`, +moment().tz(`Europe/Moscow`))
             user.save()
                 .then((d) => { resolve(d) })
                 .catch((d) => { reject(d) })
@@ -175,13 +175,20 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
             new Parse.Query(`Laundry`)
                 .equalTo(`objectId`, request.params.book_id)
                 .first()
-                .then((d) => {
-                    changeBalance(d.get(`user_id`), d.get(`book_cost`), user)
+                .then((book) => {
+                    changeBalance(book.get(`user_id`), book.get(`book_cost`), user)
                         .then((new_balance) => {
-                            let message = `laundry: unbook (${d.get(`user_id`)}, ${d.get(`machine_id`)}, ${moment(d.get(`timestamp`)).format(`DD.MM.YY HH:mm`)})`
+                            let message = `laundry: unbook (${book.get(`user_id`)}, ${book.get(`machine_id`)}, ${moment(book.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`)})`
                             writeLog(message, user)
-                            d.destroy()
-                                .then((d) => { response.send(d) })
+                            book.destroy()
+                            new Parse.Query(`Notifications`)
+                                .equalTo(`notification_id`, book.get(`notification_id`))
+                                .first()
+                                .then((notification) => {
+                                    notification.destroy()
+                                        .then((d) => { response.send(d) })
+                                        .catch((d) => { response.send(d); console.error(d) })
+                                })
                                 .catch((d) => { response.send(d); console.error(d) })
                         })
                         .catch((d) => { response.send(d); console.error(d) })
@@ -199,7 +206,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                 .find()
                 .then((users) => {
                     new Parse.Query(`Laundry`)
-                        .greaterThanOrEqualTo(`timestamp`, +moment().startOf(`week`))
+                        .greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`week`))
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
@@ -226,7 +233,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
             isAdmin(user)
                 .then((role) => {
                     if (role) {
-                        let is_before_now = +request.params.timestamp < +moment().add(-2, `hour`)
+                        let is_before_now = +request.params.timestamp < +moment().tz(`Europe/Moscow`).add(-2, `hour`)
                         new Parse.Query(`Machines`)
                             .equalTo(`objectId`, request.params.machine_id)
                             .first()
@@ -238,7 +245,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                         new Parse.Query(`Laundry`)
                                             .equalTo(`machine_id`, request.params.machine_id)
                                             .lessThanOrEqualTo(`timestamp`, +request.params.timestamp)
-                                            .greaterThan(`timestamp`, +moment().add(-2, `hour`))
+                                            .greaterThan(`timestamp`, +moment().tz(`Europe/Moscow`).add(-2, `hour`))
                                             .find()
                                             .then((books) => {
                                                 let deal = () => {
@@ -446,59 +453,6 @@ server.post(`/user/set_my_avatar`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-// server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
-//     become(request)
-//         .then((user) => {
-//             new Parse.Query(`Laundry`)
-//                 .equalTo(`timestamp`, +request.params.timestamp)
-//                 .equalTo(`machine_id`, request.params.machine_id)
-//                 .find()
-//                 .then((laundry) => {
-//                     if (laundry.length) {
-//                         response.send(`error: laundry booking for this time is already exists`)
-//                     } else {
-//                         new Parse.Query(`Constants`)
-//                             .equalTo(`name`, `laundry_cost`)
-//                             .first()
-//                             .then((cost) => {
-//                                 new Parse.Query(`Balance`)
-//                                     .equalTo(`user_id`, user.id)
-//                                     .first()
-//                                     .then((userBalance) => {
-//                                         if (userBalance.get(`money`) < +cost.get(`value`)) {
-//                                             let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
-//                                             writeLog(message, user)
-//                                             response.send(message);
-//                                         } else {
-//                                             new Parse.Object(`Laundry`)
-//                                                 .set(`timestamp`, +request.params.timestamp)
-//                                                 .set(`machine_id`, request.params.machine_id)
-//                                                 .set(`user_id`, user.id)
-//                                                 .set(`book_cost`, +cost.get(`value`))
-//                                                 .save()
-//                                                 .then((d) => {
-//                                                     userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-//                                                     userBalance.save()
-//                                                         .then((d) => {
-//                                                             let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
-//                                                             writeLog(message, user)
-//                                                             response.send(d)
-//                                                         })
-//                                                         .catch((d) => { response.send(d); console.error(d) })
-//                                                 })
-//                                                 .catch((d) => { response.send(d); console.error(d) })
-//                                         }
-//                                     })
-//                                     .catch((d) => { response.send(d); console.error(d) })
-//                             })
-//                             .catch((d) => { response.send(d); console.error(d) })
-//                     }
-//                 })
-//                 .catch((d) => { response.send(d); console.error(d) })
-//         })
-//         .catch((d) => { response.send(d); console.error(d) })
-// })
-
 server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
     become(request)
         .then((user) => {
@@ -523,26 +477,25 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                             writeLog(message, user)
                                             response.send(message);
                                         } else {
-                                            new Parse.Object(`Laundry`)
-                                                .set(`timestamp`, +request.params.timestamp)
-                                                .set(`machine_id`, request.params.machine_id)
-                                                .set(`user_id`, user.id)
-                                                .set(`book_cost`, +cost.get(`value`))
+                                            new Parse.Object(`Notifications`)
+                                                .set(`to`, user.id)
+                                                .set(`status`, `delayed`)
+                                                // .set(`delivery_timestamp`, +request.params.timestamp)
+                                                .set(`delivery_timestamp`, +moment().tz(`Europe/Moscow`).add(2, `minute`))
+                                                .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                 .save()
-                                                .then((d) => {
-                                                    userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-                                                    userBalance.save()
+                                                .then((notification) => {
+                                                    new Parse.Object(`Laundry`)
+                                                        .set(`timestamp`, +request.params.timestamp)
+                                                        .set(`machine_id`, request.params.machine_id)
+                                                        .set(`user_id`, user.id)
+                                                        .set(`book_cost`, +cost.get(`value`))
+                                                        .set(`notification_id`, notification.id)
+                                                        .save()
                                                         .then((d) => {
-                                                            new Parse.Object(`Notifications`)
-                                                                .set(`to`, user.id)
-                                                                .set(`status`, `delayed`)
-                                                                .set(`delivery_timestamp`, +request.params.timestamp)
-                                                                .set(`message`, `Напомниаем, что у через час у Вас стирка`)
-                                                                .save()
-                                                                .then((d) => {
-                                                                    console.log(d);
-                                                                    response.send(d)
-                                                                })
+                                                            userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
+                                                            userBalance.save()
+                                                                .then((d) => { response.send(d) })
                                                                 .catch((d) => { response.send(d); console.error(d) })
                                                         })
                                                         .catch((d) => { response.send(d); console.error(d) })
