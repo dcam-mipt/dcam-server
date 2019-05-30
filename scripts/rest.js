@@ -437,86 +437,27 @@ server.get(`/auth/sign_out`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/user/get_my_info`, (request, response, next) => {
-    become(request)
-        .then((user) => { response.send(user) })
-        .catch((d) => { response.send(d); console.error(d) })
+server.get(`/user/get_my_info`, async (request, response, next) => { response.send(await become(request)) })
+
+server.post(`/user/set_my_avatar`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) { response.send(await user.set(`avatar`, request.body.url).save()) }
 })
 
-server.post(`/user/set_my_avatar`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            user
-                .set(`avatar`, request.body.url)
-                .save()
-                .then((d) => { response.send(d); })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
-})
-
-// server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
-//     become(request)
-//         .then((user) => {
-//             new Parse.Query(`Laundry`)
-//                 .equalTo(`timestamp`, +request.params.timestamp)
-//                 .equalTo(`machine_id`, request.params.machine_id)
-//                 .find()
-//                 .then((laundry) => {
-//                     if (laundry.length) {
-//                         response.send(`error: laundry booking for this time is already exists`)
-//                     } else {
-//                         new Parse.Query(`Constants`)
-//                             .equalTo(`name`, `laundry_cost`)
-//                             .first()
-//                             .then((cost) => {
-//                                 new Parse.Query(`Balance`)
-//                                     .equalTo(`user_id`, user.id)
-//                                     .first()
-//                                     .then(async (userBalance) => {
-//                                         if (userBalance.get(`money`) < +cost.get(`value`)) {
-//                                             let message = `laundry: user ${user.id} has not enough money: ${userBalance.get(`money`)} rub`
-//                                             writeLog(message, user)
-//                                             response.send(message);
-//                                         } else {
-//                                             let machines = await new Parse.Query(`Machines`).find()
-//                                             new Parse.Object(`Notifications`)
-//                                                 .set(`user_id`, user.id)
-//                                                 .set(`status`, `delayed`)
-//                                                 .set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`))
-//                                                 .set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(request.params.machine_id) + 1}`)
-//                                                 .save()
-//                                                 .then((notification) => {
-//                                                     new Parse.Object(`Laundry`)
-//                                                         .set(`timestamp`, +request.params.timestamp)
-//                                                         .set(`machine_id`, request.params.machine_id)
-//                                                         .set(`user_id`, user.id)
-//                                                         .set(`book_cost`, +cost.get(`value`))
-//                                                         .set(`notification_id`, notification.id)
-//                                                         .save()
-//                                                         .then((d) => {
-//                                                             userBalance.set(`money`, userBalance.get(`money`) - +cost.get(`value`))
-//                                                             userBalance.save()
-//                                                                 .then((d) => { response.send(d) })
-//                                                                 .catch((d) => { response.send(d); console.error(d) })
-//                                                         })
-//                                                         .catch((d) => { response.send(d); console.error(d) })
-//                                                 })
-//                                                 .catch((d) => { response.send(d); console.error(d) })
-//                                         }
-//                                     })
-//                                     .catch((d) => { response.send(d); console.error(d) })
-//                             })
-//                             .catch((d) => { response.send(d); console.error(d) })
-//                     }
-//                 })
-//                 .catch((d) => { response.send(d); console.error(d) })
-//         })
-//         .catch((d) => { response.send(d); console.error(d) })
-// })
-
-server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => {
-    
+server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) {
+        let is_free = (await new Parse.Query(`Laundry`).equalTo(`timestamp`, +request.params.timestamp).equalTo(`machine_id`, request.params.machine_id).find()).length === 0
+        if (is_free) {
+            let machine_index = (await new Parse.Query(`Machines`).find()).map(i => i.id).indexOf(request.params.machine_id) + 1
+            let notification_id = (await new Parse.Object(`Notifications`).set(`user_id`, user.id).set(`status`, `delayed`).set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`)).set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machine_index}`).save()).id
+            let cost = +((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`))
+            let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
+            let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, user.id).first()
+            await balance.set(`money`, balance.get(`money`) - cost).save()
+            response.send(laundry)
+        }
+    }
 })
 
 server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => {
@@ -543,28 +484,14 @@ server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => 
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/laundry/get_laundry_cost`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            new Parse.Query(`Constants`)
-                .equalTo(`name`, `laundry_cost`)
-                .first()
-                .then((d) => { response.send(d.get(`value`)) })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
+server.get(`/laundry/get_laundry_cost`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) { response.send((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`) + ``) }
 })
 
-server.get(`/balance/get_my_balance`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            new Parse.Query(`Balance`)
-                .equalTo(`user_id`, user.id)
-                .first()
-                .then((d) => { response.send(d.get(`money`) + ``) })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
+server.get(`/balance/get_my_balance`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) { response.send((await new Parse.Query(`Balance`).equalTo(`user_id`, user.id).first()).get(`money`) + ``) }
 })
 
 server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_username`, (request, response, next) => {
@@ -603,16 +530,9 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/get_my_entries`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            new Parse.Query(`Verifications`)
-                .equalTo(`username`, user.get(`username`))
-                .find()
-                .then((d) => { response.send(d.length > 0) })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
+server.get(`/auth/get_my_entries`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) { response.send((await new Parse.Query(`Verifications`).equalTo(`username`, user.get(`username`)).find()).length > 0) }
 })
 
 server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
@@ -645,14 +565,14 @@ server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/forget_my_telegram`, (request, response, next) => {
-    become(request)
-        .then((user) => {
-            user
-                .set(`telegram`, null)
-                .save()
-                .then((d) => { response.send(`successfully unpinned telegram account`) })
-                .catch((d) => { response.send(d); console.error(d) })
-        })
-        .catch((d) => { response.send(d); console.error(d) })
+server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) {
+        try {
+            await user.set(`telegram`, null).save()
+            response.send(`successfully unpinned telegram account`)
+        } catch {
+            response.send(`error whie unpining telegram account`)
+        }
+    }
 })
