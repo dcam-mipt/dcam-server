@@ -551,6 +551,7 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
     let pass = new Array(5).fill(0).map(i => Math.round(Math.random() * 10)).join(``).substring(0, 5)
     new Parse.Query(`User`)
         .equalTo(`username`, request.params.email)
+        .first()
         .then((d) => {
             new Parse.Object(`Verifications`)
                 .set(`pass`, pass)
