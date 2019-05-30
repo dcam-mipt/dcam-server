@@ -8,9 +8,10 @@ const telegram = new Telegram(config.TELEGRAM_TOKEN)
 const bot = new Telegraf(config.TELEGRAM_TOKEN)
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
 bot.command('auth', (ctx) => {
-    ctx.reply(`Ваша почта на домене @phystech.edu:`)
+    ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
     bot.on(`text`, (mail_answer) => {
-        axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail_answer.update.message.text}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
+        let mail = mail_answer.update.message.text
+        mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
             .then((d) => { ctx.reply(`Откройте окно Вашего профиля в личном кабинете и введите этот код - ${d.data}. Не сообщайте его никому. Срок действия кода подтверждения - 60 секунд.`) })
             .catch((d) => { console.log(d) })
     })
