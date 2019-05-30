@@ -12,10 +12,10 @@ Parse.serverURL = config.PARSE_SERVER_URL
 
 let openClient = () => {
     let client = new Parse.LiveQueryClient({
-        applicationId: 'dcam',
-        serverURL: 'ws://dcam.pro:1337/parse',
-        javascriptKey: `dcam`,
-        masterKey: `dcam`
+        applicationId: config.PARSE_APP_ID,
+        serverURL: `ws://${config.PARSE_SERVER_URL.split(`//`)[1]}`,
+        javascriptKey: config.PARSE_JS_KEY,
+        masterKey: config.PARSE_MASTER_KEY
     });
     client.open()
     // error is here
