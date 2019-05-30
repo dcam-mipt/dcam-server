@@ -540,8 +540,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                                 .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                                 .save()
                                                                 .then((d) => {
-                                                                    let message = `laundry: book (${d.get(`user_id`)}, ${request.params.machine_id},${moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`)})`
-                                                                    writeLog(message, user)
                                                                     response.send(d)
                                                                 })
                                                                 .catch((d) => { response.send(d); console.error(d) })
