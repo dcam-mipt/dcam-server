@@ -4,8 +4,8 @@ const Telegraf = require('telegraf')
 const config = require('./config')
 const Telegram = require('telegraf/telegram')
 const Parse = require('parse/node')
-const log = require('./rest')
-console.log(log);
+const parse_api = require('./rest')
+
 
 const telegram = new Telegram(config.TELEGRAM_TOKEN)
 const bot = new Telegraf(config.TELEGRAM_TOKEN)

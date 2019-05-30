@@ -26,19 +26,20 @@ let openClient = () => {
         return client
 }
 
-let createSubscriptionOnUpdate = (className, action) => {
+let createSubscriptionOnUpdate = (className, method, action) => {
         let client = openClient()
         let query = new Parse.Query(className)
-        client.subscribe(query)
-                .on('update', (object) => { console.log(object); })
-                .on('create', (object) => { action(object) })
-                .on('delete', (object) => { action(object) })
+        client.subscribe(query).on(method, (object) => { action(object) })
 }
 
-createSubscriptionOnUpdate(`Laundry`, (d) => { io.emit(`Laundry`, `Laundry`) })
-createSubscriptionOnUpdate(`Verifications`, (d) => { io.emit(`Verifications`, d.get(`username`)) })
-createSubscriptionOnUpdate(`Balance`, (d) => { io.emit(`Balance`, d.get(`user_id`)) })
-createSubscriptionOnUpdate(`Constants`, (d) => { io.emit(`Constants`, `Constants`) })
-createSubscriptionOnUpdate(`Machines`, (d) => { io.emit(`Machines`, `Machines`) })
+for (let i in [`create`, `update`, `delete`]) {
+        createSubscriptionOnUpdate(`Laundry`, i, (d) => { io.emit(`Laundry`, `Laundry`) })
+        createSubscriptionOnUpdate(`Verifications`, i, (d) => { io.emit(`Verifications`, d.get(`username`)) })
+        createSubscriptionOnUpdate(`Balance`, i, (d) => { io.emit(`Balance`, d.get(`user_id`)) })
+        createSubscriptionOnUpdate(`Constants`, i, (d) => { io.emit(`Constants`, `Constants`) })
+        createSubscriptionOnUpdate(`Machines`, i, (d) => { io.emit(`Machines`, `Machines`) })
+}
+
+module.exports.subscripiton = createSubscriptionOnUpdate;
 
 /*eslint-enable no-unused-vars*/
