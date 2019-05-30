@@ -56,7 +56,8 @@ subscribe(`Laundry`, `create`, async (laundry) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
     if (user.get(`telegram`)) {
         let machines = await new Parse.Query(`Machines`).find()
-        sendMessage(user.get(`telegram`).id, `Куплена стирка на ${moment(+laundry.get(`timestamp`)).format(`DD.MM.YY HH:mm`)}, в ${machines.indexOf(laundry.get(`machine_id`)) + 1} машинку за ${laundry.get(`book_cost`)}р. \nНовый баланс: ${}.`)
+        let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, user.id).first()
+        sendMessage(user.get(`telegram`).id, `Куплена стирка на ${moment(+laundry.get(`timestamp`)).format(`DD.MM.YY HH:mm`)}, в ${machines.indexOf(laundry.get(`machine_id`)) + 1} машинку за ${laundry.get(`book_cost`)}р. \nНовый баланс: ${balance.get(`money`)}.`)
     }
 })
 
