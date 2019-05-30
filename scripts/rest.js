@@ -534,12 +534,13 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                                                     userBalance.save()
                                                         .then((d) => {
                                                             new Parse.Object(`Notifications`)
-                                                                .set(`to`, user.id)
+                                                                // .set(`to`, user.id)
                                                                 .set(`status`, `delayed`)
-                                                                .set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
-                                                                .set(`message`, `Напомниаем, что у через час у Вас стирка`)
+                                                                // .set(`delivery_timestamp`, moment(+request.params.timestamp).add(-2, `hour`))
+                                                                // .set(`message`, `Напомниаем, что у через час у Вас стирка`)
                                                                 .save()
                                                                 .then((d) => {
+                                                                    console.log(d);
                                                                     response.send(d)
                                                                 })
                                                                 .catch((d) => { response.send(d); console.error(d) })
