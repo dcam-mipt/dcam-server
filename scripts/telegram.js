@@ -13,7 +13,7 @@ bot.command('auth', (ctx) => {
         let mail = mail_answer.update.message.text
         mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${ctx.update.message.from.id}/${ctx.update.message.from.username}`)
             .then((d) => {
-                if (d === `wrong email`) {
+                if (d.data === `wrong email`) {
                     ctx.reply(`Не существует пользователя с такой почтой`)
                 } else {
                     ctx.reply(`Откройте окно Вашего профиля в личном кабинете и введите этот код - ${d.data}. Не сообщайте его никому. Срок действия кода подтверждения - 60 секунд.`)
