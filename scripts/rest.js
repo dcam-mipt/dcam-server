@@ -182,7 +182,7 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                             writeLog(message, user)
                             book.destroy()
                             new Parse.Query(`Notifications`)
-                                .equalTo(`notification_id`, book.get(`notification_id`))
+                                .equalTo(`objectId`, book.get(`notification_id`))
                                 .first()
                                 .then((notification) => {
                                     notification.destroy()
