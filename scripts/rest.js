@@ -553,6 +553,7 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
         .equalTo(`username`, request.params.email)
         .first()
         .then((d) => {
+            console.log(d.get(`telegram`));
             if (d) {
                 if (d.get(`telgram`)) {
                     response.send(`already connected`)
