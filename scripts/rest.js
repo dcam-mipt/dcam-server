@@ -480,13 +480,12 @@ server.get(`/laundry/book/:timestamp/:machine_id`, (request, response, next) => 
                                             response.send(message);
                                         } else {
                                             let machines = await new Parse.Query(`Machines`).find()
-                                            console.log(`🧺 Напоминаем о предстоязей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(request.params.machine_id) + 1}\nЦена: ${+cost.get(`value`)}р`);
                                             new Parse.Object(`Notifications`)
                                                 .set(`user_id`, user.id)
                                                 .set(`status`, `delayed`)
                                                 // .set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`))
                                                 .set(`delivery_timestamp`, +moment().tz(`Europe/Moscow`).add(-30, `seconds`))
-                                                .set(`message`, `🧺 Напоминаем`)
+                                                .set(`message`, `🧺 Напоминаем о предстоязей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(request.params.machine_id) + 1}\nЦена: ${+cost.get(`value`)}р`)
                                                 .save()
                                                 .then((notification) => {
                                                     new Parse.Object(`Laundry`)
