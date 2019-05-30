@@ -78,6 +78,13 @@ subscribe(`Balance`, `update`, async(balance) => {
     }
 })
 
+let create_notifications_queue = () => {
+    let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).greaterThan(`delivery_timestamp`, +moment().tz(`Europe/Moscow`))
+    console.log(notifications.map(i => moment(i.get(`delivery_timestamp`)).format(`DD.MM.YY HH:mm`)));
+}
+
+create_notifications_queue()
+
 bot.start((ctx) => ctx.reply('Добро пожаловать!'))
 bot.launch()
 /*eslint-enable no-unused-vars*/
