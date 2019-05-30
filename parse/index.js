@@ -10,7 +10,7 @@ var api = new ParseServer({
     javasScriptKey: 'dcam',
     serverURL: 'http://localhost:1337/parse',
     liveQuery: {
-        classNames: [`Laundry`, `Verifications`, `User`, `Balance`, `Constants`, `Machines`]
+        classNames: [`Laundry`, `Verifications`, `User`, `Balance`, `Constants`, `Machines`, `Notifications`]
     }
 });
 
