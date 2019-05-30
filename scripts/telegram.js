@@ -52,7 +52,7 @@ let auth_command = () => {
 auth_command()
 
 telegram.sendMessage(227992175, `бот снова работает`)
-subscribe(`Laundry`, `create`, (laundry) => {
+subscribe(`Laundry`, `create`, async (laundry) => {
     // let user = await new Parse.Query(`User`).equalTo(`objectUd`, laundry.get(`user_id`)).first()
     // console.log(user.get(`id`));
     // let machines = await new Parse.Query(`Machines`).find()
