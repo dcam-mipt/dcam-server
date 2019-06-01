@@ -603,7 +603,7 @@ let get_transactions = async (user_id) => {
 server.get(`/transactions/get_my_transactions`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
-        response.send(await Parse.Query.or(new Parse.Query(`Transactions`).equalTo(`from`, user.id), new Parse.Query(`Transactions`).equalTo(`to`, user.id)).find())
+        response.send(await get_transactions(user.id))
     }
 })
 
