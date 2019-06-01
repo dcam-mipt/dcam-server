@@ -593,6 +593,5 @@ server.get(`/transactions/get_all_transactions`, async (request, response, next)
     if (await isAdmin(await become(request))) {
         let users = await new Parse.Query(`User`).limit(1000000).select(`objectId`).select(`username`).find()
         response.send((await new Parse.Query(`Transactions`).limit(1000000).find()).map(i => { return {...i, from_username: users.filter(f => f.id === i.from)[0].username} }))
-        response.send(users)
     }
 })
