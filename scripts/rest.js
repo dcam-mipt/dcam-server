@@ -297,15 +297,19 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
 server.get(`/users/get_users_list`, (request, response, next) => {
     become(request)
         .then((user) => {
-            new Parse.Query(`User`)
-                .limit(1000000)
-                .find()
-                .then((users) => {
-                    new Parse.Query(`Balance`)
+            isAdmin(user)
+                .then((d) => {
+                    new Parse.Query(`User`)
                         .limit(1000000)
                         .find()
-                        .then((balances) => {
-                            response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`user_id`) === user.id)[0].get(`money`))))
+                        .then((users) => {
+                            new Parse.Query(`Balance`)
+                                .limit(1000000)
+                                .find()
+                                .then((balances) => {
+                                    response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`user_id`) === user.id)[0].get(`money`))))
+                                })
+                                .catch((d) => { response.send(d); console.error(d) })
                         })
                         .catch((d) => { response.send(d); console.error(d) })
                 })
@@ -584,7 +588,7 @@ server.get(`/transactions/get_my_transactions`, async (request, response, next) 
             let my_transactions = await Parse.Query.or(new Parse.Query(`Transactions`).equalTo(`from`, user.id), new Parse.Query(`Transactions`).equalTo(`to`, user.id)).find()
             response.send(my_transactions)
         } catch (error) {
-            
+
         }
     }
 })
