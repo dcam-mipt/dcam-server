@@ -592,9 +592,14 @@ server.get(`/transactions/get_my_transactions`, async (request, response, next) 
 server.get(`/transactions/get_all_transactions`, async (request, response, next) => {
     if (await isAdmin(await become(request))) {
         let users = await new Parse.Query(`User`).limit(1000000).select(`objectId`).select(`username`).find()
-        response.send((await new Parse.Query(`Transactions`).limit(1000000).find()).map(i => {
+        let transactions = await new Parse.Query(`Transactions`).limit(1000000).find()
+        response.send(transactions.map((i) => {
+            let from_user = users.filter(u => u.id === i.get(`from`))[0]
+            let to_user = users.filter(u => u.id === i.get(`to`))[0]
             return {
-                ...i,
+                ...i.attributes,
+                from_username: from_user ? from_user.get(`username`) : i.get(`from`),
+                to_username: to_user ? to_user.get(`username`) : i.get(`to`)
             }
         }))
     }
