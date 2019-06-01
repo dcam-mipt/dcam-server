@@ -585,12 +585,7 @@ server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
 server.get(`/transactions/get_my_transactions`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
-        try {
-            let my_transactions = await Parse.Query.or(new Parse.Query(`Transactions`).equalTo(`from`, user.id), new Parse.Query(`Transactions`).equalTo(`to`, user.id)).find()
-            response.send(my_transactions)
-        } catch (error) {
-
-        }
+        response.send(await Parse.Query.or(new Parse.Query(`Transactions`).equalTo(`from`, user.id), new Parse.Query(`Transactions`).equalTo(`to`, user.id)).find())
     }
 })
 
