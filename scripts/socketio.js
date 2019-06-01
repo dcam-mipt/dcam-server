@@ -41,5 +41,6 @@ subscribe(`Verifications`, (d) => { io.emit(`Verifications`, d.get(`username`)) 
 subscribe(`Balance`, (d) => { io.emit(`Balance`, d.get(`user_id`)) })
 subscribe(`Constants`, (d) => { io.emit(`Constants`, `Constants`) })
 subscribe(`Machines`, (d) => { io.emit(`Machines`, `Machines`) })
+subscribe(`Transactions`, (d) => { io.emit(`Transactions`, d.get(`from`) + ` ` + d.get(`to`)) })
 
 /*eslint-enable no-unused-vars*/
