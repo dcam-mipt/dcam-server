@@ -457,7 +457,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let notification_id = (await new Parse.Object(`Notifications`).set(`user_id`, user.id).set(`status`, `delayed`).set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`)).set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machine_index}`).save()).id
             let cost = +((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`))
             let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
-            let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, user.id).first()
+            let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
             await balance.set(`money`, balance.get(`money`) - cost).save()
             response.send(laundry)
         }
@@ -501,6 +501,7 @@ server.get(`/balance/get_my_balance`, async (request, response, next) => {
 server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_username`, (request, response, next) => {
     let pass = new Array(5).fill(0).map(i => Math.round(Math.random() * 10)).join(``).substring(0, 5)
     new Parse.Query(`User`)
+        .limit(1000000)
         .equalTo(`username`, request.params.email)
         .first()
         .then((d) => {
@@ -590,5 +591,11 @@ server.get(`/transactions/get_my_transactions`, async (request, response, next) 
         } catch (error) {
 
         }
+    }
+})
+
+server.get(`/transactions/get_all_transactions`, async (request, response, next) => {
+    if (await isAdmin(await become(request))) {
+        response.send(await new Parse.Query(`Transactions`).limit(1000000).find())
     }
 })
