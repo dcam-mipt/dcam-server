@@ -582,6 +582,24 @@ server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
     }
 })
 
+let get_transactions = async (user_id) => {
+    let users = await new Parse.Query(`User`).limit(1000000).select(`objectId`).select(`username`).find()
+    let query = new Parse.Query(`Transactions`).limit(1000000)
+    if (user_id) {
+        query = Parse.Query.or(new Parse.Query(`Transactions`).limit(1000000).equalTo(`from`, user_id), new Parse.Query(`Transactions`).limit(1000000).equalTo(`to`, user_id))
+    }
+    let transactions = await query.find()
+    return (transactions.map((i) => {
+        let from_user = users.filter(u => u.id === i.get(`from`))[0]
+        let to_user = users.filter(u => u.id === i.get(`to`))[0]
+        return {
+            ...i.attributes,
+            from_username: from_user ? from_user.get(`username`).split(`@`)[0] : i.get(`from`),
+            to_username: to_user ? to_user.get(`username`).split(`@`)[0] : i.get(`to`)
+        }
+    }))
+}
+
 server.get(`/transactions/get_my_transactions`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
@@ -591,16 +609,6 @@ server.get(`/transactions/get_my_transactions`, async (request, response, next) 
 
 server.get(`/transactions/get_all_transactions`, async (request, response, next) => {
     if (await isAdmin(await become(request))) {
-        let users = await new Parse.Query(`User`).limit(1000000).select(`objectId`).select(`username`).find()
-        let transactions = await new Parse.Query(`Transactions`).limit(1000000).find()
-        response.send(transactions.map((i) => {
-            let from_user = users.filter(u => u.id === i.get(`from`))[0]
-            let to_user = users.filter(u => u.id === i.get(`to`))[0]
-            return {
-                ...i.attributes,
-                from_username: from_user ? from_user.get(`username`).split(`@`)[0] : i.get(`from`),
-                to_username: to_user ? to_user.get(`username`).split(`@`)[0] : i.get(`to`)
-            }
-        }))
+        response.send(await get_transactions())
     }
 })
