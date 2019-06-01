@@ -591,6 +591,7 @@ server.get(`/transactions/get_my_transactions`, async (request, response, next) 
 
 server.get(`/transactions/get_all_transactions`, async (request, response, next) => {
     if (await isAdmin(await become(request))) {
-        response.send(await new Parse.Query(`Transactions`).limit(1000000).find())
+        let users = await new Parse.Query(`User`).limit(1000000).select(`objectId`).select(`username`).find()
+        response.send(await new Parse.Query(`Transactions`).limit(1000000).find(), users)
     }
 })
