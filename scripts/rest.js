@@ -598,8 +598,8 @@ server.get(`/transactions/get_all_transactions`, async (request, response, next)
             let to_user = users.filter(u => u.id === i.get(`to`))[0]
             return {
                 ...i.attributes,
-                from_username: from_user ? from_user.get(`username`) : i.get(`from`),
-                to_username: to_user ? to_user.get(`username`) : i.get(`to`)
+                from_username: from_user ? from_user.get(`username`).split(`@`)[0] : i.get(`from`),
+                to_username: to_user ? to_user.get(`username`).split(`@`)[0] : i.get(`to`)
             }
         }))
     }
