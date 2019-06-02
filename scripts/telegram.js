@@ -84,13 +84,13 @@ subscribe(`Balance`, `update`, async (balance) => {
 
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
-    notifications.map(async i => {
-        let user = await new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()
-        let delay = +moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
+    notifications.map(async notification => {
+        let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
+        let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
         if (user.get(`telegram`)) {
             console.log(delay);
             setTimeout(async () => {
-                telegram.sendMessage(user.get(`telegram`).id, i.get(`message`))
+                telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
                 await notification.set(`status`, `sent`).save()
             }, delay > 0 ? delay : 0)
         }
