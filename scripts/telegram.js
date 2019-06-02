@@ -77,7 +77,7 @@ subscribe(`Laundry`, `delete`, async (laundry) => {
 
 subscribe(`Balance`, `update`, async (balance) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, balance.get(`user_id`)).first()
-    await new Parse.Object(`Notificatoins`).set(`delivery_timestamp`, +moment().tz(`Europe/Moscow`)).set(`status`, `delayed`).set(`user_id`, user.id).set(`message`, `💳 Новыйы баланс: ${balance.get(`money`)}р`).save()
+    await new Parse.Object(`Notifications`).set(`delivery_timestamp`, +moment().tz(`Europe/Moscow`)).set(`status`, `delayed`).set(`user_id`, user.id).set(`message`, `💳 Новыйы баланс: ${balance.get(`money`)}р`).save()
     // if (user.get(`telegram`)) {
     //     telegram.sendMessage(user.get(`telegram`).id, `💳 Новыйы баланс: ${balance.get(`money`)}р`)
     // }
