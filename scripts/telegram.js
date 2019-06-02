@@ -99,7 +99,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
     let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
     if (user.get(`telegram`)) {
-        setTimeout(() => {
+        setTimeout(async () => {
             telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
             await notification.set(`statu`, `sent`).save()
         }, delay > 0 ? delay : 0)
