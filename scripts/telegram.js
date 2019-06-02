@@ -63,7 +63,7 @@ subscribe(`Laundry`, `create`, async (laundry) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
     if (user.get(`telegram`)) {
         let machines = await new Parse.Query(`Machines`).find()
-        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
+        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
     }
 })
 
@@ -71,7 +71,7 @@ subscribe(`Laundry`, `delete`, async (laundry) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
     if (user.get(`telegram`)) {
         let machines = await new Parse.Query(`Machines`).find()
-        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday()]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
+        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
     }
 })
 
@@ -101,7 +101,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
     if (user.get(`telegram`)) {
         setTimeout(async () => {
             telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
-            await notification.set(`statu`, `sent`).save()
+            await notification.set(`status`, `sent`).save()
         }, delay > 0 ? delay : 0)
     }
 })
