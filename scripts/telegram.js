@@ -83,7 +83,7 @@ subscribe(`Balance`, `update`, async (balance) => {
 })
 
 let create_notifications_queue = async () => {
-    let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).greaterThan(`delivery_timestamp`, +moment().tz(`Europe/Moscow`)).find()
+    let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
     notifications.map(async i => {
         let user = await new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()
         let delay = +moment(i.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
