@@ -88,7 +88,6 @@ let create_notifications_queue = async () => {
         let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
         let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
         if (user.get(`telegram`)) {
-            console.log(delay);
             setTimeout(async () => {
                 telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
                 await notification.set(`status`, `sent`).save()
