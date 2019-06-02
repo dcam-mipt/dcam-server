@@ -83,8 +83,7 @@ subscribe(`Laundry`, `delete`, async (laundry) => {
 })
 
 subscribe(`Balance`, `update`, async (balance) => {
-    let user = await new Parse.Query(`User`).equalTo(`objectId`, balance.get(`user_id`)).first()
-    await create_notification(user.id, `💳 Новыйы баланс: ${balance.get(`money`)}р`)
+    return await create_notification(balance.get(`user_id`), `💳 Новыйы баланс: ${balance.get(`money`)}р`)
 })
 
 let create_notifications_queue = async () => {
