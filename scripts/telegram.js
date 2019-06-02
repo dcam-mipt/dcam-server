@@ -101,6 +101,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
     if (user.get(`telegram`)) {
         setTimeout(() => {
             telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
+            await notification.set(`statu`, `sent`).save()
         }, delay > 0 ? delay : 0)
     }
 })
