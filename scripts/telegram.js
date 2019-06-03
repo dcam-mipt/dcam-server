@@ -117,6 +117,15 @@ subscribe(`Notifications`, `create`, async (notification) => {
     });
 })
 
+let fix = async () => {
+    (await new Parse.Query(`Notifications`).find()).map(async (i, index) => {
+        await i.set(`user`, new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()).save()
+        return i
+    })
+}
+
+fix()
+
 bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /auth'))
 bot.launch()
 /*eslint-enable no-unused-vars*/
