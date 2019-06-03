@@ -64,6 +64,7 @@ let create_notification = async (user_id, message, delivery_timestamp) => await 
     .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
     .set(`status`, `delayed`)
     .set(`user_id`, user_id)
+    .set(`user`, await new Parse.Query(`User`).equalTo(`objectId`, user_id).first())
     .set(`message`, message)
     .save()
 
