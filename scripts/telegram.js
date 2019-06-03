@@ -71,7 +71,7 @@ let create_notification = async (user_id, message, delivery_timestamp) => await 
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
     notifications.map(async notification => {
-        let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
+        let user = notification.get(`user`)
         let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
         if (user.get(`telegram`)) {
             setTimeout(async () => {
@@ -79,6 +79,7 @@ let create_notifications_queue = async () => {
                 await notification.set(`status`, `sent`).save()
             }, delay > 0 ? delay : 0)
         }
+        console.log(delay);
         return delay
     })
 }
@@ -116,15 +117,6 @@ subscribe(`Notifications`, `create`, async (notification) => {
         message: notification.get(`message`)
     });
 })
-
-let fix = async () => {
-    (await new Parse.Query(`Notifications`).find()).map(async (i, index) => {
-        await i.set(`user`, await new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()).save()
-        return i
-    })
-}
-
-fix()
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /auth'))
 bot.launch()
