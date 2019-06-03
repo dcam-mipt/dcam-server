@@ -68,6 +68,7 @@ let create_notification = async (user_id, message, delivery_timestamp) => await 
     .save()
 
 let create_notifications_queue = async () => {
+    console.log(`\nnotifications queue\n`);
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
     notifications.map(async notification => {
         let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
@@ -76,7 +77,7 @@ let create_notifications_queue = async () => {
             user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
             await notification.set(`status`, `sent`).save()
         }, delay > 0 ? delay : 0)
-        console.log(moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), user.get(`username`));
+        console.log(`\t`, moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), `\t`, user.get(`username`));
         return delay
     })
 }
