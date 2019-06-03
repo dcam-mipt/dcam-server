@@ -119,7 +119,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
 
 let fix = async () => {
     (await new Parse.Query(`Notifications`).find()).map(async (i, index) => {
-        await i.set(`user`, new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()).save()
+        await i.set(`user`, await new Parse.Query(`User`).equalTo(`objectId`, i.get(`user_id`)).first()).save()
         return i
     })
 }
