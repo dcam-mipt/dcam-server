@@ -79,7 +79,7 @@ let become = (request) => new Promise((resolve, reject) => {
         reject({
             error: `invalid sessoin token`,
             token: sessionToken,
-            url: request._url.Url,
+            url: request._url,
             code: 209,
         }, sessionToken)
         return
