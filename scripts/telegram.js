@@ -76,7 +76,7 @@ let create_notifications_queue = async () => {
             user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
             await notification.set(`status`, `sent`).save()
         }, delay > 0 ? delay : 0)
-        console.log(+moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), user.get(`username`));
+        console.log(moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), user.get(`username`));
         return delay
     })
 }
