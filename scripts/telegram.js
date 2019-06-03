@@ -59,13 +59,6 @@ auth_command()
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
 
 telegram.sendMessage(227992175, `deployed.`)
-subscribe(`Laundry`, `create`, async (laundry) => {
-    let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
-    if (user.get(`telegram`)) {
-        let machines = await new Parse.Query(`Machines`).find()
-        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
-    }
-})
 
 let create_notification = async (user_id, message, delivery_timestamp) => await new Parse.Object(`Notifications`)
     .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
@@ -73,18 +66,6 @@ let create_notification = async (user_id, message, delivery_timestamp) => await 
     .set(`user_id`, user_id)
     .set(`message`, message)
     .save()
-
-subscribe(`Laundry`, `delete`, async (laundry) => {
-    let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
-    if (user.get(`telegram`)) {
-        let machines = await new Parse.Query(`Machines`).find()
-        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
-    }
-})
-
-subscribe(`Balance`, `update`, async (balance) => {
-    return await create_notification(balance.get(`user_id`), `💳 Новыйы баланс: ${balance.get(`money`)}р`)
-})
 
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
@@ -101,6 +82,25 @@ let create_notifications_queue = async () => {
     })
 }
 
+create_notifications_queue()
+
+subscribe(`Laundry`, `create`, async (laundry) => {
+    let user = await new Parse.Query(`User`).equalTo(`objectId`, laundry.get(`user_id`)).first()
+    if (user.get(`telegram`)) {
+        let machines = await new Parse.Query(`Machines`).find()
+        telegram.sendMessage(user.get(`telegram`).id, `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
+    }
+})
+
+subscribe(`Laundry`, `delete`, async (laundry) => {
+    let machines = await new Parse.Query(`Machines`).find()
+    return await create_notification(laundry.get(`user_id`), `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
+})
+
+subscribe(`Balance`, `update`, async (balance) => {
+    return await create_notification(balance.get(`user_id`), `💳 Новыйы баланс: ${balance.get(`money`)}р`)
+})
+
 subscribe(`Notifications`, `create`, async (notification) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
     let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
@@ -110,9 +110,11 @@ subscribe(`Notifications`, `create`, async (notification) => {
             await notification.set(`status`, `sent`).save()
         }, delay > 0 ? delay : 0)
     }
+    console.log(`new notification:`, {
+        to: user.username.split(`@`)[0],
+        message: notification.get(`message`)
+    });
 })
-
-create_notifications_queue()
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /auth'))
 bot.launch()
