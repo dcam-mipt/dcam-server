@@ -68,7 +68,7 @@ let create_notification = async (user_id, message, delivery_timestamp) => await 
     .save()
 
 let create_notifications_queue = async () => {
-    console.log(`\nnotifications queue\n`);
+    console.log(`\n\n\nnotifications queue\n\n\n`);
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
     notifications.map(async notification => {
         let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
