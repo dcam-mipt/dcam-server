@@ -1,9 +1,0 @@
-{
-    "apps": [
-        {
-            "name": "parse",
-            "script": "./parse/index.js",
-            "watch": false
-        }
-    ]
-}

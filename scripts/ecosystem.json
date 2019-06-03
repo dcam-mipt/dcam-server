@@ -1,6 +1,11 @@
 {
     "apps": [
         {
+            "name": "parse",
+            "script": "./parse/index.js",
+            "watch": false
+        },
+        {
             "name": "dashboard",
             "script": "./scripts/dashboard.sh",
             "watch": false
