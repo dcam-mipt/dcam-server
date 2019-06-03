@@ -79,7 +79,7 @@ let create_notifications_queue = async () => {
                 await notification.set(`status`, `sent`).save()
             }, delay > 0 ? delay : 0)
         }
-        console.log(delay, user.get(`last_seen`));
+        console.log(delay, user.attributes);
         return delay
     })
 }
