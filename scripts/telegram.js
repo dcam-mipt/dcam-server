@@ -64,22 +64,19 @@ let create_notification = async (user_id, message, delivery_timestamp) => await 
     .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
     .set(`status`, `delayed`)
     .set(`user_id`, user_id)
-    .set(`user`, await new Parse.Query(`User`).equalTo(`objectId`, user_id).first())
     .set(`message`, message)
     .save()
 
 let create_notifications_queue = async () => {
     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
     notifications.map(async notification => {
-        let user = notification.get(`user`)
+        let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
         let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
-        if (user.get(`telegram`)) {
-            setTimeout(async () => {
-                telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
-                await notification.set(`status`, `sent`).save()
-            }, delay > 0 ? delay : 0)
-        }
-        console.log(delay, user.attributes);
+        setTimeout(async () => {
+            user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
+            await notification.set(`status`, `sent`).save()
+        }, delay > 0 ? delay : 0)
+        console.log(delay, user.get(`username`));
         return delay
     })
 }
@@ -106,12 +103,10 @@ subscribe(`Balance`, `update`, async (balance) => {
 subscribe(`Notifications`, `create`, async (notification) => {
     let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
     let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
-    if (user.get(`telegram`)) {
-        setTimeout(async () => {
-            telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
-            await notification.set(`status`, `sent`).save()
-        }, delay > 0 ? delay : 0)
-    }
+    setTimeout(async () => {
+        user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
+        await notification.set(`status`, `sent`).save()
+    }, delay > 0 ? delay : 0)
     console.log(`new notification:`, {
         to: user.get(`username`).split(`@`)[0],
         message: notification.get(`message`)
