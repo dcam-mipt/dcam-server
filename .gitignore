@@ -1,3 +1,2 @@
-jobs/config.js
-docker/parse/simple_parse_server/config.sh
 deploy.sh
+parse/config.js
