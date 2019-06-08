@@ -542,6 +542,13 @@ server.get(`/auth/get_my_entries`, async (request, response, next) => {
     if (user) { response.send((await new Parse.Query(`Verifications`).equalTo(`username`, user.get(`username`)).find()).length > 0) }
 })
 
+let create_notification = async (user_id, message, delivery_timestamp) => await new Parse.Object(`Notifications`)
+    .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
+    .set(`status`, `delayed`)
+    .set(`user_id`, user_id)
+    .set(`message`, message)
+    .save()
+
 server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
     become(request)
         .then((user) => {
@@ -555,12 +562,10 @@ server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
                             username: verification.get(`telegram_username`),
                         })
                         user.save()
-                            .then((d) => {
+                            .then(async (d) => {
+                                await verification.destroy()
+                                await create_notification(user.id, `Теперь Ваш dcam аккаунт в связке с telegram.`)
                                 response.send(`success`)
-                                verification
-                                    .destroy()
-                                    .then((d) => { console.log(d) })
-                                    .catch((d) => { response.send(d); console.error(d) })
                             })
                             .catch((d) => { response.send(d); console.error(d) })
                     } else {
@@ -577,6 +582,7 @@ server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
     if (user) {
         try {
             await user.set(`telegram`, null).save()
+            await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`[0])}.`)
             response.send(`successfully unpinned telegram account`)
         } catch {
             response.send(`error whie unpining telegram account`)
