@@ -582,7 +582,7 @@ server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
     if (user) {
         try {
             await user.set(`telegram`, null).save()
-            await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`[0])}.`)
+            await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`)[0]}.`)
             response.send(`successfully unpinned telegram account`)
         } catch {
             response.send(`error whie unpining telegram account`)
