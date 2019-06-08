@@ -110,8 +110,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
     }, delay > 0 ? delay : 0)
     console.log(`new notification:`, {
         to: user.get(`username`).split(`@`)[0],
-        message: notification.get(`message`),
-        delay: delay
+        message: notification.get(`message`)
     });
 })
 
