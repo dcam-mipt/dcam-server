@@ -77,7 +77,7 @@ let create_notifications_queue = async () => {
             user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
             await notification.set(`status`, `sent`).save()
         }, delay > 0 ? delay : 0)
-        console.log(moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), `\t`, user.get(`username`).split(`@`)[0]);
+        console.log(moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), `\t`, user.get(`username`).split(`@`)[0].split(`.`)[0]);
         return delay
     })
 }
@@ -109,7 +109,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
         await notification.set(`status`, `sent`).save()
     }, delay > 0 ? delay : 0)
     console.log(`new notification:`, {
-        to: user.get(`username`).split(`@`)[0],
+        to: user.get(`username`).split(`@`)[0].split(`.`)[0],
         message: notification.get(`message`)
     });
 })

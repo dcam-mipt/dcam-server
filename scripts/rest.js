@@ -581,7 +581,7 @@ server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
         try {
-            await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`)[0]}.`)
+            await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`)[0].split(`.`)[0]}.`)
             await user.set(`telegram`, null).save()
             response.send(`successfully unpinned telegram account`)
         } catch {
@@ -602,8 +602,8 @@ let get_transactions = async (user_id) => {
         let to_user = users.filter(u => u.id === i.get(`to`))[0]
         return {
             ...i.attributes,
-            from_username: from_user ? from_user.get(`username`).split(`@`)[0] : i.get(`from`),
-            to_username: to_user ? to_user.get(`username`).split(`@`)[0] : i.get(`to`)
+            from_username: from_user ? from_user.get(`username`).split(`@`)[0].split(`.`)[0] : i.get(`from`),
+            to_username: to_user ? to_user.get(`username`).split(`@`)[0].split(`.`)[0] : i.get(`to`)
         }
     }))
 }
