@@ -22,6 +22,9 @@ ssh root@$SSH_SERVER sh << END
     sudo ufw status
     sudo apt update
 
+    printf '\n\n\n> > > zip < < <\n\n\n'
+    echo y | sudo apt-get install zip
+
     printf '\n\n\n> > > node < < <\n\n\n'
 
     echo Y | sudo apt install nodejs npm
