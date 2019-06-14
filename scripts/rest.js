@@ -412,7 +412,7 @@ server.get(`/machines/create`, (request, response, next) => {
 })
 
 server.get(`/auth/:email/:password`, async (request, response, next) => {
-    let admins = await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find()
+    let admins = (await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find()).map(i => i.get(`user_id`))
     console.log(admins);
     if (request.params.email.indexOf(`@`) > -1) {
         Parse.User.logIn(request.params.email, request.params.password)
