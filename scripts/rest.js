@@ -412,8 +412,6 @@ server.get(`/machines/create`, (request, response, next) => {
 })
 
 server.get(`/auth/:email/:password`, async (request, response, next) => {
-    let admins = (await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find()).map(i => i.get(`user_id`))
-    console.log(admins);
     if (request.params.email.indexOf(`@`) > -1) {
         Parse.User.logIn(request.params.email, request.params.password)
             .then((d) => { response.send(d.get(`sessionToken`)) })
@@ -425,10 +423,12 @@ server.get(`/auth/:email/:password`, async (request, response, next) => {
                                 .set(`user_id`, user.id)
                                 .set(`money`, 100)
                                 .save()
-                                .then(async (d) => {
-                                    // let admins = await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find().map(i => i.id)
-                                    // console.log(admins);
-                                    // admins.forEach(async(i) => await create_notification())
+                                .then(async (new_user) => {
+                                    (await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find())
+                                        .forEach(async (i) => await create_notification(
+                                            i.get(`user_id`),
+                                            `Зарегистрирован пользователь с почтой ${new_user.get(username)}`
+                                        ))
                                     response.send(user.get(`sessionToken`))
                                 })
                                 .catch((d) => { response.send(d); console.error(d) })
