@@ -412,24 +412,29 @@ server.get(`/machines/create`, (request, response, next) => {
 })
 
 server.get(`/auth/:email/:password`, (request, response, next) => {
-    Parse.User.logIn(request.params.email, request.params.password)
-        .then((d) => { response.send(d.get(`sessionToken`)) })
-        .catch((d) => {
-            if (d.code === 101) {
-                Parse.User.signUp(request.params.email, request.params.password)
-                    .then((user) => {
-                        new Parse.Object(`Balance`)
-                            .set(`user_id`, user.id)
-                            .set(`money`, 100)
-                            .save()
-                            .then((d) => { response.send(user.get(`sessionToken`)) })
-                            .catch((d) => { response.send(d); console.error(d) })
-                    })
-                    .catch((d) => { response.send(d); console.error(d) })
-            } else {
-                response.send(d); console.error(d)
-            }
-        })
+    if (request.params.email.indexOf(`@`) > -1) {
+        Parse.User.logIn(request.params.email, request.params.password)
+            .then((d) => { response.send(d.get(`sessionToken`)) })
+            .catch((d) => {
+                if (d.code === 101) {
+                    Parse.User.signUp(request.params.email, request.params.password)
+                        .then((user) => {
+                            new Parse.Object(`Balance`)
+                                .set(`user_id`, user.id)
+                                .set(`money`, 100)
+                                .save()
+                                .then((d) => { response.send(user.get(`sessionToken`)) })
+                                .catch((d) => { response.send(d); console.error(d) })
+                        })
+                        .catch((d) => { response.send(d); console.error(d) })
+                } else {
+                    response.send(d); console.error(d)
+                }
+            })
+    } else {
+        let error = `invalid email`
+        response.send(error); console.error(error)
+    }
 })
 
 server.get(`/auth/sign_out`, (request, response, next) => {
