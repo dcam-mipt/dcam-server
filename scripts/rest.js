@@ -411,7 +411,7 @@ server.get(`/machines/create`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/:email/:password`, (request, response, next) => {
+server.get(`/auth/:email/:password`, async (request, response, next) => {
     let admins = await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find().map(i => i.id)
     console.log(admins);
     if (request.params.email.indexOf(`@`) > -1) {
