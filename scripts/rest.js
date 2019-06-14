@@ -425,13 +425,10 @@ server.get(`/auth/:email/:password`, async (request, response, next) => {
                                 .save()
                                 .then(async (new_user) => {
                                     (await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find())
-                                        .forEach(async (i) => {
-                                            console.log(user.get(`username`));
-                                            // await create_notification(
-                                            //     i.get(`user_id`),
-                                            //     `Зарегистрирован пользователь с почтой ${user.get(username)}`
-                                            // )
-                                        })
+                                        .forEach(async (i) => await create_notification(
+                                            i.get(`user_id`),
+                                            `Зарегистрирован пользователь с почтой ${user.get(`username`)}`
+                                        ))
                                     response.send(user.get(`sessionToken`))
                                 })
                                 .catch((d) => { response.send(d); console.error(d) })
