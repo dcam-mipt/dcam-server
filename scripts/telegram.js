@@ -50,9 +50,9 @@ let auth_command = () => {
     })
 }
 
-// bot.on(`text`, (message) => {
-//     telegram.sendMessage(227992175, `${message.update.message.from.username}\n\n${message.update.message.text}`)
-// })
+bot.on(`text`, (message) => {
+    telegram.sendMessage(227992175, `${message.update.message.from.username}\n\n${message.update.message.text}`)
+})
 
 auth_command()
 
