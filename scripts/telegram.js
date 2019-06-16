@@ -50,9 +50,9 @@ let auth_command = () => {
     })
 }
 
-// bot.on(`text`, (message) => {
-//     telegram.sendMessage(227992175, `${message.update.message.from.username}\n\n${message.update.message.text}`)
-// })
+bot.on(`message`, (message) => {
+    telegram.sendMessage(227992175, `${message.update.message.from.username}\n\n${message.update.message.text}`)
+})
 
 auth_command()
 
@@ -116,9 +116,9 @@ subscribe(`Notifications`, `create`, async (notification) => {
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /help, чтоб получить список команд'))
 bot.command('help', (ctx) => {
-    ctx.reply(`Вот список команд:\n
-    /auth - авторизация\n
-    /help - помощь в работе с сервисом\n\n
+    ctx.reply(`Вот список команд:
+    /auth - авторизация
+    /help - помощь в работе с сервисом
     Отпарвьте боту любое сообщение с вопросом, мы постараемся ответить вам как можно быстрее.`)
 })
 bot.launch()
