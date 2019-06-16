@@ -29,24 +29,26 @@ let subscribe = (className, method, action) => {
 
 let auth_command = () => {
     let auth_mode = false
-    bot.command('auth', (ctx) => {
+    bot.command('auth', async (ctx) => {
         auth_mode = true
-        ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
-        bot.on(`text`, (mail_answer) => {
-            console.log(`< < <`, mail_answer.update.message.from.id, mail_answer.update.message.from.username);
-            if (auth_mode) {
-                let mail = mail_answer.update.message.text
-                mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${mail_answer.update.message.from.id}/${mail_answer.update.message.from.username}`)
-                    .then((d) => {
-                        switch (d.data) {
-                            case `already connected`: mail_answer.reply(`Аккаунт с этой почтой уже связан с telegram. Если это Ваш аккаунт - нажмите "забыть этот аккаунт" в профиле на сайте, и повторите попытку`); break;
-                            case `wrong email`: mail_answer.reply(`Не существует пользователя с такой почтой`); break;
-                            default: mail_answer.reply(`🔗 Откройте окно Вашего профиля в личном кабинете и введите этот код - ${d.data}. Не сообщайте его никому. Срок действия кода подтверждения - 60 секунд.`)
-                        }
-                        auth_mode = false
-                    })
-            }
-        })
+        let is_already_signed = (await new Parse.Query(`User`).exists(`telegram`).find()).map(i => i.get(`telegram`).id).indexOf(ctx.update.message.from.id) > -1
+        ctx.reply(is_already_signed)
+        // ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
+        // bot.on(`text`, (mail_answer) => {
+        //     console.log(`< < <`, mail_answer.update.message.from.id, mail_answer.update.message.from.username);
+        //     if (auth_mode) {
+        //         let mail = mail_answer.update.message.text
+        //         mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${mail_answer.update.message.from.id}/${mail_answer.update.message.from.username}`)
+        //             .then((d) => {
+        //                 switch (d.data) {
+        //                     case `already connected`: mail_answer.reply(`Аккаунт с этой почтой уже связан с telegram. Если это Ваш аккаунт - нажмите "забыть этот аккаунт" в профиле на сайте, и повторите попытку`); break;
+        //                     case `wrong email`: mail_answer.reply(`Не существует пользователя с такой почтой`); break;
+        //                     default: mail_answer.reply(`🔗 Откройте окно Вашего профиля в личном кабинете и введите этот код - ${d.data}. Не сообщайте его никому. Срок действия кода подтверждения - 60 секунд.`)
+        //                 }
+        //                 auth_mode = false
+        //             })
+        //     }
+        // })
     })
 }
 
