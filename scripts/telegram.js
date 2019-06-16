@@ -31,8 +31,12 @@ let auth_command = () => {
     let auth_mode = false
     bot.command('auth', async (ctx) => {
         auth_mode = true
-        let is_already_signed = (await new Parse.Query(`User`).limit(1000000).select(`telegram`).find()).map(i => i.get(`telegram`)).filter(i => i !== undefined && i !== null).map(i => +i.id).indexOf(+ctx.update.message.from.id) > -1
-        console.log(is_already_signed);
+        let users = await new Parse.Query(`User`).limit(1000000).find()
+        let current_user = users.filter(i => i.get(`telegram`) !== undefined && i.get(`telegram`) !== null).map(i => { return {telegram_id: i.get(`telegram`).id, mail: i.get(`username`)} }).filter(i => +i.telegram_id === +ctx.update.message.from.id)
+        console.log(current_user.length > 0);
+        // if (is_already_signed) {
+        //     ctx.reply(`Этот бот уже привязан к профилю c почтой ${mail}`)
+        // }
         // ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
         // bot.on(`text`, (mail_answer) => {
         //     console.log(`< < <`, mail_answer.update.message.from.id, mail_answer.update.message.from.username);
