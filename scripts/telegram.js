@@ -116,8 +116,7 @@ subscribe(`Notifications`, `create`, async (notification) => {
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /help, чтоб получить список команд'))
 bot.command('help', (ctx) => {
-    console.log(`> > > help > > >`);
-    ctx.replay(`Вот список команд:\n
+    ctx.reply(`Вот список команд:\n
     /auth - авторизация\n
     /help - помощь в работе с сервисом\n\n
     Отпарвьте боту любое сообщение с вопросом, мы постараемся ответить вам как можно быстрее.`)
