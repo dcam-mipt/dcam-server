@@ -134,7 +134,7 @@ bot.command('help', (ctx) => {
     /help - помощь в работе с сервисом`)
 })
 
-bot.use(Telegraf.log())
+// bot.use(Telegraf.log())
 
 bot.launch()
 /*eslint-enable no-unused-vars*/
