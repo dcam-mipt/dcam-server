@@ -58,6 +58,15 @@ let auth_command = () => {
 
 auth_command()
 
+bot.command('onetime', ({ reply }) =>
+    reply('One time keyboard', Markup
+        .keyboard(['/simple', '/inline', '/pyramid'])
+        .oneTime()
+        .resize()
+        .extra()
+    )
+)
+
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
 
 telegram.sendMessage(227992175, `deployed.`)
