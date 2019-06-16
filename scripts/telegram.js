@@ -50,10 +50,6 @@ let auth_command = () => {
     })
 }
 
-bot.on(`message`, (message) => {
-    telegram.sendMessage(227992175, `${message.update.message.from.username}\n\n${message.update.message.text}`)
-})
-
 auth_command()
 
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
@@ -118,8 +114,7 @@ bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправь�
 bot.command('help', (ctx) => {
     ctx.reply(`Вот список команд:
     /auth - авторизация
-    /help - помощь в работе с сервисом
-    Отпарвьте боту любое сообщение с вопросом, мы постараемся ответить вам как можно быстрее.`)
+    /help - помощь в работе с сервисом`)
 })
 bot.launch()
 /*eslint-enable no-unused-vars*/
