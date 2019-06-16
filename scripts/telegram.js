@@ -31,7 +31,7 @@ let auth_command = () => {
     let auth_mode = false
     bot.command('auth', async (ctx) => {
         auth_mode = true
-        let is_already_signed = (await new Parse.Query(`User`).notEqualTo(`telegram`, undefined).find()).map(i => i.get(`telegram`))
+        let is_already_signed = (await new Parse.Query(`User`).limit(100000000).find()).map(i => i.get(`telegram`))
         ctx.reply(is_already_signed)
         // ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
         // bot.on(`text`, (mail_answer) => {
