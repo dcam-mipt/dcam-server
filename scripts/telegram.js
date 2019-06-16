@@ -37,9 +37,15 @@ let auth_command = () => {
         let current_user = users.filter(i => i.get(`telegram`) !== undefined && i.get(`telegram`) !== null).map(i => { return { telegram_id: i.get(`telegram`).id, mail: i.get(`username`) } }).filter(i => +i.telegram_id === +ctx.update.message.from.id)[0]
         if (current_user) {
             ctx.reply(`Этот бот уже привязан к профилю c почтой ${current_user.mail}`, Markup.inlineKeyboard([
-                Markup.callbackButton('Выйти', 'Выйти'),
-                Markup.callbackButton('Остаться', 'Остаться'),
+                Markup.callbackButton('Сменить аккаунт', 'Сменить аккаунт'),
+                Markup.callbackButton('Выйти', 'Выйти')
             ]).extra())
+            // bot.action('Выйти', (ctx, next) => {
+            //     return ctx.reply('👍').then(() => next())
+            // })
+            // bot.action('Сменить аккаунт', (ctx, next) => {
+            //     return ctx.reply('👍').then(() => next())
+            // })
         } else {
             ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
             bot.on(`text`, (mail_answer) => {
