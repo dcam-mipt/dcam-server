@@ -32,7 +32,7 @@ let auth_command = () => {
     bot.command('auth', async (ctx) => {
         auth_mode = true
         let is_already_signed = (new Parse.Query(`User`).limit(1000000).select(`telegram`).find())
-        console.log(is_alredy_signed);
+        console.log(is_already_signed);
         // ctx.reply(`Введите вашу почту (на домене @phystech.edu)`)
         // bot.on(`text`, (mail_answer) => {
         //     console.log(`< < <`, mail_answer.update.message.from.id, mail_answer.update.message.from.username);
