@@ -3,6 +3,7 @@ const axios = require(`axios`)
 const Telegraf = require('telegraf')
 const config = require('./config')
 const Telegram = require('telegraf/telegram')
+const Markup = require('telegraf/markup')
 const Parse = require(`parse/node`)
 const moment = require('moment-timezone')
 
