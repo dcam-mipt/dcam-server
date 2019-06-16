@@ -114,6 +114,12 @@ subscribe(`Notifications`, `create`, async (notification) => {
     });
 })
 
-bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /auth'))
+bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /help, чтоб получить список команд'))
+bot.command('help', (ctx) => {
+    ctx.replay(`Вот список команд:\n
+    /auth - авторизация\n
+    /help - помощь в работе с сервисом\n\n
+    Отпарвьте боту любое сообщение с вопросом, мы постараемся ответить вам как можно быстрее.`)
+})
 bot.launch()
 /*eslint-enable no-unused-vars*/
