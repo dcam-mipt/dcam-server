@@ -60,25 +60,24 @@ let drive = () => {
         exec("mongodump && zip dump.zip dump", () => {
             const drive = google.drive({ version: 'v3', auth });
             var fileMetadata = {
-                'name': 'dump',
+                'name': 'dump.zip',
                 parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
             };
             var media = {
                 mimeType: mime.getType(`dump.zip`),
                 body: fs.createReadStream('dump.zip')
             };
-            console.log(`> > >`, media);
-            // drive.files.create({
-            //     resource: fileMetadata,
-            //     media: media,
-            //     fields: 'id'
-            // }, function (err, file) {
-            //     if (err) {
-            //         console.error(err);
-            //     } else {
-            //         console.log('File Id: ', file.id);
-            //     }
-            // });
+            drive.files.create({
+                resource: fileMetadata,
+                media: media,
+                fields: 'id'
+            }, function (err, file) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log('File Id: ', file.id);
+                }
+            });
         });
 
     }
