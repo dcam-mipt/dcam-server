@@ -2,15 +2,16 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
+var config = require('./config')
 
 var api = new ParseServer({
-    databaseURI: 'mongodb://localhost:27017/dev',
-    appId: 'dcam',
-    masterKey: 'dcam',
-    javasScriptKey: 'dcam',
-    serverURL: 'http://localhost:1337/parse',
+    databaseURI: config.MONGO_DB_URL,
+    appId: config.PARSE_APP_ID,
+    masterKey: config.PARSE_MASTER_KEY,
+    javasScriptKey: config.PARSE_JS_KEY,
+    serverURL: config.PARSE_SERVER_URL,
     liveQuery: {
-        classNames: [`Laundry`, `Verifications`, `User`, `Balance`, `Constants`, `Machines`, `Notifications`, `Transactions`]
+        classNames: config.LIVE_QUERY_CLASSES
     }
 });
 
@@ -28,7 +29,7 @@ app.get('/test', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/test.html'));
 });
 
-var port = 1337;
+var port = config.PARSE_PORT;
 var httpServer = require('http').createServer(app);
 httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
