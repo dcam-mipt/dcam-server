@@ -11,13 +11,13 @@ Parse.User.enableUnsafeCurrentUser()
 let create_notification = async (user_id, message, delivery_timestamp) => await new Parse.Object(`Notifications`)
     .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
     .set(`status`, `delayed`)
-    .set(`user_id`, user_id + ``)
+    .set(`user_id`, user_id)
     .set(`message`, message)
     .save()
 
 let backup = () => {
     exec(`node upload.js`, () => {
-        create_notification(227992175, `> > > backup created`)
+        create_notification(`2l9EdlDLIE`, `> > > backup created`)
         // setTimeout(() => { backup() }, 60000 * 0.5)
     })
 }
