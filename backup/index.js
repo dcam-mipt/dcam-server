@@ -2,6 +2,7 @@
 var exec = require('child_process').exec;
 var Parse = require('parse/node')
 var config = require('../config')
+var moment = require(`moment`)
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
