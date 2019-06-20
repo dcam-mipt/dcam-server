@@ -2,6 +2,7 @@
 var nodemailer = require('nodemailer');
 var sys = require('sys')
 var exec = require('child_process').exec;
+var mime = require('mime');
 
 let drive = () => {
     const fs = require('fs');
@@ -63,7 +64,7 @@ let drive = () => {
                 parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
             };
             var media = {
-                mimeType: 'inode/directory',
+                mimeType: mime.getType(`dump`),
                 body: fs.createReadStream('dump')
             };
             drive.files.create({
