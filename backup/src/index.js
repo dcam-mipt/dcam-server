@@ -67,17 +67,18 @@ let drive = () => {
                 mimeType: mime.getType(`dump`),
                 body: fs.createReadStream('dump')
             };
-            drive.files.create({
-                resource: fileMetadata,
-                media: media,
-                fields: 'id'
-            }, function (err, file) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log('File Id: ', file.id);
-                }
-            });
+            console.log(`> > >`, media);
+            // drive.files.create({
+            //     resource: fileMetadata,
+            //     media: media,
+            //     fields: 'id'
+            // }, function (err, file) {
+            //     if (err) {
+            //         console.error(err);
+            //     } else {
+            //         console.log('File Id: ', file.id);
+            //     }
+            // });
         });
 
     }
