@@ -64,12 +64,9 @@ let drive = () => {
             if (err) return console.log('The API returned an error: ' + err);
             const files = res.data.files;
             if (files.length) {
-                files.map(i => +i.name.split(`.`)[0].split[`_`][1]).forEach(i => {
-                    console.log(i);
-                })
-                // files.sort((a, b) => +a.name.split(`_`)[1] - +b.name.split(`_`)[1]).map((file) => {
-                //     console.log(`${file.name} (${file.id})`);
-                // });
+                files.sort((a, b) => +a.name.split(`.`)[0].split(`_`)[1] - +b.name.split(`.`)[0].split(`_`)[1]).map((file) => {
+                    console.log(`${file.name} (${file.id})`);
+                });
             } else {
                 console.log('No files found.');
             }
