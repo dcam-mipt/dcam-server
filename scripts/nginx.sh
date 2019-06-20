@@ -48,7 +48,7 @@ server {
         }
 
         location / {
-                root /var/www/$DOMAIN_NAME/html;
+            root /var/www/$DOMAIN_NAME/html;
         }
 
 }
