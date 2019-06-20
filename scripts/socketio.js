@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 var Parse = require(`parse/node`)
-var config = require('./config')
+var config = require('../config')
 
 
 // socket io

@@ -2,7 +2,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
-var config = require('./config')
+var config = require('../config')
 
 var api = new ParseServer({
     databaseURI: config.MONGO_DB_URL,

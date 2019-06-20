@@ -59,15 +59,29 @@ let drive = () => {
         const drive = google.drive({ version: 'v3', auth });
         drive.files.list({
             pageSize: 10,
-            fields: 'nextPageToken, files(id, name)',
+            fields: 'nextPageToken, files(id, name, parents)',
             parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
         }, (err, res) => {
             if (err) return console.log('The API returned an error: ' + err);
             const files = res.data.files;
             if (files.length) {
-                files.sort((b, a) => +a.name.split(`.`)[0].split(`_`)[1] - +b.name.split(`.`)[0].split(`_`)[1]).map((file) => {
-                    console.log(`${file.name} (${file.id})`);
-                });
+                let fileId = files.filter(i => i.name.indexOf(`dump`) > -1).sort((b, a) => +a.name.split(`.`)[0].split(`_`)[1] - +b.name.split(`.`)[0].split(`_`)[1])[0].id
+                var dest = fs.createWriteStream('dump.zip');
+                drive.files.get({ fileId: fileId, alt: 'media' }, { responseType: 'stream' },
+                    function (err, res) {
+                        res.data
+                            .on('end', () => {
+                                console.log('> > > backup downloaded');
+                                exec(`./restore.sh`, () => { console.log(`> > > backup restored`) })
+                            })
+                            .on('error', err => {
+                                console.log('Error', err);
+                            })
+                            .pipe(dest);
+                    }
+                );
+
+
             } else {
                 console.log('No files found.');
             }

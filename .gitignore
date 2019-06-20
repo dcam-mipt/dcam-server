@@ -1,7 +1,6 @@
 deploy.sh
 setup.sh
-parse/config.js
-scripts/config.js
+config.js
 scripts/parse-dashboard-config.json
-mailer/credentials.json
-mailer/token.json
+backup/credentials.json
+backup/token.json
