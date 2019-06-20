@@ -54,21 +54,21 @@ ssh root@$SSH_SERVER sh << END
 
 END
 
-printf '\n\n\n> > > copy files to server < < <\n\n\n'
-scp -r ./* root@$SSH_SERVER:~/
+# printf '\n\n\n> > > copy files to server < < <\n\n\n'
+# scp -r ./* root@$SSH_SERVER:~/
 
-ssh root@$SSH_SERVER sh << END
+# ssh root@$SSH_SERVER sh << END
 
-    printf '\n\n\n> > > setup nginx server blocks < < <\n\n\n'
-    chmod +x ./scripts/nginx.sh
-    ./scripts/nginx.sh
+#     printf '\n\n\n> > > setup nginx server blocks < < <\n\n\n'
+#     chmod +x ./scripts/nginx.sh
+#     ./scripts/nginx.sh
 
-    printf '\n\n\n> > > install packages && restart < < <\n\n\n'
-    cd parse && yarn install && cd ../
-    cd scripts && yarn install && cd ../
+#     printf '\n\n\n> > > install packages && restart < < <\n\n\n'
+#     cd parse && yarn install && cd ../
+#     cd scripts && yarn install && cd ../
     
-    printf '\n\n\n> > > start pm2 ecosystem < < <\n\n\n'
-    pm2 kill
-    pm2 start ./scripts/ecosystem.json
+#     printf '\n\n\n> > > start pm2 ecosystem < < <\n\n\n'
+#     pm2 kill
+#     pm2 start ./scripts/ecosystem.json
     
-END
+# END
