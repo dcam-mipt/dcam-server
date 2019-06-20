@@ -1,5 +1,5 @@
 deploy.sh
-setup.sh
+# setup.sh
 config.js
 scripts/parse-dashboard-config.json
 backup/credentials.json
