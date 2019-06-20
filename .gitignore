@@ -1,5 +1,6 @@
 deploy.sh
 setup.sh
 parse/config.js
+scripts/config.js
 mailer/credentials.json
 mailer/token.json
