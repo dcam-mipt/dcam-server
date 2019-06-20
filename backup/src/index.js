@@ -57,26 +57,27 @@ let drive = () => {
     function create_backup(auth) {
 
         exec("mongodump", () => {
-            const drive = google.drive({ version: 'v3', auth });
-            var fileMetadata = {
-                'name': 'backups/package.json',
-                parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
-            };
-            var media = {
-                mimeType: 'inode/directory',
-                body: fs.createReadStream('dump')
-            };
-            drive.files.create({
-                resource: fileMetadata,
-                media: media,
-                fields: 'id'
-            }, function (err, file) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log('File Id: ', file.id);
-                }
-            });
+            console.log(`> > > done`);
+            // const drive = google.drive({ version: 'v3', auth });
+            // var fileMetadata = {
+            //     'name': 'backups/package.json',
+            //     parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
+            // };
+            // var media = {
+            //     mimeType: 'inode/directory',
+            //     body: fs.createReadStream('dump')
+            // };
+            // drive.files.create({
+            //     resource: fileMetadata,
+            //     media: media,
+            //     fields: 'id'
+            // }, function (err, file) {
+            //     if (err) {
+            //         console.error(err);
+            //     } else {
+            //         console.log('File Id: ', file.id);
+            //     }
+            // });
         });
 
     }
