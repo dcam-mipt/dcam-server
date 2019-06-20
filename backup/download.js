@@ -60,6 +60,7 @@ let drive = () => {
         drive.files.list({
             pageSize: 10,
             fields: 'nextPageToken, files(id, name)',
+            parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
         }, (err, res) => {
             if (err) return console.log('The API returned an error: ' + err);
             const files = res.data.files;
