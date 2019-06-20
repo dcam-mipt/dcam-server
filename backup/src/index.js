@@ -1,9 +1,8 @@
 /*eslint-disable no-unused-vars*/
-import moment from 'moment'
-
 var nodemailer = require('nodemailer');
 var exec = require('child_process').exec;
 var mime = require('mime');
+var moment = require(`moment`)
 
 let drive = () => {
     const fs = require('fs');
