@@ -59,7 +59,7 @@ let drive = () => {
         exec("mongodump && zip -r -m dump.zip dump", () => {
             const drive = google.drive({ version: 'v3', auth });
             var fileMetadata = {
-                'name': `dump_${+moment()}}.zip`,
+                'name': `dump_${+moment()}.zip`,
                 parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
             };
             var media = {
