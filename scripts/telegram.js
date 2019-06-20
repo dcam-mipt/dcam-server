@@ -1,7 +1,7 @@
 /*eslint-disable no-unused-vars*/
 const axios = require(`axios`)
 const Telegraf = require('telegraf')
-const config = require('./config')
+const config = require('../config')
 const Telegram = require('telegraf/telegram')
 const Markup = require('telegraf/markup')
 const Extra = require('telegraf/extra')
