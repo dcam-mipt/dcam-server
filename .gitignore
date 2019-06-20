@@ -3,4 +3,3 @@ setup.sh
 parse/config.js
 mailer/credentials.json
 mailer/token.json
-mailer
