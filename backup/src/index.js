@@ -57,15 +57,15 @@ let drive = () => {
 
     function create_backup(auth) {
 
-        exec("mongodump", () => {
+        exec("mongodump && zip dump.zip dump", () => {
             const drive = google.drive({ version: 'v3', auth });
             var fileMetadata = {
                 'name': 'dump',
                 parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
             };
             var media = {
-                mimeType: mime.getType(`dump`),
-                body: fs.createReadStream('dump')
+                mimeType: mime.getType(`dump.zip`),
+                body: fs.createReadStream('dump.zip')
             };
             console.log(`> > >`, media);
             // drive.files.create({
