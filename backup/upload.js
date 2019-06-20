@@ -1,5 +1,4 @@
 /*eslint-disable no-unused-vars*/
-var nodemailer = require('nodemailer');
 var exec = require('child_process').exec;
 var mime = require('mime');
 var moment = require(`moment`)
@@ -57,10 +56,10 @@ let drive = () => {
 
     function create_backup(auth) {
 
-        exec("mongodump && zip dump.zip dump", () => {
+        exec("mongodump && zip -r -m dump.zip dump", () => {
             const drive = google.drive({ version: 'v3', auth });
             var fileMetadata = {
-                'name': `dump_${+moment()}_${moment().format(`DD.MM.YY_HH:mm`)}.zip`,
+                'name': `dump_${+moment()}}.zip`,
                 parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
             };
             var media = {
