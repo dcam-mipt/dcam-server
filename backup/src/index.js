@@ -1,6 +1,7 @@
 /*eslint-disable no-unused-vars*/
+import moment from 'moment'
+
 var nodemailer = require('nodemailer');
-var sys = require('sys')
 var exec = require('child_process').exec;
 var mime = require('mime');
 
@@ -60,7 +61,7 @@ let drive = () => {
         exec("mongodump && zip dump.zip dump", () => {
             const drive = google.drive({ version: 'v3', auth });
             var fileMetadata = {
-                'name': 'dump.zip',
+                'name': `dump_${moment().format(`DD.MM.YY`)}_${moment().format(`DD.MM.YY_HH:mm`)}.zip`,
                 parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
             };
             var media = {
