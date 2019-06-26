@@ -632,3 +632,16 @@ server.get(`/transactions/get_all_transactions`, async (request, response, next)
         response.send(await get_transactions())
     }
 })
+
+server.get(`/notifications/get_all_notifications`, async (request, response, next) => {
+    if (await isAdmin(await become(request))) {
+        response.send(await new Parse.Query(`Notifications`).limit(1000000).find())
+    }
+}
+)
+server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) {
+        response.send(await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).limit(1000000).find())
+    }
+})
