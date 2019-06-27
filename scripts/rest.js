@@ -642,6 +642,11 @@ server.get(`/notifications/get_all_notifications`, async (request, response, nex
 server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
-        response.send(await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).limit(1000000).find())
+        let res = await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).limit(1000000).find()
+        let res_ = res.forEach(async (item) => {
+            item.username = (await new Parse.Query(`User`).equalTo(`objectId`, item.user_id).select(`username`).first()).get(`username`)
+        })
+        console.log(res_);
+        response.send(res)
     }
 })
