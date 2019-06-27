@@ -639,13 +639,13 @@ let get_notifications = async (user_id) => {
         query.equalTo(`user_id`, user_id)
     }
     query.select(`user_id`, `message`, `delivery_timestamp`, `status`).
-    let result = await query.find()
+    let array = await query.find()
 
     query.forEach((item) => {
         console.log((await new Parse.Query(`User`).equalTo(`objectId`, item.get(`user_id`).select(`username`)).get(`username`)));
     })
 
-    return (result)
+    return (array)
 }
 
 server.get(`/notifications/get_all_notifications`, async (request, response, next) => {
