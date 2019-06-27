@@ -644,14 +644,22 @@ let get_notifications = async (user_id) => {
 }
 
 server.get(`/notifications/get_all_notifications`, async (request, response, next) => {
-    if (await isAdmin(await become(request))) {
-        response.send(await get_notifications())
+    try {
+        if (await isAdmin(await become(request))) {
+            response.send(await get_notifications())
+        }
+    } catch (error) {
+        response.send(error)
     }
 }
 )
 server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
-    let user = await become(request)
-    if (user) {
-        response.send(await get_notifications(user.id))
+    try {
+        let user = await become(request)
+        if (user) {
+            response.send(await get_notifications(user.id))
+        }
+    } catch (error) {
+        response.send(error)
     }
 })
