@@ -635,19 +635,19 @@ server.get(`/transactions/get_all_transactions`, async (request, response, next)
 
 server.get(`/notifications/get_all_notifications`, async (request, response, next) => {
     if (await isAdmin(await become(request))) {
-        response.send(await new Parse.Query(`Notifications`).limit(1000000).find())
-    }
-}
-)
-server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
-    let user = await become(request)
-    if (user) {
-        let res = await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).limit(1000000).find()
+        let res = await new Parse.Query(`Notifications`).limit(1000000).find()
         let res_ = res.forEach(async (item) => {
             console.log(item.user_id);
             item.username = (await new Parse.Query(`User`).equalTo(`objectId`, item.user_id).select(`username`).first()).get(`username`)
         })
         console.log(res_)
         response.send(res)
+    }
+}
+)
+server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
+    let user = await become(request)
+    if (user) {
+        response.send(await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).limit(1000000).find())
     }
 })
