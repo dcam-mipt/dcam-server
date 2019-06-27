@@ -640,9 +640,7 @@ let get_notifications = async (user_id) => {
     }
     let notifications = await query.find()
     let users = await new Parse.Query(`User`).limit(1000000).find()
-    notifications.forEach(i => {
-        console.log(users.filter(u => u.id === i.get(`user_id`)));
-    })
+    notifications.forEach(i => { i.set(`user`, users.filter(u => u.id === i.get(`user_id`))[0].get(`username`)) })
     return notifications
 }
 
