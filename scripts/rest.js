@@ -590,15 +590,19 @@ server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
 })
 
 server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
-    let user = await become(request)
-    if (user) {
-        try {
-            await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`)[0].split(`.`)[0]}.`)
-            await user.set(`telegram`, null).save()
-            response.send(`successfully unpinned telegram account`)
-        } catch {
-            response.send(`error whie unpining telegram account`)
+    try {
+        let user = await become(request)
+        if (user) {
+            try {
+                await create_notification(user.id, `Больше этот telegram аккаунт не связан с dcam профилем ${user.get(`username`).split(`@`)[0].split(`.`)[0]}.`)
+                await user.set(`telegram`, null).save()
+                response.send(`successfully unpinned telegram account`)
+            } catch {
+                response.send(`error while unpining telegram account`)
+            }
         }
+    } catch (error) {
+        response.send(error)
     }
 })
 
@@ -621,15 +625,23 @@ let get_transactions = async (user_id) => {
 }
 
 server.get(`/transactions/get_my_transactions`, async (request, response, next) => {
-    let user = await become(request)
-    if (user) {
-        response.send(await get_transactions(user.id))
+    try {
+        let user = await become(request)
+        if (user) {
+            response.send(await get_transactions(user.id))
+        }
+    } catch (error) {
+        response.send(error)
     }
 })
 
 server.get(`/transactions/get_all_transactions`, async (request, response, next) => {
-    if (await isAdmin(await become(request))) {
-        response.send(await get_transactions())
+    try {
+        if (await isAdmin(await become(request))) {
+            response.send(await get_transactions())
+        }
+    } catch (error) {
+        response.send(error)
     }
 })
 
