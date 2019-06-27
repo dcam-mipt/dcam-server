@@ -642,7 +642,8 @@ let get_notifications = async (user_id) => {
     let result = await query.find()
 
     query.forEach((item) => {
-        console.log((await new Parse.Query(`User`).equalTo(`objectId`, item.get(`user_id`).select(`username`)).get(`username`)));
+        let username = await new Parse.Query(`User`).equalTo(`objectId`, item.get(`user_id`)).first()
+        console.log(username);
     })
 
     return (result)
