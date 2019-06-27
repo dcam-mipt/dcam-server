@@ -638,13 +638,13 @@ let get_notifications = async (user_id) => {
     if (user_id) {
         query.equalTo(`user_id`, user_id)
     }
-    query.select(`user_id`, `message`, `delivery_timestamp`, `status`)
+    query.select(`message`)
     let result = await query.find()
 
-    await result.forEach(async (item) => {
-        let username = (await new Parse.Query(`User`).equalTo(`objectId`, item.get(`user_id`)).first()).get(`username`)
-        item.set(`username`, username)
-    })
+    // await result.forEach(async (item) => {
+    //     let username = (await new Parse.Query(`User`).equalTo(`objectId`, item.get(`user_id`)).first()).get(`username`)
+    //     item.set(`username`, username)
+    // })
 
     return (result)
 }
