@@ -639,11 +639,11 @@ let get_notifications = async (user_id) => {
         query.equalTo(`user_id`, user_id)
     }
     let notifications = await query.find()
-    let users = new Parse.Query(`User`).limit(1000000).find()
+    let users = await new Parse.Query(`User`).limit(1000000).find()
     notifications.forEach(i => {
         i.set(`user`, user.filter(u => u.get(`objectId`) === u.get(`user_id`)))
     })
-    return await query.find()
+    return notifications
 }
 
 server.get(`/notifications/get_all_notifications`, async (request, response, next) => {
