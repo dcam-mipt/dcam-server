@@ -102,18 +102,13 @@ subscribe(`Laundry`, `create`, async (laundry) => {
     return await create_notification(laundry.get(`user_id`), `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
 })
 
-subscribe(`Laundry`, `create`, async (laundry) => {
-    let machines = await new Parse.Query(`Machines`).find()
-    return await create_notification(laundry.get(`user_id`), `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
-})
-
 subscribe(`Laundry`, `delete`, async (laundry) => {
     let machines = await new Parse.Query(`Machines`).find()
     return await create_notification(laundry.get(`user_id`), `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
 })
 
 subscribe(`Balance`, `update`, async (balance) => {
-    return await create_notification(balance.get(`user_id`), `💳 Новый баланс: ${balance.get(`money`)}р`)
+    return await setTimeout(() => { create_notification(balance.get(`user_id`), `💳 Новый баланс: ${balance.get(`money`)}р`) }, 1000)
 })
 
 subscribe(`Notifications`, `create`, async (notification) => {
