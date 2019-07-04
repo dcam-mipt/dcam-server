@@ -54,6 +54,11 @@ ssh root@$SSH_SERVER sh << END
 
 END
 
+printf '\n\n\n> > > deploy front < < <\n\n\n'
+cd ../dcam-web-app/
+./deploy.sh
+cd ../dcam-server/
+
 printf '\n\n\n> > > copy files to server < < <\n\n\n'
 scp -r ./* root@$SSH_SERVER:~/
 
@@ -63,6 +68,7 @@ ssh root@$SSH_SERVER sh << END
     chmod +x ./scripts/nginx.sh
     chmod +x ./scripts/backup.sh
     chmod +x ./scripts/dashboard.sh
+    chmod +x ./backup/restore.sh
     ./scripts/nginx.sh
 
     printf '\n\n\n> > > install packages && restart < < <\n\n\n'
@@ -75,7 +81,3 @@ ssh root@$SSH_SERVER sh << END
     pm2 start ./scripts/ecosystem.json
     
 END
-
-cd ../dcam-web-app/
-./deploy.sh
-cd ../dcam-server/
