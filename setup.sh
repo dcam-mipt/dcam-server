@@ -61,6 +61,8 @@ ssh root@$SSH_SERVER sh << END
 
     printf '\n\n\n> > > setup nginx server blocks < < <\n\n\n'
     chmod +x ./scripts/nginx.sh
+    chmod +x ./scripts/backup.sh
+    chmod +x ./scripts/dashboard.sh
     ./scripts/nginx.sh
 
     printf '\n\n\n> > > install packages && restart < < <\n\n\n'
@@ -73,3 +75,7 @@ ssh root@$SSH_SERVER sh << END
     pm2 start ./scripts/ecosystem.json
     
 END
+
+cd ../dcam-web-app/
+./deploy.sh
+cd ../dcam-server/
