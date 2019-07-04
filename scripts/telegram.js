@@ -29,6 +29,13 @@ let subscribe = (className, method, action) => {
     client.subscribe(new Parse.Query(className)).on(method, (object) => { action(object) })
 }
 
+bot.command(`clear`, async () => {
+    let balances = await new Parse.Query(`Balance`).find()
+    for (let i in balances) {
+        await balance[i].set(`money`, 0).save()
+    }
+})
+
 let auth_command = () => {
     let auth_mode = false
     bot.command('auth', async (ctx) => {
