@@ -111,7 +111,7 @@ subscribe(`Laundry`, `delete`, async (laundry) => {
 })
 
 subscribe(`Balance`, `update`, async (balance) => {
-    return await create_notification(balance.get(`user_id`), `💳 Новыйы баланс: ${balance.get(`money`)}р`)
+    return await create_notification(balance.get(`user_id`), `💳 Новый баланс: ${balance.get(`money`)}р`)
 })
 
 subscribe(`Notifications`, `create`, async (notification) => {
