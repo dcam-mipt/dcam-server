@@ -2,7 +2,7 @@
 let moment = require(`moment-timezone`)
 let exec = require('child_process').exec;
 
-let interval_in_hours = 1 / (60 * 4)
+let interval_in_hours = 1
 
 // setTimeout(() => {
 setInterval(() => {

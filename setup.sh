@@ -73,6 +73,7 @@ ssh root@$SSH_SERVER sh << END
     printf '\n\n\n> > > start pm2 ecosystem < < <\n\n\n'
     pm2 kill
     pm2 start ./scripts/ecosystem.json
+    pm2 start ./backup/index.js
     
 END
 
