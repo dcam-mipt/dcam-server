@@ -213,8 +213,8 @@ server.get(`/laundry/get`, (request, response, next) => {
                         .greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`week`))
                         .find()
                         .then((d) => {
+                            console.log(d);
                             response.send(d.map((i) => {
-                                console.log(`> > >`);
                                 let user = users.filter(u => u.id === i.get(`user_id`))[0]
                                 return {
                                     machine_id: i.get(`machine_id`),
