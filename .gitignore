@@ -3,4 +3,5 @@ deploy.sh
 config.js
 scripts/parse-dashboard-config.json
 backup/credentials.json
+credentials.json
 backup/token.json
