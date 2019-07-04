@@ -1,1 +1,3 @@
-node ../backup/index.js
+cd ../backup
+node index.js
+cd ../scripts
