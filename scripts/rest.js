@@ -209,12 +209,12 @@ server.get(`/laundry/get`, (request, response, next) => {
                 .limit(1000000)
                 .find()
                 .then((users) => {
-                    console.log(`> > >`);
                     new Parse.Query(`Laundry`)
                         .greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`week`))
                         .find()
                         .then((d) => {
                             response.send(d.map((i) => {
+                                console.log(`> > >`);
                                 let user = users.filter(u => u.id === i.get(`user_id`))[0]
                                 return {
                                     machine_id: i.get(`machine_id`),
