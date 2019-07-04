@@ -74,7 +74,7 @@ let drive = () => {
                 if (err) {
                     console.error(err);
                 } else {
-                    console.log('> > > backup upwloaded');
+                    console.log('> > > backup uploaded');
                 }
             });
         });
