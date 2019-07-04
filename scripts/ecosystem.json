@@ -27,7 +27,7 @@
         },
         {
             "name": "backup",
-            "script": "./backup/index.js",
+            "script": "backup.sh",
             "watch": false
         }
     ]
