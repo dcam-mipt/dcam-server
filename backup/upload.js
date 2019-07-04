@@ -3,6 +3,8 @@ var exec = require('child_process').exec;
 var mime = require('mime');
 var moment = require(`moment`)
 
+console.log(`log in file`);
+
 let drive = () => {
     const fs = require('fs');
     const readline = require('readline');
