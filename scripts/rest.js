@@ -203,13 +203,13 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
 });
 
 server.get(`/laundry/get`, (request, response, next) => {
-    console.log(`> > >`);
     become(request)
         .then((d) => {
             new Parse.Query(`User`)
                 .limit(1000000)
                 .find()
                 .then((users) => {
+                    console.log(`> > >`);
                     new Parse.Query(`Laundry`)
                         .greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`week`))
                         .find()
