@@ -185,7 +185,14 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                             let message = `laundry: unbook (${book.get(`user_id`)}, ${book.get(`machine_id`)}, ${moment(book.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`)})`
                             writeLog(message, user)
                             book.destroy()
-                                .then((d) => { response.send(d) })
+                            new Parse.Query(`Notifications`)
+                                .equalTo(`objectId`, book.get(`notification_id`))
+                                .first()
+                                .then((notification) => {
+                                    notification.destroy()
+                                        .then((d) => { response.send(d) })
+                                        .catch((d) => { response.send(d); console.error(d) })
+                                })
                                 .catch((d) => { response.send(d); console.error(d) })
                         })
                         .catch((d) => { response.send(d); console.error(d) })
