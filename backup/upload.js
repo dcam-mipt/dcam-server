@@ -15,7 +15,7 @@ let drive = () => {
         "https://www.googleapis.com/auth/drive"]
     const TOKEN_PATH = 'token.json';
 
-    fs.readFile('~/backup/credentials.json', (err, content) => {
+    fs.readFile('../backup/credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         authorize(JSON.parse(content), create_backup);
     });
