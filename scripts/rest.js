@@ -97,7 +97,7 @@ let become = (request) => new Promise((resolve, reject) => {
 
 let isAdmin = (user) => new Promise((resolve, reject) => {
     new Parse.Query(`Roles`)
-        .equalTo(`user_id`, user.objectId)
+        .equalTo(`user_id`, user.id)
         .equalTo(`role`, `ADMIN`)
         .first()
         .then((d) => { resolve(true) })
