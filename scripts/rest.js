@@ -301,6 +301,7 @@ server.get(`/users/get_users_list`, (request, response, next) => {
         .then((user) => {
             isAdmin(user)
                 .then((d) => {
+                    console.log(user.objectId);
                     new Parse.Query(`User`)
                         .limit(1000000)
                         .find()
