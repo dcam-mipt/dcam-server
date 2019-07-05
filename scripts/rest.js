@@ -96,12 +96,7 @@ let become = (request) => new Promise((resolve, reject) => {
 
 
 let isAdmin = (user) => new Promise(async (resolve, reject) => {
-    let equal_roles = await new Parse.Query(`Roles`)
-        .equalTo(`user_id`, user.id)
-        .equalTo(`role`, `ADMIN`)
-        .first()
-    console.log(equal_roles);
-    return false
+    return (await new Parse.Query(`Roles`).equalTo(`user_id`, user.id).equalTo(`role`, `ADMIN`).first()) !== undefined
 })
 
 
