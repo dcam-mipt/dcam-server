@@ -666,11 +666,27 @@ server.get(`/notifications/get_all_notifications`, async (request, response, nex
     }
 }
 )
+
 server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
             response.send(await get_notifications(user.id))
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
+
+server.get(`/notifications/match_as_read`, async (request, response, next) => {
+    try {
+        let user = await become(request)
+        if (user) {
+            let notifications = await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).find()
+            for (let i in notifications) {
+                await notifications[i].set(`status`, `read`).save()
+            }
+            response(`success`)
         }
     } catch (error) {
         response.send(error)
