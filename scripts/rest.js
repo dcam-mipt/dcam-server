@@ -679,6 +679,7 @@ server.get(`/notifications/get_my_notifications`, async (request, response, next
 })
 
 server.get(`/notifications/match_as_checked`, async (request, response, next) => {
+    console.log(`> > >`);
     try {
         let user = await become(request)
         if (user) {
