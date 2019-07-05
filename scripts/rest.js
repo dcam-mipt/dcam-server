@@ -658,6 +658,7 @@ let get_notifications = async (user_id) => {
 }
 
 server.get(`/notifications/get_all_notifications`, async (request, response, next) => {
+    console.log(`all`);
     try {
         if (await isAdmin(await become(request))) {
             response.send(await get_notifications())
@@ -669,9 +670,9 @@ server.get(`/notifications/get_all_notifications`, async (request, response, nex
 )
 
 server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
+    console.log(`my`);
     try {
         let user = await become(request)
-        console.log(user);
         if (user) {
             response.send(await get_notifications(user.id))
         }
