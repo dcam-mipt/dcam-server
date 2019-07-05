@@ -683,11 +683,9 @@ server.get(`/notifications/match_as_checked`, async (request, response, next) =>
     try {
         let user = await become(request)
         if (user) {
-            let notifications = await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).find()
-            console.log(notifications.length);
+            let notifications = await new Parse.Query(`Notifications`).equalTo(`user_id`, user.id).limit(1000000).find()
             for (let i in notifications) {
                 await notifications[i].set(`status`, `checked`).save()
-                console.log(`setted`);
             }
             response(`success`)
         }
