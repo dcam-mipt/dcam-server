@@ -96,12 +96,10 @@ let become = (request) => new Promise((resolve, reject) => {
 
 
 let isAdmin = (user) => new Promise((resolve, reject) => {
-    new Parse.Query(`Roles`)
+    return (await new Parse.Query(`Roles`)
         .equalTo(`user_id`, user.id)
         .equalTo(`role`, `ADMIN`)
-        .first()
-        .then((d) => { resolve(true) })
-        .catch((d) => { resolve(false) })
+        .first()).length > 0
 })
 
 
