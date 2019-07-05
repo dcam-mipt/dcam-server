@@ -646,6 +646,7 @@ server.get(`/transactions/get_all_transactions`, async (request, response, next)
 })
 
 let get_notifications = async (user_id) => {
+    console.log(user_id);
     let query = new Parse.Query(`Notifications`).limit(1000000)
     if (user_id) {
         query.equalTo(`user_id`, user_id)
