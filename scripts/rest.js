@@ -687,7 +687,7 @@ server.get(`/notifications/match_as_checked`, async (request, response, next) =>
             for (let i in notifications) {
                 await notifications[i].set(`status`, `checked`).save()
             }
-            response(`success`)
+            response.send(`success`)
         }
     } catch (error) {
         response.send(error)
