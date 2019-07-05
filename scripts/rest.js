@@ -671,8 +671,8 @@ server.get(`/notifications/get_all_notifications`, async (request, response, nex
 server.get(`/notifications/get_my_notifications`, async (request, response, next) => {
     try {
         let user = await become(request)
+        console.log(user);
         if (user) {
-            console.log(user);
             response.send(await get_notifications(user.id))
         }
     } catch (error) {
