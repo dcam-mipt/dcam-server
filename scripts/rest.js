@@ -421,7 +421,7 @@ server.get(`/auth/:email/:password`, async (request, response, next) => {
                         .then((user) => {
                             new Parse.Object(`Balance`)
                                 .set(`user_id`, user.id)
-                                .set(`money`, 100)
+                                .set(`money`, 0)
                                 .save()
                                 .then(async (new_user) => {
                                     (await new Parse.Query(`Roles`).equalTo(`role`, `ADMIN`).find())
