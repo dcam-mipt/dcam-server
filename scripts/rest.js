@@ -108,7 +108,7 @@ let isAdmin = (user) => new Promise(async (resolve, reject) => {
 server.post('/yandex/', (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
     new Parse.Query(`Transactions`)
-        .equalTo(`objectId`, req.body.label)
+        .equalTo(`solid`, req.body.label)
         .first()
         .then((transaction) => {
             new Parse.Query(`Balance`)
