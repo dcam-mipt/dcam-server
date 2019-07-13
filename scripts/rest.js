@@ -382,7 +382,10 @@ server.get(`/transactions/start_yandex/:value/:id`, (request, response, next) =>
                 .set(`status`, `started`)
                 .set(`requested`, +request.params.value)
                 .save()
-                .then((d) => { response.send(d.id) })
+                .then((d) => {
+                    d.set(`objectId`, request.params.id)
+                    response.send(d.id)
+                })
                 .catch((d) => { response.send(d); console.error(d) })
         })
         .catch((d) => { response.send(d); console.error(d) })
