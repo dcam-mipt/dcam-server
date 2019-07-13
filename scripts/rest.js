@@ -371,11 +371,12 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/transactions/start_yandex/:value`, (request, response, next) => {
+server.get(`/transactions/start_yandex/:value/:id`, (request, response, next) => {
     become(request)
         .then((user) => {
             var Transactions = Parse.Object.extend(`Transactions`);
             new Transactions()
+                .set(`objectId`, request.params.id)
                 .set(`to`, user.id)
                 .set(`from`, `yandex`)
                 .set(`status`, `started`)

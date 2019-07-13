@@ -18,6 +18,15 @@ cat > /var/www/$DOMAIN_NAME/html/index.html <<EOF
 </html>
 EOF
 
+cat > /var/www/$DOMAIN_NAME/yandex_34252a6cad729229/index.html <<EOF
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>Verification: 34252a6cad729229</body>
+</html>
+EOF
+
 cat > /etc/nginx/sites-available/$DOMAIN_NAME <<EOF
 server {
     listen 80;
