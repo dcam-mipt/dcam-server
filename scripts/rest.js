@@ -376,7 +376,7 @@ server.get(`/transactions/start_yandex/:value/:id`, (request, response, next) =>
         .then((user) => {
             var Transactions = Parse.Object.extend(`Transactions`);
             new Transactions()
-                .set(`objectId`, request.params.id)
+                .set(`solid`, request.params.id)
                 .set(`to`, user.id)
                 .set(`from`, `yandex`)
                 .set(`status`, `started`)
