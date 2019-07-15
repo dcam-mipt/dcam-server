@@ -137,16 +137,19 @@ let isAdmin = (user) => new Promise(async (resolve, reject) => {
 
 server.post('/yandex/', async (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
-    await new Parse.Object(`Transactions`)
-        .set(`to`, req.body.label.split(` `)[0])
-        .set(`from`, `yandex`)
-        .set(`requested`, +req.body.withdraw_amount)
-        .set(`recived`, +req.body.amount)
-        .set(`status`, `done`)
-        .set(`solid`, req.body.label.split(` `)[1])
-        .save()
-    let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label).first()
-    await balance.set(`money`, +balance.get(`money`) + +req.body.withdraw_amount).save()
+    let tr = await new Parse.Query(`Transactions`).equalTo(`solid`, req.body.label.split(` `)[1]).find()
+    if (tr.length === 0) {
+        await new Parse.Object(`Transactions`)
+            .set(`to`, req.body.label.split(` `)[0])
+            .set(`from`, `yandex`)
+            .set(`requested`, +req.body.withdraw_amount)
+            .set(`recived`, +req.body.amount)
+            .set(`status`, `done`)
+            .set(`solid`, req.body.label.split(` `)[1])
+            .save()
+        let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label.split(` `)[0]).first()
+        await balance.set(`money`, +balance.get(`money`) + +req.body.withdraw_amount).save()
+    }
 });
 
 let createOneBook = (request, user, group_id, week_number) => new Promise((resolve, reject) => {
