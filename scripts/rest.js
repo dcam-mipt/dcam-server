@@ -143,6 +143,7 @@ server.post('/yandex/', async (req, res, next) => {
         .set(`requested`, +req.body.withdraw_amount)
         .set(`recived`, +req.body.amount)
         .set(`status`, `done`)
+        .set(`solid`, req.body.target)
         .save()
     let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label).first()
     await balance.set(`money`, +balance.get(`money`) + +req.body.withdraw_amount).save()
