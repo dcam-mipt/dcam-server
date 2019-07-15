@@ -140,11 +140,13 @@ server.post('/yandex/', async (req, res, next) => {
     await new Parse.Object(`Transactions`)
         .set(`to`, req.body.label)
         .set(`from`, `yandex`)
+        .set(`requested`, +req.body.withdraw_amount)
         .set(`recived`, +req.body.amount)
         .set(`status`, `done`)
         .save()
     let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label).first()
-    console.log(balance);
+    await balance.set(`money`, +balance.get(`money`) + +req.body.withdraw_amount).save()
+    response.send(`success`)
 });
 
 let createOneBook = (request, user, group_id, week_number) => new Promise((resolve, reject) => {
