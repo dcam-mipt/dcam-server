@@ -143,7 +143,7 @@ server.post('/yandex/', async (req, res, next) => {
         .set(`recived`, +req.body.amount)
         .set(`status`, `done`)
         .save()
-    let balance = new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label).first()
+    let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label).first()
     console.log(balance);
 });
 
