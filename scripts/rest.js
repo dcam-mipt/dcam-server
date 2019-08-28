@@ -738,7 +738,7 @@ server.get(`/targets/get`, async (request, response, next) => {
         let user = await become(request)
         if (user) {
             // response.send(await new Parse.Query(`Targets`).find())
-            response.send([])
+            response.send(`hi`)
         }
     } catch (error) {
         response.send(error)
