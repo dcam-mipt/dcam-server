@@ -717,8 +717,7 @@ server.post(`/targets/create/:name`, async (request, response, next) => {
         let user = await become(request)
         if (user) {
             console.log(`> > > 3`);
-            console.log(await is_admin(user));
-            if (await is_admin(user)) {
+            if (await isAdmin(user)) {
                 console.log(`> > > 4`);
                 const data = Array.from(Buffer.from(request.body, 'binary'))
                 const contentType = request.headers['content-type'];
