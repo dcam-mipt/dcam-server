@@ -709,3 +709,36 @@ server.get(`/notifications/match_as_checked`, async (request, response, next) =>
         response.send(error)
     }
 })
+
+server.post(`/spaces/create/:name`, async (request, response, next) => {
+    try {
+        let user = await become(request)
+        if (user) {
+            if (await is_admin(user)) {
+                const data = Array.from(Buffer.from(request.body, 'binary'))
+                const contentType = request.headers['content-type'];
+                const parseFile = new Parse.File('logo.jpg', data, contentType)
+                await new Parse.Object(`Spaces`)
+                    .set(`avatar`, parseFile)
+                    .set(`name`, request.params.name)
+                    .save()
+                response.send(`plan created with success`)
+            } else {
+                response.send(`no permission`)
+            }
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
+
+server.get(`/spaces/get`, async (request, response, next) => {
+    try {
+        let user = await become(request)
+        if (user) {
+            response.send(await new Parse.Query(`Spaces`).find())
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
