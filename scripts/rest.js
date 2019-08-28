@@ -717,7 +717,7 @@ server.post(`/targets/create/:name`, async (request, response, next) => {
             if (await isAdmin(user)) {
                 const data = Array.from(Buffer.from(request.body, 'binary'))
                 const contentType = request.headers['content-type'];
-                const parseFile = new Parse.File('logo.jpg', data, contentType)
+                const parseFile = new Parse.File('logo.svg', data, contentType)
                 await new Parse.Object(`Targets`)
                     .set(`avatar`, parseFile)
                     .set(`name`, request.params.name)
