@@ -718,10 +718,11 @@ server.post(`/tartgets/create/:name`, async (request, response, next) => {
                 const data = Array.from(Buffer.from(request.body, 'binary'))
                 const contentType = request.headers['content-type'];
                 const parseFile = new Parse.File('logo.jpg', data, contentType)
-                await new Parse.Object(`Targets`)
-                    .set(`avatar`, parseFile)
-                    .set(`name`, request.params.name)
-                    .save()
+                console.log(parseFile);
+                // await new Parse.Object(`Targets`)
+                //     .set(`avatar`, parseFile)
+                //     .set(`name`, request.params.name)
+                //     .save()
                 response.send(`plan created with success`)
             } else {
                 response.send(`no permission`)
