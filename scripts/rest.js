@@ -711,18 +711,14 @@ server.get(`/notifications/match_as_checked`, async (request, response, next) =>
 })
 
 server.post(`/targets/create/:name`, async (request, response, next) => {
-    console.log(`> > > 1`);
     try {
-        console.log(`> > > 2`);
         let user = await become(request)
         if (user) {
-            console.log(`> > > 3`);
             if (await isAdmin(user)) {
-                console.log(`> > > 4`);
                 const data = Array.from(Buffer.from(request.body, 'binary'))
                 const contentType = request.headers['content-type'];
                 const parseFile = new Parse.File('logo.jpg', data, contentType)
-                console.log(`> > > 5`);
+                console.log(parseFile, request.params);
                 // await new Parse.Object(`Targets`)
                 //     .set(`avatar`, parseFile)
                 //     .set(`name`, request.params.name)
