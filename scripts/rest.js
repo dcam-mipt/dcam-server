@@ -710,7 +710,7 @@ server.get(`/notifications/match_as_checked`, async (request, response, next) =>
     }
 })
 
-server.post(`/spaces/create/:name`, async (request, response, next) => {
+server.post(`/tartgets/create/:name`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
@@ -732,7 +732,7 @@ server.post(`/spaces/create/:name`, async (request, response, next) => {
     }
 })
 
-server.get(`/spaces/get`, async (request, response, next) => {
+server.get(`/tartgets/get`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
