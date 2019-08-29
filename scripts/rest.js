@@ -742,3 +742,30 @@ server.get(`/targets/get`, async (request, response, next) => {
         response.send(error)
     }
 })
+
+server.get(`/events/create/:name/:start/:duration`, async (request, response, next) => {
+    try {
+        let user = await become(request)
+        if (user) {
+            await new Parse.Object(`Events`)
+                .set(`name`, request.params.name)
+                .set(`start_timestamp`, request.params.start)
+                .set(`duration`, request.params.duration)
+                .save()
+            response.send(`plan created with success`)
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
+
+server.get(`/events/get`, async (request, response, next) => {
+    try {
+        let user = await become(request)
+        if (user) {
+            response.send(await new Parse.Query(`Events`).find())
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
