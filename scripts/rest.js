@@ -752,6 +752,7 @@ server.get(`/events/create/:name/:start/:duration/:target_id`, async (request, r
                 .set(`start_timestamp`, request.params.start)
                 .set(`duration`, request.params.duration)
                 .set(`target_id`, request.params.target_id)
+                .set(`accepted`, false)
                 .save()
             response.send(`plan created with success`)
         }
