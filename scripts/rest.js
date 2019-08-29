@@ -743,7 +743,7 @@ server.get(`/targets/get`, async (request, response, next) => {
     }
 })
 
-server.get(`/events/create/:name/:start/:duration`, async (request, response, next) => {
+server.get(`/events/create/:name/:start/:duration/:target_id`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
@@ -751,6 +751,7 @@ server.get(`/events/create/:name/:start/:duration`, async (request, response, ne
                 .set(`name`, request.params.name)
                 .set(`start_timestamp`, request.params.start)
                 .set(`duration`, request.params.duration)
+                .set(`target_id`, request.params.target_id)
                 .save()
             response.send(`plan created with success`)
         }
