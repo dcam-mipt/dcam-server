@@ -484,6 +484,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
     if (user) {
         let is_free = (await new Parse.Query(`Laundry`).equalTo(`timestamp`, +request.params.timestamp).equalTo(`machine_id`, request.params.machine_id).find()).length === 0
         if (is_free) {
+            console.log(`> > >`);
             let machine_index = (await new Parse.Query(`Machines`).find()).map(i => i.id).indexOf(request.params.machine_id) + 1
             let notification_id = (await new Parse.Object(`Notifications`).set(`user_id`, user.id).set(`status`, `delayed`).set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`)).set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machine_index}`).save()).id
             let cost = +((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`))
