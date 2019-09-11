@@ -10,9 +10,9 @@ var api = new ParseServer({
     masterKey: config.PARSE_MASTER_KEY,
     javasScriptKey: config.PARSE_JS_KEY,
     serverURL: config.PARSE_SERVER_URL,
-    liveQuery: {
-        classNames: config.LIVE_QUERY_CLASSES
-    }
+    // liveQuery: {
+    //     classNames: config.LIVE_QUERY_CLASSES
+    // }
 });
 
 var app = express();
@@ -30,9 +30,9 @@ app.get('/test', function (req, res) {
 });
 
 var port = config.PARSE_PORT;
-var httpServer = require('https').createServer(app);
+var httpServer = require('http').createServer(app);
 httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
 });
-ParseServer.createLiveQueryServer(httpServer);
+// ParseServer.createLiveQueryServer(httpServer);
 /*eslint-enable no-unused-vars*/

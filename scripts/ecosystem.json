@@ -16,11 +16,6 @@
             "watch": false
         },
         {
-            "name": "telegram",
-            "script": "./scripts/telegram.js",
-            "watch": false
-        },
-        {
             "name": "backup",
             "script": "./backup/index.js",
             "watch": false

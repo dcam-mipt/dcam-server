@@ -87,7 +87,6 @@ let become = (request) => new Promise((resolve, reject) => {
     }
     Parse.User.become(sessionToken)
         .then((user) => {
-            // console.log(`> > > become:`, user.get(`username`), sessionToken);
             updateActivity(user)
             resolve(user)
         })
@@ -103,37 +102,6 @@ let isAdmin = (user) => new Promise(async (resolve, reject) => {
         reject(false)
     }
 })
-
-// server.post('/yandex/', (req, res, next) => {
-//     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
-//     new Parse.Query(`Transactions`)
-//         .equalTo(`solid`, req.body.label)
-//         .first()
-//         .then((transaction) => {
-//             new Parse.Query(`Balance`)
-//                 .limit(1000000)
-//                 .equalTo(`user_id`, transaction.get(`to`))
-//                 .first()
-//                 .then((balance) => {
-//                     if (transaction.get(`status`) !== `done`) {
-//                         balance.set(`money`, balance.get(`money`) + +req.body.withdraw_amount)
-//                         // balance.set(`money`, balance.get(`money`) + +req.body.amount)
-//                         balance.save()
-//                             .then((d) => {
-//                                 transaction.set(`status`, `done`)
-//                                 transaction.set(`recived`, +req.body.withdraw_amount)
-//                                 transaction.set(`recived`, +req.body.amount)
-//                                 transaction.save()
-//                                     .then((d) => { console.log(d) })
-//                                     .catch((d) => { response.send(d); console.error(d) })
-//                             })
-//                             .catch((d) => { response.send(d); console.error(d) })
-//                     }
-//                 })
-//                 .catch((d) => { response.send(d); console.error(d) })
-//         })
-//         .catch((d) => { response.send(d); console.error(d) })
-// });
 
 server.post('/yandex/', async (req, res, next) => {
     console.log(` - - - > > > incoming request:`, req.body.label, req.body.amount, `RUB`)
