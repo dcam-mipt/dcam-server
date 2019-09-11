@@ -400,8 +400,8 @@ server.get(`/machines/create`, (request, response, next) => {
 server.get(`/auth/:email/:password/:name`, async (request, response, next) => {
     if (request.params.email.indexOf(`@`) > -1) {
         Parse.User.logIn(request.params.email, request.params.password)
-            .then((d) => {
-                console.log(request.params.name);
+            .then(async (d) => {
+                await d.set(`name`, request.params.name).save()
                 response.send(d.get(`sessionToken`))
             })
             .catch((d) => {
