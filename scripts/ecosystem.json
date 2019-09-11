@@ -11,8 +11,8 @@
             "watch": false
         },
         {
-            "name": "telegram",
-            "script": "./scripts/telegram.js",
+            "name": "dashboard",
+            "script": "./scripts/dashboard.sh",
             "watch": false
         },
         {
