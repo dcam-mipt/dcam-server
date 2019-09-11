@@ -6,11 +6,6 @@
             "watch": false
         },
         {
-            "name": "dashboard",
-            "script": "./scripts/dashboard.sh",
-            "watch": false
-        },
-        {
             "name": "rest",
             "script": "./scripts/rest.js",
             "watch": false
