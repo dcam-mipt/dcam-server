@@ -52,6 +52,9 @@ ssh root@$SSH_SERVER sh << END
 
     rm -rf *
 
+    printf '\n\n\n> > > parse-dashboard < < <\n\n\n'
+    npm install -g parse-dashboard
+
 END
 
 printf '\n\n\n> > > deploy front < < <\n\n\n'

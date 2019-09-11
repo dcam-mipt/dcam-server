@@ -59,7 +59,7 @@ let auth_command = () => {
                 console.log(`< < <`, mail_answer.update.message.from.id, mail_answer.update.message.from.username);
                 if (auth_mode) {
                     let mail = mail_answer.update.message.text
-                    mail.indexOf(`@`) && axios.get(`http://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${mail_answer.update.message.from.id}/${mail_answer.update.message.from.username}`)
+                    mail.indexOf(`@`) && axios.get(`https://dcam.pro/api/auth/create_verificatoin_pass/${mail}/${mail_answer.update.message.from.id}/${mail_answer.update.message.from.username}`)
                         .then((d) => {
                             switch (d.data) {
                                 case `already connected`: mail_answer.reply(`Аккаунт с этой почтой уже связан с telegram. Если это Ваш аккаунт - нажмите "забыть этот аккаунт" в профиле на сайте, и повторите попытку`); break;

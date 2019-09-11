@@ -30,12 +30,9 @@ app.get('/test', function (req, res) {
 });
 
 var port = config.PARSE_PORT;
-var httpServer = require('http').createServer(app);
+var httpServer = require('https').createServer(app);
 httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
 });
 ParseServer.createLiveQueryServer(httpServer);
-
-ParseServer.createLiveQueryServer(httpServer);
-
 /*eslint-enable no-unused-vars*/

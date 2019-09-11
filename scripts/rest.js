@@ -432,9 +432,11 @@ server.get(`/machines/create`, (request, response, next) => {
 server.get(`/auth/:email/:password`, async (request, response, next) => {
     if (request.params.email.indexOf(`@`) > -1) {
         Parse.User.logIn(request.params.email, request.params.password)
-            .then((d) => { response.send(d.get(`sessionToken`)) })
+            .then((d) => { console.log(`> > >`, d.get(`sessionToken`)); response.send(d.get(`sessionToken`)) })
             .catch((d) => {
+                console.log(`> > > 3`);
                 if (d.code === 101) {
+                    console.log(`> > > 4`);
                     Parse.User.signUp(request.params.email, request.params.password)
                         .then((user) => {
                             new Parse.Object(`Balance`)

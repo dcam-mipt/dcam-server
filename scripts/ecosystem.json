@@ -21,11 +21,6 @@
             "watch": false
         },
         {
-            "name": "socketio",
-            "script": "./scripts/socketio.js",
-            "watch": false
-        },
-        {
             "name": "backup",
             "script": "./backup/index.js",
             "watch": false
