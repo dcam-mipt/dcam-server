@@ -80,56 +80,56 @@ let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`
 
 telegram.sendMessage(227992175, `deployed.`)
 
-let create_notification = async (user_id, message, delivery_timestamp) => await new Parse.Object(`Notifications`)
-    .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
-    .set(`status`, `delayed`)
-    .set(`user_id`, user_id)
-    .set(`message`, message)
-    .save()
+// let create_notification = async (user_id, message, delivery_timestamp) => await new Parse.Object(`Notifications`)
+//     .set(`delivery_timestamp`, delivery_timestamp ? delivery_timestamp : +moment().tz(`Europe/Moscow`))
+//     .set(`status`, `delayed`)
+//     .set(`user_id`, user_id)
+//     .set(`message`, message)
+//     .save()
 
-let create_notifications_queue = async () => {
-    let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
-    console.log(`notifications queue`);
-    notifications.map(async notification => {
-        let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
-        let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
-        setTimeout(async () => {
-            user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
-            await notification.set(`status`, `sent`).save()
-        }, delay > 0 ? delay : 0)
-        console.log(moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), `\t`, user.get(`username`).split(`@`)[0].split(`.`)[0]);
-        return delay
-    })
-}
+// let create_notifications_queue = async () => {
+//     let notifications = await new Parse.Query(`Notifications`).equalTo(`status`, `delayed`).find()
+//     console.log(`notifications queue`);
+//     notifications.map(async notification => {
+//         let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
+//         let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
+//         setTimeout(async () => {
+//             user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
+//             await notification.set(`status`, `sent`).save()
+//         }, delay > 0 ? delay : 0)
+//         console.log(moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`), `\t`, user.get(`username`).split(`@`)[0].split(`.`)[0]);
+//         return delay
+//     })
+// }
 
-create_notifications_queue()
+// create_notifications_queue()
 
-subscribe(`Laundry`, `create`, async (laundry) => {
-    let machines = await new Parse.Query(`Machines`).find()
-    return await create_notification(laundry.get(`user_id`), `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
-})
+// subscribe(`Laundry`, `create`, async (laundry) => {
+//     let machines = await new Parse.Query(`Machines`).find()
+//     return await create_notification(laundry.get(`user_id`), `🧺 Стирка куплена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
+// })
 
-subscribe(`Laundry`, `delete`, async (laundry) => {
-    let machines = await new Parse.Query(`Machines`).find()
-    return await create_notification(laundry.get(`user_id`), `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
-})
+// subscribe(`Laundry`, `delete`, async (laundry) => {
+//     let machines = await new Parse.Query(`Machines`).find()
+//     return await create_notification(laundry.get(`user_id`), `🧺 Стирка удалена\nДата: ${days_of_week_short[moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+laundry.get(`timestamp`)).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machines.map(i => i.id).indexOf(laundry.get(`machine_id`)) + 1}\nЦена: ${laundry.get(`book_cost`)}р`)
+// })
 
-subscribe(`Balance`, `update`, async (balance) => {
-    return await setTimeout(() => { create_notification(balance.get(`user_id`), `💳 Новый баланс: ${balance.get(`money`)}р`) }, 1000)
-})
+// subscribe(`Balance`, `update`, async (balance) => {
+//     return await setTimeout(() => { create_notification(balance.get(`user_id`), `💳 Новый баланс: ${balance.get(`money`)}р`) }, 1000)
+// })
 
-subscribe(`Notifications`, `create`, async (notification) => {
-    let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
-    let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
-    setTimeout(async () => {
-        user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
-        await notification.set(`status`, `sent`).save()
-    }, delay > 0 ? delay : 0)
-    console.log(`new notification:`, {
-        to: user.get(`username`).split(`@`)[0].split(`.`)[0],
-        message: notification.get(`message`)
-    });
-})
+// subscribe(`Notifications`, `create`, async (notification) => {
+//     let user = await new Parse.Query(`User`).equalTo(`objectId`, notification.get(`user_id`)).first()
+//     let delay = +moment(notification.get(`delivery_timestamp`)).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)
+//     setTimeout(async () => {
+//         user.get(`telegram`) && telegram.sendMessage(user.get(`telegram`).id, notification.get(`message`))
+//         await notification.set(`status`, `sent`).save()
+//     }, delay > 0 ? delay : 0)
+//     console.log(`new notification:`, {
+//         to: user.get(`username`).split(`@`)[0].split(`.`)[0],
+//         message: notification.get(`message`)
+//     });
+// })
 
 bot.start((ctx) => ctx.reply('Добро пожаловать!\n Отправьте /help, чтоб получить список команд'))
 bot.command('help', (ctx) => {
