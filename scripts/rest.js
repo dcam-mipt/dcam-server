@@ -397,10 +397,13 @@ server.get(`/machines/create`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/auth/:email/:password`, async (request, response, next) => {
+server.get(`/auth/:email/:password/:name`, async (request, response, next) => {
     if (request.params.email.indexOf(`@`) > -1) {
         Parse.User.logIn(request.params.email, request.params.password)
-            .then((d) => { console.log(`> > >`, d.get(`sessionToken`)); response.send(d.get(`sessionToken`)) })
+            .then((d) => {
+                console.log(request.params.name);
+                response.send(d.get(`sessionToken`))
+            })
             .catch((d) => {
                 console.log(`> > > 3`);
                 if (d.code === 101) {
