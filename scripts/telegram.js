@@ -101,7 +101,7 @@ let create_notifications_queue = async () => {
         return delay
     })
 }
-
+s
 create_notifications_queue()
 
 subscribe(`Laundry`, `create`, async (laundry) => {
