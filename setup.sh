@@ -1,5 +1,5 @@
 #!/bin/bash
-SSH_SERVER=dcam.pro
+SSH_SERVER=134.209.188.240
 ssh root@$SSH_SERVER sh << END
 
     printf '\n\n\n> > > ufw < < <\n\n\n'
