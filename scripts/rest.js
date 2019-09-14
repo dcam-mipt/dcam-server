@@ -150,11 +150,11 @@ server.post(`/club/create_book/`, (request, response, next) => {
                             deal()
                         }
                     })
-                    // .catch((d) => { response.send(d); console.error(d) })
+                    .catch((d) => { response.send(d); console.error(d) })
             }
             deal()
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
@@ -164,7 +164,8 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                 .equalTo(`objectId`, request.params.book_id)
                 .first()
                 .then((book) => {
-                    changeBalance(book.get(`user_id`), book.get(`book_cost`), user)
+                    let calc_hours = (timestamp) => +(((+moment(timestamp).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)) / 3600000 + ``).split(`.`)[0])
+                    changeBalance(book.get(`user_id`), calc_hours(+book.get(`timestamp`)) > 10 ? book.get(`book_cost`) : 0, user)
                         .then((new_balance) => {
                             let message = `laundry: unbook (${book.get(`user_id`)}, ${book.get(`machine_id`)}, ${moment(book.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`)})`
                             writeLog(message, user)
@@ -175,15 +176,15 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                                 .then((notification) => {
                                     notification.destroy()
                                         .then((d) => { response.send(d) })
-                                        // .catch((d) => { response.send(d); console.error(d) })
+                                        .catch((d) => { response.send(d); console.error(d) })
                                 })
-                                // .catch((d) => { response.send(d); console.error(d) })
+                                .catch((d) => { response.send(d); console.error(d) })
                         })
-                        // .catch((d) => { response.send(d); console.error(d) })
+                        .catch((d) => { response.send(d); console.error(d) })
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/laundry/get`, (request, response, next) => {
@@ -207,9 +208,9 @@ server.get(`/laundry/get`, (request, response, next) => {
                         }
                     }))
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, next) => {
@@ -240,27 +241,27 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
                                                         .then((d) => {
                                                             d.destroy()
                                                                 .then((d) => { books.shift(); deal() })
-                                                                // .catch((d) => { response.send(d); console.error(d) })
+                                                                .catch((d) => { response.send(d); console.error(d) })
                                                         })
-                                                        // .catch((d) => { response.send(d); console.error(d) })
+                                                        .catch((d) => { response.send(d); console.error(d) })
 
                                                 }
                                                 if (books.length) {
                                                     deal()
                                                 }
                                             })
-                                            // .catch((d) => { response.send(d); console.error(d) })
+                                            .catch((d) => { response.send(d); console.error(d) })
                                     })
-                                    // .catch((d) => { response.send(d); console.error(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
                             })
-                            // .catch((d) => { response.send(d); console.error(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     } else {
                         response.send(`permission denied`)
                     }
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 // get user
@@ -272,9 +273,9 @@ server.get(`/users/get_user/:user_id`, (request, response, next) => {
                 .equalTo(`objectId`, request.params.user_id)
                 .first()
                 .then((d) => { response.send(d) })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/users/get_users_list`, (request, response, next) => {
@@ -292,13 +293,13 @@ server.get(`/users/get_users_list`, (request, response, next) => {
                                 .then((balances) => {
                                     response.send(users.map((user, u_i) => user.set(`money`, balances.filter(i => i.get(`user_id`) === user.id)[0].get(`money`))))
                                 })
-                                // .catch((d) => { response.send(d); console.error(d) })
+                                .catch((d) => { response.send(d); console.error(d) })
                         })
-                        // .catch((d) => { response.send(d); console.error(d) })
+                        .catch((d) => { response.send(d); console.error(d) })
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 });
 
 server.get(`/roles/get_my_roles/`, (request, response, next) => {
@@ -310,9 +311,9 @@ server.get(`/roles/get_my_roles/`, (request, response, next) => {
                 .then((d) => {
                     response.send(d.map(i => i.get(`role`)))
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
@@ -338,18 +339,18 @@ server.get(`/balance/edit/:user_id/:value`, (request, response, next) => {
                                             .set(`from`, user.id)
                                             .save()
                                             .then((d) => { response.send(d.id) })
-                                            // .catch((d) => { response.send(d); console.error(d) })
+                                            .catch((d) => { response.send(d); console.error(d) })
                                     })
-                                    // .catch((d) => { response.send(d); console.error(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
                             })
-                            // .catch((d) => { response.send(d); console.error(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     } else {
                         response.send(`permission for editting balance denied`)
                     }
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/transactions/start_yandex/:value/:id`, (request, response, next) => {
@@ -364,9 +365,9 @@ server.get(`/transactions/start_yandex/:value/:id`, (request, response, next) =>
                 .set(`requested`, +request.params.value)
                 .save()
                 .then((d) => { response.send(d.id) })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/machines/get`, (request, response, next) => {
@@ -375,9 +376,9 @@ server.get(`/machines/get`, (request, response, next) => {
             new Parse.Query(`Machines`)
                 .find()
                 .then((d) => { response.send(d.sort((a, b) => +a.get(`createdAt`) - +b.get(`createdAt`))) })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/machines/create`, (request, response, next) => {
@@ -388,9 +389,9 @@ server.get(`/machines/create`, (request, response, next) => {
                 .set(`chill_untill`, undefined)
                 .save()
                 .then((d) => { response.send(d) })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/auth/:email/:password/:name`, async (request, response, next) => {
@@ -401,9 +402,7 @@ server.get(`/auth/:email/:password/:name`, async (request, response, next) => {
                 response.send(d.get(`sessionToken`))
             })
             .catch((d) => {
-                console.log(`> > > 3`);
                 if (d.code === 101) {
-                    console.log(`> > > 4`);
                     Parse.User.signUp(request.params.email, request.params.password)
                         .then((user) => {
                             new Parse.Object(`Balance`)
@@ -418,9 +417,9 @@ server.get(`/auth/:email/:password/:name`, async (request, response, next) => {
                                         ))
                                     response.send(user.get(`sessionToken`))
                                 })
-                                // .catch((d) => { response.send(d); console.error(d) })
+                                .catch((d) => { response.send(d); console.error(d) })
                         })
-                        // .catch((d) => { response.send(d); console.error(d) })
+                        .catch((d) => { response.send(d); console.error(d) })
                 } else {
                     response.send(d); console.error(d)
                 }
@@ -437,9 +436,9 @@ server.get(`/auth/sign_out`, (request, response, next) => {
             console.log(d);
             Parse.User.logOut()
                 .then((user) => { response.send(user) })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/user/get_my_info`, async (request, response, next) => { response.send(await become(request)) })
@@ -479,14 +478,14 @@ server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => 
                                     .set(`value`, request.params.new_value)
                                     .save()
                                     .then((d) => { response.send(d) })
-                                    // .catch((d) => { response.send(d); console.error(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
 
                             })
-                            // .catch((d) => { response.send(d); console.error(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     }
                 })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/laundry/get_laundry_cost`, async (request, response, next) => {
@@ -522,17 +521,17 @@ server.get(`/auth/create_verificatoin_pass/:email/:telegram_id/:telegram_usernam
                                     .equalTo(`objectId`, d.id)
                                     .first()
                                     .then((d_to_destroy) => { d_to_destroy && d_to_destroy.destroy() })
-                                    // .catch((d) => { response.send(d); console.error(d) })
+                                    .catch((d) => { response.send(d); console.error(d) })
 
                             }, 60 * 1000)
                         })
-                        // .catch((d) => { response.send(d); console.error(d) })
+                        .catch((d) => { response.send(d); console.error(d) })
                 }
             } else {
                 response.send(`wrong email`)
             }
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/auth/get_my_entries`, async (request, response, next) => {
@@ -565,14 +564,14 @@ server.get(`/auth/check_verificatoin_pass/:pass`, (request, response, next) => {
                                 await create_notification(user.id, `Теперь Ваш dcam аккаунт в связке с telegram.`)
                                 response.send(`success`)
                             })
-                            // .catch((d) => { response.send(d); console.error(d) })
+                            .catch((d) => { response.send(d); console.error(d) })
                     } else {
                         response.send(`password denied`)
                     }
                 })
-                // .catch((d) => { response.send(d); console.error(d) })
+                .catch((d) => { response.send(d); console.error(d) })
         })
-        // .catch((d) => { response.send(d); console.error(d) })
+        .catch((d) => { response.send(d); console.error(d) })
 })
 
 server.get(`/auth/forget_my_telegram`, async (request, response, next) => {
