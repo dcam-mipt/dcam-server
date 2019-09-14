@@ -187,29 +187,25 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
 });
 
 server.get(`/laundry/get`, (request, response, next) => {
-    become(request)
-        .then((d) => {
-            new Parse.Query(`User`)
+    new Parse.Query(`User`)
+        .limit(1000000)
+        .find()
+        .then((users) => {
+            new Parse.Query(`Laundry`)
+                .greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`))
                 .limit(1000000)
                 .find()
-                .then((users) => {
-                    new Parse.Query(`Laundry`)
-                        .greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`))
-                        .limit(1000000)
-                        .find()
-                        .then((d) => {
-                            response.send(d.map((i) => {
-                                let user = users.filter(u => u.id === i.get(`user_id`))[0]
-                                return {
-                                    machine_id: i.get(`machine_id`),
-                                    objectId: i.id,
-                                    timestamp: i.get(`timestamp`),
-                                    user_id: i.get(`user_id`),
-                                    email: user ? user.get(`username`) : i.get(`user_id`)
-                                }
-                            }))
-                        })
-                        .catch((d) => { response.send(d); console.error(d) })
+                .then((d) => {
+                    response.send(d.map((i) => {
+                        let user = users.filter(u => u.id === i.get(`user_id`))[0]
+                        return {
+                            machine_id: i.get(`machine_id`),
+                            objectId: i.id,
+                            timestamp: i.get(`timestamp`),
+                            user_id: i.get(`user_id`),
+                            email: user ? user.get(`username`) : i.get(`user_id`)
+                        }
+                    }))
                 })
                 .catch((d) => { response.send(d); console.error(d) })
         })
@@ -494,8 +490,7 @@ server.get(`/laundry/set_laundry_cost/:new_value`, (request, response, next) => 
 })
 
 server.get(`/laundry/get_laundry_cost`, async (request, response, next) => {
-    let user = await become(request)
-    if (user) { response.send((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`) + ``) }
+    response.send((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`) + ``)
 })
 
 server.get(`/balance/get_my_balance`, async (request, response, next) => {
