@@ -717,7 +717,7 @@ server.get(`/events/create/:name/:start/:duration/:target_id`, async (request, r
         if (user) {
             await new Parse.Object(`Events`)
                 .set(`name`, request.params.name)
-                .set(`start_timestamp`, request.params.start)
+                .set(`timestamp`, +request.params.start)
                 .set(`duration`, request.params.duration)
                 .set(`target_id`, request.params.target_id)
                 .set(`accepted`, false)
@@ -733,7 +733,7 @@ server.get(`/events/get`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
-            response.send(await new Parse.Query(`Events`).find())
+            response.send(await new Parse.Query(`Events`).greaterThanOrEqualTo(`start_timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`)).find())
         }
     } catch (error) {
         response.send(error)
