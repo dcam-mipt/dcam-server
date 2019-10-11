@@ -733,7 +733,7 @@ server.get(`/events/get`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
-            response.send(await new Parse.Query(`Events`).find())
+            response.send(await new Parse.Query(`Events`).greaterThanOrEqualTo(`timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`)).find())
         }
     } catch (error) {
         response.send(error)
