@@ -1,4 +1,4 @@
 var MailAPI = require('./MailAPI')
-MailAPI.sendEmail({ email: 'beldiy.dp@phystech.edu', subject: `test`, html: `test` })
+MailAPI.sendEmail({ email: 'kolaeva.ad@phystech.edu', subject: `привет`, html: `привет` })
     .then((d) => { console.log(d) })
     .catch((d) => { console.log(d) })
