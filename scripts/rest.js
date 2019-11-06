@@ -711,14 +711,13 @@ server.get(`/targets/get`, async (request, response, next) => {
     }
 })
 
-server.get(`/events/create/:name/:start/:duration/:target_id`, async (request, response, next) => {
+server.get(`/events/create/:start/:end/:target_id`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
             await new Parse.Object(`Events`)
-                .set(`name`, request.params.name)
-                .set(`timestamp`, +request.params.start)
-                .set(`duration`, request.params.duration)
+                .set(`start_timestamp`, +request.params.start)
+                .set(`end_timestamp`, +request.params.end)
                 .set(`target_id`, request.params.target_id)
                 .set(`accepted`, false)
                 .save()
