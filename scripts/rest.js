@@ -678,7 +678,7 @@ server.get(`/notifications/match_as_checked`, async (request, response, next) =>
     }
 })
 
-server.post(`/targets/create/:name`, async (request, response, next) => {
+server.post(`/targets/create/:name/:dormitory_id`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
@@ -689,6 +689,7 @@ server.post(`/targets/create/:name`, async (request, response, next) => {
                 await new Parse.Object(`Targets`)
                     .set(`avatar`, parseFile)
                     .set(`name`, request.params.name)
+                    .set(`dormitory_id`, request.params.dormitory_id)
                     .save()
                 response.send(`plan created with success`)
             } else {
