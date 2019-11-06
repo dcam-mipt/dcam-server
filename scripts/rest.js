@@ -716,6 +716,7 @@ server.get(`/events/create/:start/:end/:target_id`, async (request, response, ne
         let user = await become(request)
         if (user) {
             await new Parse.Object(`Events`)
+                .set(`user_id`, user.id)
                 .set(`start_timestamp`, +request.params.start)
                 .set(`end_timestamp`, +request.params.end)
                 .set(`target_id`, request.params.target_id)
