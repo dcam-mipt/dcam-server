@@ -739,3 +739,11 @@ server.get(`/events/get`, async (request, response, next) => {
         response.send(error)
     }
 })
+
+server.get(`/dormitory/get`, async (request, response, next) => {
+    try {
+        response.send(await new Parse.Query(`Dormitory`).find())
+    } catch (error) {
+        response.send(error)
+    }
+})
