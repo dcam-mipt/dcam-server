@@ -744,7 +744,7 @@ server.get(`/events/get`, async (request, response, next) => {
 server.get(`/events/accept/:event_id/:value`, async (request, response, next) => {
     try {
         if (await isAdmin(await become(request))) {
-            console.log(await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first());
+            await (await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()).set(`accepted`, request.params.value -- `true`).save()
             response.send(`save successfully`)
         }
     } catch (error) {
