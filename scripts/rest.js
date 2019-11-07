@@ -741,6 +741,17 @@ server.get(`/events/get`, async (request, response, next) => {
     }
 })
 
+server.get(`/events/accept/:event_id/:value`, async (request, response, next) => {
+    try {
+        if (await isAdmin(await become(request))) {
+            await (await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()).set(`accepted`, request.params.value == `true`)
+            response.send(`save successfully`)
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
+
 server.get(`/dormitory/get`, async (request, response, next) => {
     try {
         response.send(await new Parse.Query(`Dormitory`).find())
