@@ -734,6 +734,8 @@ server.get(`/events/get`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
+            let users = await new Parse.Query(`User`).limit(0).select(`username`).find()
+            console.log(users);
             response.send(await new Parse.Query(`Events`).greaterThanOrEqualTo(`start_timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`)).find())
         }
     } catch (error) {
