@@ -735,8 +735,8 @@ server.get(`/events/get`, async (request, response, next) => {
         let user = await become(request)
         if (user) {
             let users = (await new Parse.Query(`User`).limit(1000000).select(`username`).find()).map(i => { return { username: i.get(`username`), user_id: i.id, } })
-            console.log(users);
-            response.send(await new Parse.Query(`Events`).greaterThanOrEqualTo(`start_timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`)).find())
+            let events = (await new Parse.Query(`Events`).greaterThanOrEqualTo(`start_timestamp`, +moment().tz(`Europe/Moscow`).startOf(`isoWeek`)).find()).map(i => { return { ...i, username: users.filter(j => j.user_id === i.user_id)[0].username } })
+            response.send(events)
         }
     } catch (error) {
         response.send(error)
