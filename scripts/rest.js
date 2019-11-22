@@ -712,20 +712,20 @@ server.get(`/targets/get`, async (request, response, next) => {
     }
 })
 
-server.get(`/events/create/`, async (request, response, next) => {
+server.post(`/events/create/`, async (request, response, next) => {
     try {
         let user = await become(request)
         if (user) {
-            // await new Parse.Object(`Events`)
-            //     .set(`user_id`, user.id)
-            //     .set(`start_timestamp`, +request.body.start)
-            //     .set(`end_timestamp`, +request.body.end)
-            //     .set(`target_id`, request.body.target_id)
-            //     .set(`number_of_people`, request.body.number_of_people)
-            //     .set(`aim`, request.body.aim)
-            //     .set(`accepted`, false)
-            //     .save()
-            response.send(`plan created with success`, body)
+            await new Parse.Object(`Events`)
+                .set(`user_id`, user.id)
+                .set(`start_timestamp`, +request.body.start)
+                .set(`end_timestamp`, +request.body.end)
+                .set(`target_id`, request.body.target_id)
+                .set(`number_of_people`, request.body.number_of_people)
+                .set(`aim`, request.body.aim)
+                .set(`accepted`, false)
+                .save()
+            response.send(`plan created with success`)
         }
     } catch (error) {
         response.send(error)
