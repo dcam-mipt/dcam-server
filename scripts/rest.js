@@ -468,8 +468,17 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
             let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
             await balance.set(`money`, balance.get(`money`) - cost).save()
-            // await Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` })
-            console.log(user.get(`username`));
+            await Mailer.sendEmail({
+                email: user.get(`username`),
+                subject: `Стиралка`,
+                html: `Вы запланировали стирку 🧺:
+                \nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}
+                \nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}
+                \nОбщежитие: 7
+                \nМашинка: ${machine_index}
+                \n\nСпасибо, что пользуетесь услугами Студсовета ФПМИ!
+                `
+            })
             response.send(laundry)
         }
     }
