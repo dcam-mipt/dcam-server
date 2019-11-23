@@ -457,11 +457,9 @@ server.post(`/user/set_my_avatar`, async (request, response, next) => {
     if (user) { response.send(await user.set(`avatar`, request.body.url).save()) }
 })
 
-server.get(`/test`, (request, seponse) => {
+server.get(`/test`, async (request, response) => {
     try {
-        Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` })
-        .then((d) => { response.send(d) })
-        .catch((d) => { console.log(d) })
+        response.send(await Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` }))
     } catch (error) {
         response.send(error)
     }
