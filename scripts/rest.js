@@ -5,6 +5,7 @@ var config = require('../config')
 var corsMiddleware = require('restify-cors-middleware');
 var moment = require('moment-timezone')
 var axios = require(`axios`)
+var Mailer = require(`./MailAPI`)
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
@@ -265,7 +266,11 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
 });
 
 server.get(`/laundry/get_users_history/:user_id`, async (request, response, next) => {
-    response.send((await new Parse.Query(`Laundry`).limit(1000000).equalTo(`user_id`, request.params.user_id).find()))
+    try {
+        response.send((await new Parse.Query(`Laundry`).limit(1000000).equalTo(`user_id`, request.params.user_id).find()))
+    } catch (error) {
+        response.send(error)
+    }
 })
 
 // get user
@@ -452,6 +457,14 @@ server.post(`/user/set_my_avatar`, async (request, response, next) => {
     if (user) { response.send(await user.set(`avatar`, request.body.url).save()) }
 })
 
+server.get(`test`, (request, seponse) => {
+    try {
+        response.send(await Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` }))
+    } catch (error) {
+        response.send(error)
+    }
+})
+
 server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
@@ -463,6 +476,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
             let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
             await balance.set(`money`, balance.get(`money`) - cost).save()
+
             response.send(laundry)
         }
     }
