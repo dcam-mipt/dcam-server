@@ -457,14 +457,6 @@ server.post(`/user/set_my_avatar`, async (request, response, next) => {
     if (user) { response.send(await user.set(`avatar`, request.body.url).save()) }
 })
 
-server.get(`/test`, async (request, response) => {
-    try {
-        response.send(await Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` }))
-    } catch (error) {
-        response.send(error)
-    }
-})
-
 server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
     let user = await become(request)
     if (user) {
@@ -476,7 +468,8 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
             let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
             await balance.set(`money`, balance.get(`money`) - cost).save()
-
+            // await Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` })
+            console.log(user.get(`username`));
             response.send(laundry)
         }
     }
