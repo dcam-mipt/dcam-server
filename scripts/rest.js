@@ -264,6 +264,10 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
         .catch((d) => { response.send(d); console.error(d) })
 });
 
+server.get(`/laundry/get_users_history/:user_id`, async (request, response, next) => {
+    response.send(await new Parse.Query(`Laundry`).limit(1000000).equalTo(`user_id`, request.params.user_id).find())
+})
+
 // get user
 server.get(`/users/get_user/:user_id`, (request, response, next) => {
     become(request)
