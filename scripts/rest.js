@@ -459,7 +459,9 @@ server.post(`/user/set_my_avatar`, async (request, response, next) => {
 
 server.get(`/test`, (request, seponse) => {
     try {
-        response.send(await Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` }))
+        Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `test`, html: `test` })
+        .then((d) => { response.send(d) })
+        .catch((d) => { console.log(d) })
     } catch (error) {
         response.send(error)
     }
