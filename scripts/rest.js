@@ -265,7 +265,7 @@ server.get(`/laundry/broke_machine/:machine_id/:timestamp`, (request, response, 
 });
 
 server.get(`/laundry/get_users_history/:user_id`, async (request, response, next) => {
-    response.send((await new Parse.Query(`Laundry`).limit(1000000).equalTo(`user_id`, request.params.user_id).find()).map(i => i.set(`date`, moment(i.get(`timestamp`)))))
+    response.send((await new Parse.Query(`Laundry`).limit(1000000).equalTo(`user_id`, request.params.user_id).find()).map(i => i.set(`date`, moment(+i.get(`timestamp`)).format(`DD.MM.YY HH:mm`))))
 })
 
 // get user
