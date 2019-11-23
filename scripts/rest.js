@@ -473,14 +473,12 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                 subject: `Стиралка`,
                 html: `
                     <html>
-                    <body>
                     <p>Вы запланировали стирку 🧺:</p>
                     <p>Дата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}</p>
                     <p>Время: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}</p>
                     <p>Общежитие: 7</p>
                     <p>Машинка: ${machine_index}</p>
                     <p>Спасибо, что пользуетесь услугами Студсовета ФПМИ!</p>
-                    </body>
                     </html>
                 `
             })
