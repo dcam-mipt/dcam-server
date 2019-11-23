@@ -473,12 +473,12 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                 subject: `Стиралка`,
                 html: `
                     <html>
-                    <div>Вы запланировали стирку 🧺:</div>
-                    <div>Дата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}</div>
-                    <div>Время: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}</div>
-                    <div>Общежитие: 7</div>
-                    <div>Машинка: ${machine_index}</div>
-                    <div>Спасибо, что пользуетесь услугами Студсовета ФПМИ!</div>
+                    <div style={{ marginTop: '1vw', }} >Вы запланировали стирку 🧺:</div>
+                    <div style={{ marginTop: '1vw', }} >Дата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}</div>
+                    <div style={{ marginTop: '1vw', }} >Время: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}</div>
+                    <div style={{ marginTop: '1vw', }} >Общежитие: 7</div>
+                    <div style={{ marginTop: '1vw', }} >Машинка: ${machine_index}</div>
+                    <div style={{ marginTop: '2vw', }} >Спасибо, что пользуетесь услугами Студсовета ФПМИ!</div>
                     </html>
                 `
             })
