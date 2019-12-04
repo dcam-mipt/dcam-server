@@ -28,7 +28,7 @@ let get_laundry = () => {
 // }, to_start_of_hour)
 
 Mailer.sendEmail({
-    email: `beldiy.dp@phystech.edu`, subject: `dev`, html: `
+    email: `mityabeldii@gmail.com`, subject: `dev`, html: `
             <html>
             <div>${moment().tz(`Europe/Moscow`).format(`HH:mm`)}</div>
             </html>
