@@ -801,6 +801,21 @@ server.get(`/events/accept/:event_id/:value`, async (request, response, next) =>
     }
 })
 
+server.get(`/events/delete/:event_id`, async (request, response, next) => {
+    try {
+        let user = await become(request)
+        let event = await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()
+        if (event.get(`user_id`) === user.id || await isAdmin(user)) {
+            event.destroy()
+            response.send(`deleted successfully`)
+        } else {
+            response.send(`error while deleting event: no permission`)
+        }
+    } catch (error) {
+        response.send(error)
+    }
+})
+
 server.get(`/dormitory/get`, async (request, response, next) => {
     try {
         response.send(await new Parse.Query(`Dormitory`).find())
