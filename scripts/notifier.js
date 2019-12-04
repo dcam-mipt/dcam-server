@@ -16,13 +16,20 @@ let get_laundry = () => {
         .find()
 }
 
-let to_start_of_hour = +moment().startOf(`minute`).add(1, `minute`) - +moment()
-setTimeout(() => {
-    setInterval(() => {
-        Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `dev`, html: `
+// let to_start_of_hour = +moment().startOf(`minute`).add(1, `minute`) - +moment()
+// setTimeout(() => {
+//     setInterval(() => {
+//         Mailer.sendEmail({ email: `beldiy.dp@phystech.edu`, subject: `dev`, html: `
+//             <html>
+//             <div>${moment().tz(`Europe/Moscow`).format(`HH:mm`)}</div>
+//             </html>
+//         ` })
+//     }, 1000 * 60)
+// }, to_start_of_hour)
+
+Mailer.sendEmail({
+    email: `beldiy.dp@phystech.edu`, subject: `dev`, html: `
             <html>
             <div>${moment().tz(`Europe/Moscow`).format(`HH:mm`)}</div>
             </html>
         ` })
-    }, 1000 * 60)
-}, to_start_of_hour)
