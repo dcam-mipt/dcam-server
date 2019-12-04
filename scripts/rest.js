@@ -118,6 +118,7 @@ server.post('/yandex/', async (req, res, next) => {
             .save()
         let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label.split(` `)[0]).first()
         await balance.set(`money`, +balance.get(`money`) + +req.body.withdraw_amount).save()
+        let user = await new Parse.Query(`User`).equalTo(`objectId`, req.body.label.split(` `)[0]).first()
         await Mailer.sendEmail({
             email: user.get(`username`),
             subject: `Стиралка`,
