@@ -125,7 +125,7 @@ server.post('/yandex/', async (req, res, next) => {
             html: `
                 <html>
                 <div style={{ marginTop: '1vw', }} >👉💳 ${+req.body.withdraw_amount}р</div>
-                <div style={{ marginTop: '1vw', }} >Баланс: ${balance}р</div>
+                <div style={{ marginTop: '1vw', }} >Баланс: ${balance.get(`money`)}р</div>
                 <div style={{ marginTop: '2vw', }} >Спасибо, что пользуетесь услугами Студсовета ФПМИ!</div>
                 </html>
             `
