@@ -118,6 +118,17 @@ server.post('/yandex/', async (req, res, next) => {
             .save()
         let balance = await new Parse.Query(`Balance`).equalTo(`user_id`, req.body.label.split(` `)[0]).first()
         await balance.set(`money`, +balance.get(`money`) + +req.body.withdraw_amount).save()
+        await Mailer.sendEmail({
+            email: user.get(`username`),
+            subject: `Стиралка`,
+            html: `
+                <html>
+                <div style={{ marginTop: '1vw', }} >👉💳 ${+req.body.withdraw_amount}р</div>
+                <div style={{ marginTop: '1vw', }} >Баланс: ${balance}р</div>
+                <div style={{ marginTop: '2vw', }} >Спасибо, что пользуетесь услугами Студсовета ФПМИ!</div>
+                </html>
+            `
+        })
     }
 });
 
