@@ -19,11 +19,6 @@
             "name": "backup",
             "script": "./backup/index.js",
             "watch": false
-        },
-        {
-            "name": "notifications",
-            "script": "./scripts/notifications.js",
-            "watch": false
         }
     ]
 }
