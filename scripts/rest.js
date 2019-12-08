@@ -490,7 +490,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                     <div style={{ marginTop: '1vw', }} >Время: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}</div>
                     <div style={{ marginTop: '1vw', }} >Общежитие: 7</div>
                     <div style={{ marginTop: '1vw', }} >Машинка: ${machine_index}</div>
-                    <div style={{ marginTop: '2vw', }} >Спасибо, что пользуетесь услугами Студсовета ФПМИ!</div>
                     </html>
                 `
             })
