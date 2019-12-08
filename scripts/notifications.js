@@ -15,7 +15,7 @@ let get_laundries = () => {
     // new Parse.Query()
 }
 
-setTimeout(() => {
+setTimeout(async () => {
     console.log(+moment().startOf(`minute`).add(1, `minute`) - +moment() / 1000);
     await Mailer.sendEmail({
         email: `beldiy.dp@phystech.edu`,
