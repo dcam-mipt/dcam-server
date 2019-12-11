@@ -66,7 +66,7 @@ let drive = () => {
             const files = res.data.files;
             if (files.length) {
                 let q = 0
-                console.log(files.filter(i => i.name.indexOf(`dump`) > -1).sort((b, a) => +a.name.split(`.`)[0].split(`_`)[1] - +b.name.split(`.`)[0].split(`_`)));
+                console.log(files);
                 // let fileId = files.filter(i => i.name.indexOf(`dump`) > -1).sort((b, a) => +a.name.split(`.`)[0].split(`_`)[1] - +b.name.split(`.`)[0].split(`_`)[1])[q].id
                 // console.log(files.filter(i => i.name.indexOf(`dump`) > -1).sort((b, a) => +a.name.split(`.`)[0].split(`_`)[1] - +b.name.split(`.`)[0].split(`_`)[1]).map((i, index) => i.name.indexOf(`dump`) > -1 ? moment(+i.name.split(`_`)[1].split(`.`)[0]).format(`DD.MM.YY HH:mm`) : i.name)[q]);
                 // var dest = fs.createWriteStream('dump.zip');
