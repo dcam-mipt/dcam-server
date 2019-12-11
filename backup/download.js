@@ -59,7 +59,7 @@ let drive = () => {
         const drive = google.drive({ version: 'v3', auth });
         drive.files.list({
             pageSize: 10,
-            // fields: 'nextPageToken, files(id, name, parents)',
+            fields: 'nextPageToken, files(id, name, parents)',
             parents: [`10s-5g5AScFrjU5yQ0nhad9BtKhg1ELE2`]
         }, (err, res) => {
             if (err) return console.log('The API returned an error: ' + err);

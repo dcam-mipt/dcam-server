@@ -1,6 +1,5 @@
 #!/bin/bash
-# SSH_SERVER=134.209.188.240
-SSH_SERVER=64.225.100.168
+SSH_SERVER=134.209.188.240
 ssh root@$SSH_SERVER sh << END
 
     printf '\n\n\n> > > ufw < < <\n\n\n'
@@ -35,7 +34,7 @@ ssh root@$SSH_SERVER sh << END
     printf '\n\n\n> > > yarn < < <\n\n\n'
 
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+     
     sudo apt update
     echo Y | sudo apt install yarn
     sudo apt install --no-install-recommends yarn
