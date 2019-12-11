@@ -1,5 +1,6 @@
 #!/bin/bash
-SSH_SERVER=134.209.188.240
+# SSH_SERVER=134.209.188.240
+SSH_SERVER=64.225.100.168
 ssh root@$SSH_SERVER sh << END
 
     printf '\n\n\n> > > ufw < < <\n\n\n'
@@ -13,7 +14,7 @@ ssh root@$SSH_SERVER sh << END
     ufw allow 3000
     echo y | ufw enable
 
-    printf '\n\n\n> > > nginx < < <\n\n\n'
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -printf '\n\n\n> > > nginx < < <\n\n\n'
 
     sudo apt update
     echo y | sudo apt install nginx
