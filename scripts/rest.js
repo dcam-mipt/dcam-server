@@ -479,6 +479,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let cost = +((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`))
             let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
             let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
+            response.send(laundry)
             await balance.set(`money`, balance.get(`money`) - cost).save()
             await Mailer.sendEmail({
                 email: user.get(`username`),
@@ -493,7 +494,6 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
                     </html>
                 `
             })
-            response.send(laundry)
         }
     }
 })
