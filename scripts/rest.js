@@ -215,7 +215,7 @@ server.get(`/laundry/get`, (request, response, next) => {
                         return {
                             machine_id: i.get(`machine_id`),
                             objectId: i.id,
-                            timestamp: i.get(`timestamp`),
+                            timestamp: moment(i.get(`timestamp`)).tz(`Europe/Moscow`),
                             user_id: i.get(`user_id`),
                             email: user ? user.get(`username`) : i.get(`user_id`)
                         }
