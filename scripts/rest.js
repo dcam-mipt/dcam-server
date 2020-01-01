@@ -477,7 +477,7 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let machine_index = (await new Parse.Query(`Machines`).find()).map(i => i.id).indexOf(request.params.machine_id) + 1
             let notification_id = (await new Parse.Object(`Notifications`).set(`user_id`, user.id).set(`status`, `delayed`).set(`delivery_timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`).add(-1, `hour`)).set(`message`, `🧺 Напоминаем о предстоящей стирке\nДата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}\nВремя: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}\nМашинка: ${machine_index}`).save()).id
             let cost = +((await new Parse.Query(`Constants`).equalTo(`name`, `laundry_cost`).first()).get(`value`))
-            let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +request.params.timestamp).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
+            let laundry = await new Parse.Object(`Laundry`).set(`timestamp`, +moment(+request.params.timestamp).tz(`Europe/Moscow`)).set(`machine_id`, request.params.machine_id).set(`user_id`, user.id).set(`book_cost`, cost).set(`notification_id`, notification_id).save()
             let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
             await balance.set(`money`, balance.get(`money`) - cost).save()
             response.send(laundry)
