@@ -470,7 +470,9 @@ server.post(`/user/set_my_avatar`, async (request, response, next) => {
 })
 
 server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
+    console.log(`> > >`);
     console.log(`> > >`, moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`));
+    response.send(`laundry`)
     // let user = await become(request)
     // if (user) {
     //     let is_free = (await new Parse.Query(`Laundry`).equalTo(`timestamp`, +request.params.timestamp).equalTo(`machine_id`, request.params.machine_id).find()).length === 0
