@@ -471,7 +471,7 @@ server.post(`/user/set_my_avatar`, async (request, response, next) => {
 
 server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, next) => {
     console.log(`> > >`);
-    console.log(`> > >`, moment(+request.params.timestamp).format(`DD.MM.YY HH:mm`));
+    console.log(`> > >`, moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`));
     response.send(`laundry`)
     // let user = await become(request)
     // if (user) {
