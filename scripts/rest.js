@@ -841,3 +841,8 @@ server.get(`/dormitory/get`, async (request, response, next) => {
         response.send(error)
     }
 })
+
+server.get(`/dev`, async (request, response, next) => {
+    console.log(`accept`);
+    response.send(`hello`)
+})
