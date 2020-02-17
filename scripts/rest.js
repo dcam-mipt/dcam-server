@@ -843,6 +843,14 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 })
 
 server.get(`/dev`, async (request, response, next) => {
-    console.log(`accept`);
+    await Mailer.sendEmail({
+        email: `beldiy.dp@phystech.eduy`,
+        subject: `psamcs`,
+        html: `
+            <html>
+            <div>hello</div>
+            </html>
+        `
+    })
     response.send(`hello`)
 })
