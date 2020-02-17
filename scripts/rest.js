@@ -761,6 +761,17 @@ server.post(`/events/create/`, async (request, response, next) => {
                 .set(`accepted`, false)
                 .save()
             response.send(`plan created with success`)
+            await Mailer.sendEmail({
+                email: `beldiy.dp@phystech.edu`,
+                subject: `psamcs`,
+                html: `
+                    <html>
+                    <div>Вы создали мероприятие в помещении: клуб</div>
+                    <div>Новый статус: ожидание</div>
+                    <div>Заведующий помещением: beldiy.dp@phystech.edu</div>
+                    </html>
+                `
+            })
         }
     } catch (error) {
         response.send(error)
