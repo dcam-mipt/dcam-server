@@ -844,7 +844,7 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 
 server.get(`/dev`, async (request, response, next) => {
     await Mailer.sendEmail({
-        email: `beldiy.dp@phystech.eduy`,
+        email: `beldiy.dp@phystech.edu`,
         subject: `psamcs`,
         html: `
             <html>
