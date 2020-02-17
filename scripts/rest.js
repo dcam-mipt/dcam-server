@@ -846,11 +846,7 @@ server.get(`/dev`, async (request, response, next) => {
     await Mailer.sendEmail({
         email: `beldiy.dp@phystech.edu`,
         subject: `psamcs`,
-        html: `
-            <html>
-            <div>hello</div>
-            </html>
-        `
+        html: `vk.com`
     })
     response.send(`hello`)
 })
