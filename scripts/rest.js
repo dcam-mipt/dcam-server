@@ -761,17 +761,17 @@ server.post(`/events/create/`, async (request, response, next) => {
                 .set(`accepted`, false)
                 .save()
             response.send(`plan created with success`)
-            await Mailer.sendEmail({
-                email: `beldiy.dp@phystech.edu`,
-                subject: `psamcs`,
-                html: `
-                    <html>
-                    <div>Вы создали мероприятие в помещении: клуб</div>
-                    <div>Новый статус: ожидание</div>
-                    <div>Заведующий помещением: beldiy.dp@phystech.edu</div>
-                    </html>
-                `
-            })
+            // await Mailer.sendEmail({
+            //     email: user.get(`username`),
+            //     subject: `psamcs`,
+            //     html: `
+            //         <html>
+            //         <div>Вы создали мероприятие в помещении: клуб</div>
+            //         <div>Новый статус: ожидание</div>
+            //         <div>Заведующий помещением: beldiy.dp@phystech.edu</div>
+            //         </html>
+            //     `
+            // })
         }
     } catch (error) {
         response.send(error)
@@ -854,10 +854,11 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 })
 
 server.get(`/dev`, async (request, response, next) => {
-    await Mailer.sendEmail({
-        email: `beldiy.dp@phystech.edu`,
-        subject: `psamcs`,
-        html: `vk.com`
-    })
-    response.send(`hello`)
+    let d = await new Parse.Query(`Notofications`).first()
+    // await Mailer.sendEmail({
+    //     email: `beldiy.dp@phystech.edu`,
+    //     subject: `psamcs`,
+    //     html: `vk.com`
+    // })
+    response.send(d)
 })
