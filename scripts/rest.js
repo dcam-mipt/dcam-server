@@ -854,7 +854,7 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 })
 
 server.get(`/dev`, async (request, response, next) => {
-    let d = await new Parse.Query(`Notifications`).first()
+    let d = await new Parse.Query(`Notifications`).greaterThan(+moment().startOf(`day`).add(1, `day`)).find()
     // await Mailer.sendEmail({
     //     email: `beldiy.dp@phystech.edu`,
     //     subject: `psamcs`,
