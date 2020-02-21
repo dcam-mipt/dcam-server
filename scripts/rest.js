@@ -854,12 +854,12 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 })
 
 server.get(`/dev`, async (request, response, next) => {
-    // let d = await new Parse.Query(`Notifications`).greaterThan().find()
-    // await Mailer.sendEmail({
-    //     email: `beldiy.dp@phystech.edu`,
-    //     subject: `psamcs`,
-    //     html: `vk.com`
-    // })
-    // response.send(d)
-    response.send(+moment().startOf(`day`).add(1, `day`))
+    let d = await new Parse.Query(`Notifications`).greaterThan().find()
+    await Mailer.sendEmail({
+        email: `beldiy.dp@phystech.edu`,
+        subject: `psamcs`,
+        html: `vk.com`
+    })
+    response.send(d)
+    // response.send(+moment().startOf(`day`).add(1, `day`))
 })
