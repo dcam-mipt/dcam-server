@@ -188,7 +188,23 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                                 .first()
                                 .then((notification) => {
                                     notification.destroy()
-                                        .then((d) => { response.send(d) })
+                                        .then(async (d) => {
+                                            try {
+                                                await Mailer.sendEmail({
+                                                    email: user.get(`username`),
+                                                    subject: `Стиралка`,
+                                                    html: `
+                                                        <html>
+                                                        <title>Стиралка</title>
+                                                        <div>Стирка удалена 🧺</div>
+                                                        </html>
+                                                    `
+                                                })
+                                            } catch (error) {
+                                                console.log(error);
+                                            }
+                                            response.send(d)
+                                        })
                                         .catch((d) => { response.send(d); console.error(d) })
                                 })
                                 .catch((d) => { response.send(d); console.error(d) })
@@ -481,20 +497,24 @@ server.get(`/laundry/book/:timestamp/:machine_id`, async (request, response, nex
             let balance = await new Parse.Query(`Balance`).limit(1000000).equalTo(`user_id`, user.id).first()
             await balance.set(`money`, balance.get(`money`) - cost).save()
             response.send(laundry)
-            // await Mailer.sendEmail({
-            //     email: user.get(`username`),
-            //     subject: `Стиралка`,
-            //     html: `
-            //         <html>
-            //         <title>Стиралка</title>
-            //         <div>Вы запланировали стирку 🧺:</div>
-            //         <div>Дата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}</div>
-            //         <div>Время: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}</div>
-            //         <div>Общежитие: 7</div>
-            //         <div>Машинка: ${machine_index}</div>
-            //         </html>
-            //     `
-            // })
+            try {
+                await Mailer.sendEmail({
+                    email: user.get(`username`),
+                    subject: `Стиралка`,
+                    html: `
+                        <html>
+                        <title>Стиралка</title>
+                        <div>Вы запланировали стирку 🧺:</div>
+                        <div>Дата: ${days_of_week_short[moment(+request.params.timestamp).tz(`Europe/Moscow`).isoWeekday() - 1]} ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`DD.MM.YY`)}</div>
+                        <div>Время: ${moment(+request.params.timestamp).tz(`Europe/Moscow`).format(`HH:mm`)}</div>
+                        <div>Общежитие: 7</div>
+                        <div>Машинка: ${machine_index}</div>
+                        </html>
+                    `
+                })
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 })
@@ -761,47 +781,44 @@ server.post(`/events/create/`, async (request, response, next) => {
                 .set(`accepted`, false)
                 .save()
 
-            let owners = await new Parse.Query(`Roles`).equalTo(`target_id`, request.body.target_id).find()
-            // await Mailer.sendEmail({
-            //     email: i.get(`username`),
-            //     subject: `psamcs`,
-            //     html: `
-            //         <html>
-            //         <div>Вы создали мероприятие в помещении: клуб</div>
-            //         <div>Новый статус: ожидание</div>
-            //         <div>Заведующий помещением: ${owners[0].get(`username`)}</div>
-            //         </html>
-            //     `
-            // })
+            let target_name = (await new Parse.Query(`Targets`).equalTo(`objectId`, request.body.target_id).first()).get(`name`)
 
+            let owners = (await new Parse.Query(`Roles`).equalTo(`target_id`, request.body.target_id).find()).map(i => i.get(`user_id`))
+            owners = await Promise.all(owners.map(async (i) => (await new Parse.Query(`User`).equalTo(`objectId`, i).first()).get(`username`)));
 
-            // owners.forEach(i => {
-            //     await Mailer.sendEmail({
-            //         email: i.get(`username`),
-            //         subject: `psamcs`,
-            //         html: `
-            //         <html>
-            //         <div>Вы создали мероприятие в помещении: клуб</div>
-            //         <div>Новый статус: ожидание</div>
-            //         <div>Заведующий помещением: beldiy.dp@phystech.edu</div>
-            //         </html>
-            //     `
-            //     })
-            // })
-            response.send(owners)
+            try {
+                await Promise.all(owners.forEach(async i => {
+                    try {
+                        await Mailer.sendEmail({
+                            email: i,
+                            subject: `Уведомление ответственному за ${target_name}`,
+                            html: `Пользователь ${user.get(`username`)} создал мероприятие`
+                        })
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }))
+            } catch (error) {
+                console.log(error);
+            }
 
-            // response.send(`plan created with success`)
-            // await Mailer.sendEmail({
-            //     email: user.get(`username`),
-            //     subject: `psamcs`,
-            //     html: `
-            //         <html>
-            //         <div>Вы создали мероприятие в помещении: клуб</div>
-            //         <div>Новый статус: ожидание</div>
-            //         <div>Заведующий помещением: beldiy.dp@phystech.edu</div>
-            //         </html>
-            //     `
-            // })
+            try {
+                await Mailer.sendEmail({
+                    email: user.get(`username`),
+                    subject: `Студсовет ФПМИ`,
+                    html: `
+                        <html>
+                        <div>Вы создали мероприятие в помещении: <b>${target_name}</b></div>
+                        <div>Новый статус: <b>ожидание</b></div>
+                        <div>Заведующие помещением: ${owners.join(`, `)}</div>
+                        </html>
+                    `
+                })
+            } catch (error) {
+                console.log(error);
+            }
+
+            response.send(user)
         }
     } catch (error) {
         response.send(error)
@@ -847,13 +864,27 @@ server.get(`/events/get`, async (request, response, next) => {
 server.get(`/events/accept/:event_id/:value`, async (request, response, next) => {
     try {
         if (await isAdmin(await become(request))) {
+            let username = (await new Parse.Query(`User`).equalTo(`objectId`, (await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()).get(`user_id`)).first()).get(`username`)
             if (request.params.value == `true`) {
                 await (await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()).set(`accepted`, true).save()
-                response.send(`accepted successfully`)
             } else {
                 await (await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()).destroy()
-                response.send(`denied successfully`)
             }
+            try {
+                await Mailer.sendEmail({
+                    email: username,
+                    subject: `Студсовет ФПМИ`,
+                    html: `
+                        <html>
+                        <div>Обновлен статус Вашего мероприятия</div>
+                        <div>Новый статус: <b>${request.params.value == `true` ? `одобрено` : `отклонено`}</b></div>
+                        </html>
+                    `
+                })
+            } catch (error) {
+                console.log(error);
+            }
+            response.send(`${request.params.value == `true` ? `accepted` : `denied`} successfully`)
         }
     } catch (error) {
         response.send(error)
@@ -866,6 +897,15 @@ server.get(`/events/delete/:event_id`, async (request, response, next) => {
         let event = await new Parse.Query(`Events`).equalTo(`objectId`, request.params.event_id).first()
         if (event.get(`user_id`) === user.id || await isAdmin(user)) {
             event.destroy()
+            // await Mailer.sendEmail({
+            //     email: user.get(`username`),
+            //     subject: `Студсовет ФПМИ`,
+            //     html: `
+            //         <html>
+            //         <div>Ваше мероприятие удалено/div>
+            //         </html>
+            //     `
+            // })
             response.send(`deleted successfully`)
         } else {
             response.send(`error while deleting event: no permission`)
