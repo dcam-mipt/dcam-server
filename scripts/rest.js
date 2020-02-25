@@ -762,17 +762,17 @@ server.post(`/events/create/`, async (request, response, next) => {
                 .save()
 
             let owners = await new Parse.Query(`Roles`).equalTo(`target_id`, request.body.target_id).find()
-            await Mailer.sendEmail({
-                email: i.get(`username`),
-                subject: `psamcs`,
-                html: `
-                    <html>
-                    <div>Вы создали мероприятие в помещении: клуб</div>
-                    <div>Новый статус: ожидание</div>
-                    <div>Заведующий помещением: ${owners[0].get(`username`)}</div>
-                    </html>
-                `
-            })
+            // await Mailer.sendEmail({
+            //     email: i.get(`username`),
+            //     subject: `psamcs`,
+            //     html: `
+            //         <html>
+            //         <div>Вы создали мероприятие в помещении: клуб</div>
+            //         <div>Новый статус: ожидание</div>
+            //         <div>Заведующий помещением: ${owners[0].get(`username`)}</div>
+            //         </html>
+            //     `
+            // })
 
 
             // owners.forEach(i => {
