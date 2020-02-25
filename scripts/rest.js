@@ -760,7 +760,37 @@ server.post(`/events/create/`, async (request, response, next) => {
                 .set(`aim`, request.body.aim)
                 .set(`accepted`, false)
                 .save()
-            response.send(`plan created with success`)
+
+            let owners = await new Parse.Query(`Roles`).equalTo(`target_id`, request.body.target_id).find()
+            await Mailer.sendEmail({
+                email: i.get(`username`),
+                subject: `psamcs`,
+                html: `
+                    <html>
+                    <div>Вы создали мероприятие в помещении: клуб</div>
+                    <div>Новый статус: ожидание</div>
+                    <div>Заведующий помещением: ${owners[0].get(`username`)}</div>
+                    </html>
+                `
+            })
+
+
+            // owners.forEach(i => {
+            //     await Mailer.sendEmail({
+            //         email: i.get(`username`),
+            //         subject: `psamcs`,
+            //         html: `
+            //         <html>
+            //         <div>Вы создали мероприятие в помещении: клуб</div>
+            //         <div>Новый статус: ожидание</div>
+            //         <div>Заведующий помещением: beldiy.dp@phystech.edu</div>
+            //         </html>
+            //     `
+            //     })
+            // })
+            response.send(owners)
+
+            // response.send(`plan created with success`)
             // await Mailer.sendEmail({
             //     email: user.get(`username`),
             //     subject: `psamcs`,
@@ -851,15 +881,4 @@ server.get(`/dormitory/get`, async (request, response, next) => {
     } catch (error) {
         response.send(error)
     }
-})
-
-server.get(`/dev`, async (request, response, next) => {
-    let d = await new Parse.Query(`Notifications`).greaterThan().find()
-    await Mailer.sendEmail({
-        email: `beldiy.dp@phystech.edu`,
-        subject: `psamcs`,
-        html: `vk.com`
-    })
-    response.send(d)
-    // response.send(+moment().startOf(`day`).add(1, `day`))
 })
