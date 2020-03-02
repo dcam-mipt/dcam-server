@@ -48,21 +48,27 @@ const EmailAPI = module.exports = {
     async sendEmail({ email, subject, html }) {
 
         var transporter = nodemailer.createTransport({
-            service: 'gmail',
+            service: config.YANDEX_SMTP_ADDRESS,
             auth: {
-                user: config.GOOGLE_MAIL,
-                pass: config.GOOGLE_PASSWORD,
-            }
+                user: config.YANDEX_SMTP_PASSWORD,
+                pass: config.YANDEX_SMTP_MAIL,
+            },
+            // service: 'gmail',
+            // auth: {
+            //     user: config.GOOGLE_MAIL,
+            //     pass: config.GOOGLE_PASSWORD,
+            // },
         });
 
         let info = await transporter.sendMail({
-            from: config.GOOGLE_MAIL,
+            // from: config.GOOGLE_MAIL,
+            from: config.YANDEX_SMTP_MAIL,
             to: email,
             subject: subject,
             text: html,
             html: `${html}`,
         });
-        console.log(`> > > Email with test "${html}" send to ${email}`);
+        console.log(`> > > Email with text "${html}" send to ${email}`);
     }
 
 
