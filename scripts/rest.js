@@ -926,7 +926,7 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 server.get(`/dev`, async (request, response, next) => {
     try {
         // let d = await Parse.User.requestPasswordReset("beldiy.dp@phystech.edu");
-        await Mailer.sendEmail({
+        let d = await Mailer.sendEmail({
             email: `beldiy.dp@phystech.edu`,
             subject: `Стиралка`,
             html: `hello world`
