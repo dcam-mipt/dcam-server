@@ -926,13 +926,15 @@ server.get(`/dormitory/get`, async (request, response, next) => {
 server.get(`/dev`, async (request, response, next) => {
     try {
         // let d = await Parse.User.requestPasswordReset("beldiy.dp@phystech.edu");
-        // let d = await Mailer.sendEmail({
-        //     email: `beldiy.dp@phystech.edu`,
-        //     subject: `Стиралка`,
-        //     html: `hello world`
-        // })
-        response.send(`hello world`)
+        let d = await Mailer.sendEmail({
+            email: `beldiy.dp@phystech.edu`,
+            subject: `Стиралка`,
+            html: `hello world`
+        })
+        console.log(d);
     } catch (error) {
         response.send(error)
     }
+    response.send(`hello world`)
+
 })
