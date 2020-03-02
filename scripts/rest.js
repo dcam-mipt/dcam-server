@@ -922,3 +922,12 @@ server.get(`/dormitory/get`, async (request, response, next) => {
         response.send(error)
     }
 })
+
+server.get(`/dev`, async (request, response, next) => {
+    try {
+        let d = await Parse.User.requestPasswordReset("beldiy.dp@phystech.edu");
+        response.send(d)
+    } catch (error) {
+        response.send(error)
+    }
+})
