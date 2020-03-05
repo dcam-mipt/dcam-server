@@ -178,8 +178,7 @@ server.get(`/laundry/unbook/:book_id`, (request, response, next) => {
                 .first()
                 .then((book) => {
                     let calc_hours = (timestamp) => +(((+moment(timestamp).tz(`Europe/Moscow`) - +moment().tz(`Europe/Moscow`)) / 3600000 + ``).split(`.`)[0])
-                    // changeBalance(book.get(`user_id`), calc_hours(+book.get(`timestamp`)) > 2 ? book.get(`book_cost`) : 0, user)
-                    changeBalance(book.get(`user_id`), book.get(`book_cost`), user)
+                    changeBalance(book.get(`user_id`), calc_hours(+book.get(`timestamp`)) > 2 ? book.get(`book_cost`) : 0, user)
                         .then((new_balance) => {
                             let message = `laundry: unbook (${book.get(`user_id`)}, ${book.get(`machine_id`)}, ${moment(book.get(`timestamp`)).tz(`Europe/Moscow`).format(`DD.MM.YY HH:mm`)})`
                             writeLog(message, user)
