@@ -478,7 +478,10 @@ server.get(`/auth/sign_out`, (request, response, next) => {
         .catch((d) => { response.send(d); console.error(d) })
 })
 
-server.get(`/user/get_my_info`, async (request, response, next) => { response.send(await become(request)) })
+server.get(`/user/get_my_info`, async (request, response, next) => {
+    console.log(request.headers.authorization);
+    response.send(await become(request))
+})
 
 server.post(`/user/set_my_avatar`, async (request, response, next) => {
     let user = await become(request)
