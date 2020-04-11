@@ -76,7 +76,6 @@ let changeBalance = (user, value, author) => new Promise((resolve, reject) => {
 
 let become = (request) => new Promise((resolve, reject) => {
     let sessionToken = request.headers.authorization
-    console.log(sessionToken);
     if (!sessionToken) {
         reject({
             error: `invalid sessoin token`,
@@ -89,6 +88,7 @@ let become = (request) => new Promise((resolve, reject) => {
     }
     Parse.User.become(sessionToken)
         .then((user) => {
+            console.log(user);
             updateActivity(user)
             resolve(user)
         })
