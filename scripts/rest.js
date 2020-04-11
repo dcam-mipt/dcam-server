@@ -76,6 +76,7 @@ let changeBalance = (user, value, author) => new Promise((resolve, reject) => {
 
 let become = (request) => new Promise((resolve, reject) => {
     let sessionToken = request.headers.authorization
+    console.log(sessionToken);
     if (!sessionToken) {
         reject({
             error: `invalid sessoin token`,
@@ -479,7 +480,6 @@ server.get(`/auth/sign_out`, (request, response, next) => {
 })
 
 server.get(`/user/get_my_info`, async (request, response, next) => {
-    console.log(request.headers.authorization);
     response.send(await become(request))
 })
 
