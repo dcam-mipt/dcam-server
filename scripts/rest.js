@@ -480,7 +480,6 @@ server.get(`/auth/sign_out`, (request, response, next) => {
 
 server.get(`/user/get_my_info`, async (request, response, next) => {
     let user = await become(request)
-    console.log(user);
     response.send(user)
 })
 
