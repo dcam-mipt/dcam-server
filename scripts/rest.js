@@ -88,7 +88,6 @@ let become = (request) => new Promise((resolve, reject) => {
     }
     Parse.User.become(sessionToken)
         .then((user) => {
-            console.log(user);
             updateActivity(user)
             resolve(user)
         })
@@ -480,7 +479,9 @@ server.get(`/auth/sign_out`, (request, response, next) => {
 })
 
 server.get(`/user/get_my_info`, async (request, response, next) => {
-    response.send(await become(request))
+    let user = await become(request)
+    console.log(user);
+    response.send(user)
 })
 
 server.post(`/user/set_my_avatar`, async (request, response, next) => {
