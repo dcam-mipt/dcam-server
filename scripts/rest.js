@@ -933,12 +933,12 @@ server.get(`/dev`, async (request, response, next) => {
 
 })
 
-server.get(`/get-transactions-dump`, async (request, response, next) => {
-    try {
-        let transaction = await new Parse.Query(`Transactions`).limit(1000000).find()
-        response.send(transaction)
-    } catch (error) {
-        response.send(error)
-    }
+// server.get(`/get-transactions-dump`, async (request, response, next) => {
+//     try {
+//         let transaction = await new Parse.Query(`Transactions`).limit(1000000).find()
+//         response.send(transaction)
+//     } catch (error) {
+//         response.send(error)
+//     }
 
-})
+// })
