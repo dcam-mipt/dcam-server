@@ -8,7 +8,7 @@ var moment = require('moment-timezone')
 var axios = require(`axios`)
 var Mailer = require(`./MailAPI`)
 
-const BookkeepingService = require('../services/BookkeepingService');
+// const BookkeepingService = require('../services/BookkeepingService');
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
@@ -38,7 +38,7 @@ server.listen(config.REST_PORT, () => { console.log(`${server.name} listening at
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
 
 // services
-UsersService.addRequestHandlers(server);
+// UsersService.addRequestHandlers(server);
 
 
 // infile rest queries
