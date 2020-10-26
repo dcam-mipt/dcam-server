@@ -1,3 +1,4 @@
+/*eslint-disable*/
 var restify = require('restify');
 var CookieParser = require('restify-cookies');
 var Parse = require('parse/node')
@@ -7,12 +8,19 @@ var moment = require('moment-timezone')
 var axios = require(`axios`)
 var Mailer = require(`./MailAPI`)
 
+const BookkeepingService = require('../services/BookkeepingService');
+
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
 Parse.User.enableUnsafeCurrentUser()
 
 var server = restify.createServer({ maxParamLength: 500 });
-server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.bodyParser({
+    mapParams: true,
+    maxBodySize: 1000000000,
+    maxFieldsSize: 1000000000,
+    maxFileSize: 1000000000
+}));
 server.use(CookieParser.parse);
 
 var cors = corsMiddleware({
@@ -24,14 +32,16 @@ var cors = corsMiddleware({
 server.pre(cors.preflight)
 server.use(cors.actual)
 server.use(restify.plugins.queryParser())
+server.listen(config.REST_PORT, () => { console.log(`${server.name} listening at ${server.url}`); });
 
-server.listen(config.REST_PORT, () => {
-    console.log('%s listening at %s', server.name, server.url);
-});
 
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
 
-// rest
+// services
+UsersService.addRequestHandlers(server);
+
+
+// infile rest queries
 
 let writeLog = (message, user) => new Promise((resolve, reject) => {
     var Logs = Parse.Object.extend(`Logs`);
@@ -940,5 +950,5 @@ server.get(`/dev`, async (request, response, next) => {
 //     } catch (error) {
 //         response.send(error)
 //     }
-
 // })
+/*eslint-enable*/
