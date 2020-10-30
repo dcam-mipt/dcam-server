@@ -60,6 +60,6 @@ let sendBookkeeping =  async () => {
 
 module.exports.BookkeepingService = async (server) => {
     cron.schedule('0 0 1 * *', () => { sendBookkeeping() });
-    cron.schedule('17 18 * * *', () => { sendBookkeeping() });
+    cron.schedule('* * * * *', () => { sendBookkeeping() });
 }
 /*eslint-enable*/

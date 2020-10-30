@@ -20,6 +20,7 @@
     },
     "scripts": {
         "dev": "node rest.js",
-        "deploy": "../deploy.sh"
+        "deploy": "../deploy.sh",
+        "commit": "git add . && git status -s && git commit -m `date '+%d.%m.%Y🌿%H:%M'` && git push"
     }
 }
