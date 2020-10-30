@@ -38,7 +38,7 @@ let sendBookkeeping =  async () => {
         },
         {
             label: 'Salary (RUB)',
-            value: `${Math.round(transactions.map(i => i.get(`recived`)).reduce((a, b) => a + b) * 0.25)}`,
+            value: `${Math.max(Math.round(transactions.map(i => i.get(`recived`)).reduce((a, b) => a + b) * 0.25), 4000)}`,
         },
         {
             label: 'Number of purchases',
