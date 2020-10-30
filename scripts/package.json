@@ -3,11 +3,13 @@
     "version": "0.0.1",
     "dependencies": {
         "axios": "^0.18.0",
+        "csv-writer": "^1.6.0",
         "emailjs": "^2.2.0",
         "fs": "^0.0.1-security",
         "immutable": "^4.0.0-rc.12",
         "moment": "^2.24.0",
         "moment-timezone": "^0.5.23",
+        "node-cron": "^2.0.3",
         "nodemailer": "^6.4.3",
         "parse": "^2.2.1",
         "restify": "^7.7.0",
@@ -15,5 +17,9 @@
         "restify-cors-middleware": "^1.1.1",
         "socket.io": "^2.2.0",
         "telegraf": "^3.29.0"
+    },
+    "scripts": {
+        "dev": "node rest.js",
+        "deploy": "../deploy.sh"
     }
 }

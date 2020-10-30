@@ -17,7 +17,7 @@ const EmailAPI = module.exports = {
         return this.serverInstance;
     },
 
-    sendEmail({ email, subject, html }) {
+    sendEmail({ email, subject, html, files = [] }) {
         return new Promise((resolve, reject) => {
             let server = this.getServer();
             server.send({
@@ -26,7 +26,8 @@ const EmailAPI = module.exports = {
                 subject: subject,
                 attachment:
                     [
-                        { data: `<html>${html}</html>`, alternative: true }
+                        { data: `<html>${html}</html>`, alternative: true },
+                        ...files.map(i => ({ path: i.path + ``, type: i.type + ``, name: (i.name || i.path) + `` }))
                     ]
             }, (err, message) => {
                 if (err != undefined) {

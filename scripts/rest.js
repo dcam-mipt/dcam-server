@@ -7,8 +7,7 @@ var corsMiddleware = require('restify-cors-middleware');
 var moment = require('moment-timezone')
 var axios = require(`axios`)
 var Mailer = require(`./MailAPI`)
-
-// const BookkeepingService = require('../services/BookkeepingService');
+var { Services } = require(`./services`)
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
@@ -34,11 +33,10 @@ server.use(cors.actual)
 server.use(restify.plugins.queryParser())
 server.listen(config.REST_PORT, () => { console.log(`${server.name} listening at ${server.url}`); });
 
-
 let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`]
 
 // services
-// UsersService.addRequestHandlers(server);
+Services(server);
 
 
 // infile rest queries
@@ -942,13 +940,4 @@ server.get(`/dev`, async (request, response, next) => {
     }
 
 })
-
-// server.get(`/get-transactions-dump`, async (request, response, next) => {
-//     try {
-//         let transaction = await new Parse.Query(`Transactions`).limit(1000000).find()
-//         response.send(transaction)
-//     } catch (error) {
-//         response.send(error)
-//     }
-// })
 /*eslint-enable*/
