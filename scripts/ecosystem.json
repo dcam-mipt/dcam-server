@@ -11,11 +11,6 @@
             "watch": false
         },
         {
-            "name": "services",
-            "script": "./scripts/services.js",
-            "watch": false
-        },
-        {
             "name": "dashboard",
             "script": "./scripts/dashboard.sh",
             "watch": false
