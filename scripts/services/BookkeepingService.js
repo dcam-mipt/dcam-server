@@ -53,13 +53,12 @@ let sendBookkeeping =  async () => {
 
     let mail_list = [
         `beldiy.dp@phystech.edu`,
-        // `tselinko.as@phystech.edu`,
+        `tselinko.as@phystech.edu`,
     ]
     mail_list.forEach(async (i) => { await Mailer.sendEmail({ email: i, subject: `Laundry Bookkeeping`, html: `DCAM 💰`, files: [{ path: `out.csv`, name: `laundry-${moment().add(-1, `month`).format(`MMMM-YYYY`)}.csv`, type: `text/csv` }] }) })
 }
 
 module.exports.BookkeepingService = async (server) => {
     cron.schedule('0 0 1 * *', () => { sendBookkeeping() });
-    cron.schedule('* * * * *', () => { sendBookkeeping() });
 }
 /*eslint-enable*/
