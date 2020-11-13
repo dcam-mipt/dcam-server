@@ -9,6 +9,7 @@ var axios = require(`axios`)
 var Mailer = require(`./MailAPI`)
 
 var { BookkeepingService } = require('./services/BookkeepingService')
+var { AnalyticsService } = require('./services/AnalyticsService')
 
 Parse.initialize(config.PARSE_APP_ID, config.PARSE_JS_KEY, config.PARSE_MASTER_KEY);
 Parse.serverURL = config.PARSE_SERVER_URL
@@ -38,6 +39,7 @@ let days_of_week_short = [`пн`, `вт`, `ср`, `чт`, `пт`, `сб`, `вс`
 
 // services
 BookkeepingService(server);
+AnalyticsService(server);
 
 // infile rest queries
 
