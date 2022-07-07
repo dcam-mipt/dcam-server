@@ -7,7 +7,7 @@
         "emailjs": "^2.2.0",
         "fs": "^0.0.1-security",
         "immutable": "^4.0.0-rc.12",
-        "moment": "^2.24.0",
+        "moment": "^2.29.4",
         "moment-timezone": "^0.5.23",
         "node-cron": "^2.0.3",
         "nodemailer": "^6.4.3",
